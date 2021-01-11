@@ -4,3 +4,4 @@
 /.mxproject
 /.project
 *.launch
+/STM32F103RETX_FLASH.ld

@@ -111,6 +111,7 @@ int main(void)
   sTime.Seconds = 51;
   HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
+  // Для секундного таймера
   HAL_RTCEx_SetSecond_IT(&hrtc);
 
   //HAL_RTC_GetAlarm();
@@ -118,15 +119,17 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  puts("Enter to loop");
 	while (1)
 	{
+		puts("Enter stop mode");
+		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
+		puts("after sleep\n");
+
 		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 
-		HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
-		printf("Time %02d:%02d:%02d\n", sTime.Hours, sTime.Minutes, sTime.Seconds);
 		HAL_Delay(500);
 //		printf("i: %d\n", i);
-//		puts("Test\n");
 
 //		trace_printf("Test\n");
 		//"${stm32cubeide_openocd_path}/openocd"
