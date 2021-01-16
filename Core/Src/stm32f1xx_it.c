@@ -25,6 +25,9 @@
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
 
+/* External functions --------------------------------------------------------*/
+void SystemClock_Config(void);
+
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -56,6 +59,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern PCD_HandleTypeDef hpcd_USB_FS;
 extern RTC_HandleTypeDef hrtc;
 /* USER CODE BEGIN EV */
 
@@ -214,6 +218,34 @@ void RTC_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles USB high priority or CAN TX interrupts.
+  */
+void USB_HP_CAN1_TX_IRQHandler(void)
+{
+  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 0 */
+
+  /* USER CODE END USB_HP_CAN1_TX_IRQn 0 */
+  HAL_PCD_IRQHandler(&hpcd_USB_FS);
+  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 1 */
+
+  /* USER CODE END USB_HP_CAN1_TX_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USB low priority or CAN RX0 interrupts.
+  */
+void USB_LP_CAN1_RX0_IRQHandler(void)
+{
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
+
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
+  HAL_PCD_IRQHandler(&hpcd_USB_FS);
+  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
+
+  /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
+}
+
+/**
   * @brief This function handles RTC alarm interrupt through EXTI line 17.
   */
 void RTC_Alarm_IRQHandler(void)
@@ -225,6 +257,26 @@ void RTC_Alarm_IRQHandler(void)
   /* USER CODE BEGIN RTC_Alarm_IRQn 1 */
 
   /* USER CODE END RTC_Alarm_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USB wake-up interrupt through EXTI line 18.
+  */
+void USBWakeUp_IRQHandler(void)
+{
+  /* USER CODE BEGIN USBWakeUp_IRQn 0 */
+
+  /* USER CODE END USBWakeUp_IRQn 0 */
+  if ((&hpcd_USB_FS)->Init.low_power_enable) {
+    /* Reset SLEEPDEEP bit of Cortex System Control Register */
+    SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
+    SystemClock_Config();
+  }
+  /* Clear EXTI pending bit */
+  __HAL_USB_WAKEUP_EXTI_CLEAR_FLAG();
+  /* USER CODE BEGIN USBWakeUp_IRQn 1 */
+
+  /* USER CODE END USBWakeUp_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

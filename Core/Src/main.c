@@ -20,11 +20,13 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "rtc.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,8 +59,8 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 int __io_putchar(int ch)
 {
-	ITM_SendChar(ch);
-	return ch;
+  ITM_SendChar(ch);
+  return ch;
 }
 
 //int _write(int file, char *ptr, int len){
@@ -104,6 +106,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_RTC_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
   sTime.Hours = 16;
@@ -119,22 +122,36 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  char str_tx[30];
+//  char str_rx[255];
+//  uint32_t len=0;
+  sprintf(str_tx,"USB send data\n");
   puts("Enter to loop");
-	while (1)
-	{
-		puts("Enter stop mode");
-		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
-		puts("after sleep\n");
+  while (1)
+  {
+    //		puts("Enter stop mode");
+    //		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
+    //		puts("after sleep\n");
 
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    if( CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx)) != USBD_OK)
+    {
+      puts("Error send via USB");
+//      puts("Deinint USB");
+//      MX_USB_DEVICE_DeInit();
+//      puts("Inint USB");
+//      MX_USB_DEVICE_Init();
+    }
+    else
+      puts("Send: {USB send data}");
+//    CDC_Receive_FS(str_rx, &len);
+    HAL_Delay(500);
+    //		printf("i: %d\n", i);
 
-		HAL_Delay(500);
-//		printf("i: %d\n", i);
+    //		trace_printf("Test\n");
+    //"${stm32cubeide_openocd_path}/openocd"
 
-//		trace_printf("Test\n");
-		//"${stm32cubeide_openocd_path}/openocd"
-
-	}
+  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -179,8 +196,9 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USB;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -188,7 +206,11 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void ReceiveUSB(uint8_t *str, uint32_t len)
+{
+  str[len] = 0;
+  printf("Receeive string[%s], len: %lu\n", str, len);
+}
 /* USER CODE END 4 */
 
 /**
@@ -198,11 +220,12 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-	__disable_irq();
-	while (1)
-	{
-	}
+  printf("Error_Handler\n");
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -217,7 +240,7 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-	/* User can add his own implementation to report the file name and line number,
+  /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }

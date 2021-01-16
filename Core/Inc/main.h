@@ -54,10 +54,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void ReceiveUSB(uint8_t *str, uint32_t len);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define test 12
 #define LED_Pin GPIO_PIN_11
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
