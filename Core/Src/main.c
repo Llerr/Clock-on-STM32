@@ -129,9 +129,9 @@ int main(void)
   puts("Enter to loop");
   while (1)
   {
-    //		puts("Enter stop mode");
-    //		HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
-    //		puts("after sleep\n");
+//    puts("Enter stop mode");
+//    HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
+//    puts("after sleep\n");
 
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     if( CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx)) != USBD_OK)
