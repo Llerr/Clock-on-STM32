@@ -58,6 +58,8 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define BTN_RESET_Pin GPIO_PIN_0
+#define BTN_RESET_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_11
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
