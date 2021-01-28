@@ -57,8 +57,14 @@ void DebugMon_Handler(void);
 void PendSV_Handler(void);
 void SysTick_Handler(void);
 void RTC_IRQHandler(void);
+void EXTI0_IRQHandler(void);
+void EXTI1_IRQHandler(void);
+void EXTI2_IRQHandler(void);
+void EXTI3_IRQHandler(void);
+void EXTI4_IRQHandler(void);
 void USB_HP_CAN1_TX_IRQHandler(void);
 void USB_LP_CAN1_RX0_IRQHandler(void);
+void EXTI9_5_IRQHandler(void);
 void RTC_Alarm_IRQHandler(void);
 void USBWakeUp_IRQHandler(void);
 /* USER CODE BEGIN EFP */

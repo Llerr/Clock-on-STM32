@@ -60,6 +60,25 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 /* Private defines -----------------------------------------------------------*/
 #define BTN_RESET_Pin GPIO_PIN_0
 #define BTN_RESET_GPIO_Port GPIOA
+#define BTN_RESET_EXTI_IRQn EXTI0_IRQn
+#define BTN_SET_Pin GPIO_PIN_1
+#define BTN_SET_GPIO_Port GPIOA
+#define BTN_SET_EXTI_IRQn EXTI1_IRQn
+#define BTN_MID_Pin GPIO_PIN_2
+#define BTN_MID_GPIO_Port GPIOA
+#define BTN_MID_EXTI_IRQn EXTI2_IRQn
+#define BTN_RIGHT_Pin GPIO_PIN_3
+#define BTN_RIGHT_GPIO_Port GPIOA
+#define BTN_RIGHT_EXTI_IRQn EXTI3_IRQn
+#define BTN_LEFT_Pin GPIO_PIN_4
+#define BTN_LEFT_GPIO_Port GPIOA
+#define BTN_LEFT_EXTI_IRQn EXTI4_IRQn
+#define BTN_DOWN_Pin GPIO_PIN_5
+#define BTN_DOWN_GPIO_Port GPIOA
+#define BTN_DOWN_EXTI_IRQn EXTI9_5_IRQn
+#define BTN_UP_Pin GPIO_PIN_6
+#define BTN_UP_GPIO_Port GPIOA
+#define BTN_UP_EXTI_IRQn EXTI9_5_IRQn
 #define LED_Pin GPIO_PIN_11
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */

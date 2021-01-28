@@ -144,7 +144,7 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
   HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
   sprintf(str, "Time %02d:%02d:%02d\n", sTime.Hours, sTime.Minutes, sTime.Seconds);
   puts(str);
-  CDC_Transmit_FS(str, strlen(str));
+  CDC_Transmit_FS((uint8_t *)str, strlen(str));
 
 }
 /* USER CODE END 1 */
