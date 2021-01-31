@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "rtc.h"
 #include "usb_device.h"
 #include "gpio.h"
@@ -30,6 +31,7 @@
 #include "usbd_cdc_if.h"
 
 #include "buttons.h"
+#include "sensors.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -110,6 +112,7 @@ int main(void)
   MX_GPIO_Init();
   MX_RTC_Init();
   MX_USB_DEVICE_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
   sTime.Hours = 16;

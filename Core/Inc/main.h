@@ -58,6 +58,7 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define HUMIDITY_ADDR 0x38
 #define BTN_RESET_Pin GPIO_PIN_0
 #define BTN_RESET_GPIO_Port GPIOA
 #define BTN_RESET_EXTI_IRQn EXTI0_IRQn

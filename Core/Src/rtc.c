@@ -49,9 +49,10 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-
+  int checkVar=0;
   /* USER CODE BEGIN Check_RTC_BKUP */
-
+  //Чтобы не забыть закоментировать установку времени
+  ++checkVar;
   /* USER CODE END Check_RTC_BKUP */
 
   /** Initialize RTC and set the Time and Date
