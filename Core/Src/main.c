@@ -32,6 +32,9 @@
 
 #include "buttons.h"
 #include "sensors.h"
+
+#include "aht10.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -114,7 +117,6 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
   sTime.Hours = 16;
   sTime.Minutes = 32;
   sTime.Seconds = 51;
@@ -122,7 +124,9 @@ int main(void)
 
   // Для секундного таймера
   HAL_RTCEx_SetSecond_IT(&hrtc);
-
+  //для i2c
+  HAL_I2C_EV_IRQHandler(&hi2c1);
+  AHT10Init(&hi2c1);
   //HAL_RTC_GetAlarm();
   /* USER CODE END 2 */
 
@@ -131,25 +135,26 @@ int main(void)
   char str_tx[30];
 //  char str_rx[255];
 //  uint32_t len=0;
+  HAL_Delay(500);
   sprintf(str_tx,"USB send data\n");
   puts("Enter to loop");
   while (1)
   {
-//    puts("Enter stop mode");
+//    puts("loop");
 //    HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
 //    puts("after sleep\n");
 
     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    if( CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx)) != USBD_OK)
-    {
-      puts("Error send via USB");
+//    if( CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx)) != USBD_OK)
+//    {
+//      puts("Error send via USB");
 //      puts("Deinint USB");
 //      MX_USB_DEVICE_DeInit();
 //      puts("Inint USB");
 //      MX_USB_DEVICE_Init();
-    }
-    else
-      puts("Send: {USB send data}");
+//    }
+//    else
+//      puts("Send: {USB send data}");
 //    CDC_Receive_FS(str_rx, &len);
     HAL_Delay(500);
     //		printf("i: %d\n", i);

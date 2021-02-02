@@ -24,6 +24,9 @@
 #include <string.h>
 
 #include "usbd_cdc_if.h"
+#include "aht10.h"
+#include "i2c.h"
+#include "main.h"
 
 RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef DateToUpdate = {0};
@@ -49,10 +52,10 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  int checkVar=0;
+
   /* USER CODE BEGIN Check_RTC_BKUP */
   //Чтобы не забыть закоментировать установку времени
-  ++checkVar;
+//  ++checkVar;
   /* USER CODE END Check_RTC_BKUP */
 
   /** Initialize RTC and set the Time and Date
@@ -141,11 +144,12 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
   char str[20] = {0};
-  printf("------------> Second event\n");
+  printf("\n------------> Second event\n");
   HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
-  sprintf(str, "Time %02d:%02d:%02d\n", sTime.Hours, sTime.Minutes, sTime.Seconds);
+  sprintf(str, "Time %02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
   puts(str);
   CDC_Transmit_FS((uint8_t *)str, strlen(str));
+  AHT10RequestData(&hi2c1);
 
 }
 /* USER CODE END 1 */
