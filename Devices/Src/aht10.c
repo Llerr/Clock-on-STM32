@@ -19,6 +19,7 @@ uint8_t AHT10_TmpHum_Cmd = 0xAC;
 uint8_t AHT10_Init_Cmd = 0xE1;
 uint8_t AHT10_Reset_Cmd = 0xBA;
 
+char AHT10Present = 0;
 
 #include "aht10.h"
 
@@ -26,7 +27,13 @@ uint8_t AHT10_Reset_Cmd = 0xBA;
 void AHT10Init(I2C_HandleTypeDef *hi2c)
 {
   printf("Start AHT10\n");
-  HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Init_Cmd, 1, 100);
+  if(HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Init_Cmd, 1, 100)!= HAL_OK)
+  {
+    printf("AHT10 not found!\n");
+    AHT10Present = 0;
+    return;
+  }
+  AHT10Present = 1;
   HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
   printf("AHT10 started\n");
 //  HAL_I2C_Master_Transmit_IT (&hi2c1, AHT10_Adress, uint8_t *pData, uint16_t Size);
@@ -35,8 +42,9 @@ void AHT10Init(I2C_HandleTypeDef *hi2c)
 //----------------------------------------------------------------------------------------------------------------------
 void AHT10RequestData(I2C_HandleTypeDef *hi2c)
 {
+  if(!AHT10Present) return;
   HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
- printf("Request data from AHT10\n");
+  printf("Request data from AHT10\n");
   HAL_I2C_Master_Transmit_IT(hi2c, AHT10_ADRESS, &AHT10_TmpHum_Cmd, 1);
 }
 
