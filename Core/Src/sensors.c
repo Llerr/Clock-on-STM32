@@ -7,4 +7,18 @@
 
 #include  <stdio.h>
 
+#include "i2c.h"
+#include "aht10.h"
+#include "bmp280.h"
 #include "sensors.h"
+
+void initSensors()
+{
+  AHT10Init(&hi2c1);
+  BMP280Init(&hi2c1);
+}
+
+void requestDataSensors()
+{
+  AHT10RequestData(&hi2c1);
+}

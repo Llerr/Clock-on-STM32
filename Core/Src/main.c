@@ -126,7 +126,7 @@ int main(void)
   HAL_RTCEx_SetSecond_IT(&hrtc);
   //для i2c
   HAL_I2C_EV_IRQHandler(&hi2c1);
-  AHT10Init(&hi2c1);
+  initSensors();
   //HAL_RTC_GetAlarm();
   /* USER CODE END 2 */
 

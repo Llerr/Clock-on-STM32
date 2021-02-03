@@ -8,6 +8,8 @@
 #ifndef INC_AHT10_H_
 #define INC_AHT10_H_
 
+#include "i2c.h"
+
 #define AHT10_ADRESS (0x38 << 1)
 
 #ifdef __cplusplus

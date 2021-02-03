@@ -14,6 +14,10 @@
 extern "C" {
 #endif
 
+void initSensors();
+
+void requestDataSensors();
+
 #ifdef __cplusplus
 }
 #endif

@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "usbd_cdc_if.h"
-#include "aht10.h"
+#include "sensors.h"
 #include "i2c.h"
 #include "main.h"
 
@@ -149,7 +149,7 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
   sprintf(str, "Time %02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
   puts(str);
   CDC_Transmit_FS((uint8_t *)str, strlen(str));
-  AHT10RequestData(&hi2c1);
+  requestDataSensors();
 
 }
 /* USER CODE END 1 */

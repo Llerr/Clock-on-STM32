@@ -7,8 +7,6 @@
 
 #include <stdio.h>
 
-#include "i2c.h"
-
 /* Variables for AHT10 */
 uint8_t AHT10_RX_Data[6];
 uint AHT10_Temperature;
@@ -64,18 +62,18 @@ void AHT10MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   uint32_t AHT10_ADC_Raw;
 
-  printf("AHT10MasterRxCpltCallback: state(0x%X): %02X %02X %02X %02X %02X)\n",AHT10_RX_Data[0],
-      AHT10_RX_Data[1], AHT10_RX_Data[2], AHT10_RX_Data[3], AHT10_RX_Data[4], AHT10_RX_Data[5]);
+//  printf("AHT10MasterRxCpltCallback: state(0x%X): %02X %02X %02X %02X %02X)\n",AHT10_RX_Data[0],
+//      AHT10_RX_Data[1], AHT10_RX_Data[2], AHT10_RX_Data[3], AHT10_RX_Data[4], AHT10_RX_Data[5]);
 //  if(~AHT10_RX_Data[0] & 0x80)
   {
     /* Convert to Temperature in °C */
     AHT10_ADC_Raw = (((uint32_t)AHT10_RX_Data[3] & 15) << 16) | ((uint32_t)AHT10_RX_Data[4] << 8) | AHT10_RX_Data[5];
     AHT10_Temperature = (AHT10_ADC_Raw * 200 / 1048576) - 50;
-    printf("Temperature raw: %lu\n", AHT10_ADC_Raw);
+//    printf("Temperature raw: %lu\n", AHT10_ADC_Raw);
     /* Convert to Relative Humidity in % */
     AHT10_ADC_Raw = ((uint32_t)AHT10_RX_Data[1] << 12) | ((uint32_t)AHT10_RX_Data[2] << 4) | (AHT10_RX_Data[3] >> 4);
     AHT10_Humidity = (float)(AHT10_ADC_Raw*100/1048576);
-    printf("Humidity raw: %lu\n", AHT10_ADC_Raw);
+//    printf("Humidity raw: %lu\n", AHT10_ADC_Raw);
     printf("Temperature %u, Humidity %u\n", AHT10_Temperature, AHT10_Humidity);
   }
 //  else
