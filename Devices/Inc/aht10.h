@@ -26,7 +26,7 @@ void AHT10Init(I2C_HandleTypeDef *hi2c);
  * Запросить данные у датчика AHT10
  * @param hi2c указатель на обмен i2c
  */
-void AHT10RequestData(I2C_HandleTypeDef *hi2c);
+void AHT10RequestData();
 
 void AHT10MasterTxCpltCallback(I2C_HandleTypeDef *hi2c);
 

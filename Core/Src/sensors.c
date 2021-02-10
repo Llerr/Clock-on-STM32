@@ -20,5 +20,6 @@ void initSensors()
 
 void requestDataSensors()
 {
-  AHT10RequestData(&hi2c1);
+  AHT10RequestData();
+  BMP280ReadData();
 }

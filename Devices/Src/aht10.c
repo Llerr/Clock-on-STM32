@@ -6,6 +6,10 @@
  */
 
 #include <stdio.h>
+#include "i2c.h"
+
+/// Указатель на канал I2C
+I2C_HandleTypeDef *hi2cAHT10 = NULL;
 
 /* Variables for AHT10 */
 uint8_t AHT10_RX_Data[6];
@@ -31,6 +35,7 @@ void AHT10Init(I2C_HandleTypeDef *hi2c)
     AHT10Present = 0;
     return;
   }
+  hi2cAHT10 = hi2c;
   AHT10Present = 1;
   HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
   printf("AHT10 started\n");
@@ -38,12 +43,14 @@ void AHT10Init(I2C_HandleTypeDef *hi2c)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void AHT10RequestData(I2C_HandleTypeDef *hi2c)
+void AHT10RequestData()
 {
   if(!AHT10Present) return;
-  HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
+  // Сбросим датчик
+  HAL_I2C_Master_Transmit(hi2cAHT10, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
   printf("Request data from AHT10\n");
-  HAL_I2C_Master_Transmit_IT(hi2c, AHT10_ADRESS, &AHT10_TmpHum_Cmd, 1);
+  // Запросим данные
+  HAL_I2C_Master_Transmit_IT(hi2cAHT10, AHT10_ADRESS, &AHT10_TmpHum_Cmd, 1);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

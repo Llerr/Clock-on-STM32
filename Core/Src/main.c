@@ -16,6 +16,7 @@
  *
  ******************************************************************************
  */
+// FLASH 512 Kb RAM 64Kb
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -123,6 +124,7 @@ int main(void)
   HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
   // Для секундного таймера
+  puts(" "); // Для вывода первого символа, чтобы не съедало
   HAL_RTCEx_SetSecond_IT(&hrtc);
   //для i2c
   HAL_I2C_EV_IRQHandler(&hi2c1);
