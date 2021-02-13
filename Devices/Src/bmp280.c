@@ -163,27 +163,25 @@ void BMP280ReadData()
   // Прочтём регистры за один проход
   HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), TIME_OUT);
 
-  for(int i = 0; i < sizeof(BMP280Data); ++i)
-  {
-    printf("0x%02X ", BMP280Data[i]);
-  }
-  printf("\n");
   int32_t PressRAW = 0;
   PressRAW |= BMP280Data[0]<<12;
   PressRAW |= BMP280Data[1]<<4;
   PressRAW |= BMP280Data[2]>>4;
-  printf("Press: 0x%04lX\n", PressRAW);
+//  printf("Press: 0x%04lX\n", PressRAW);
 
   int32_t TempRAW = 0;
   TempRAW |= BMP280Data[3]<<12;
   TempRAW |= BMP280Data[4]<<4;
   TempRAW |= BMP280Data[5]>>4;
-  printf("Temp: 0x%04lX\n", TempRAW);
+//  printf("Temp: 0x%04lX\n", TempRAW);
 
   int32_t realT = bmp280_compensate_T_int32(TempRAW);
   printf("T: %ld\n", realT);
   uint32_t realP = bmp280_compensate_P_int32(PressRAW);
-  printf("P: %ld\n", realP);
+  uint32_t mmHgP = realP*3/4;
+  // 101 325 / 760 ≈ 133,322 368 4 Па.
+  // Норма атмосферного давления составляет 760 мм рт. ст., или 101 325 Па
+  printf("P: %lu, mm.Hg: %lu\n", realP, mmHgP);
   //litlle endian
 
 }

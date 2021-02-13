@@ -143,6 +143,7 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
+  return;
   char str[20] = {0};
   printf("\n------------> Second event\n");
   HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD

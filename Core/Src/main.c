@@ -35,6 +35,7 @@
 #include "sensors.h"
 
 #include "aht10.h"
+#include "MatrixRGB.h"
 
 /* USER CODE END Includes */
 
@@ -117,6 +118,7 @@ int main(void)
   MX_RTC_Init();
   MX_USB_DEVICE_Init();
   MX_I2C1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   sTime.Hours = 16;
   sTime.Minutes = 32;
@@ -139,6 +141,9 @@ int main(void)
 //  uint32_t len=0;
   HAL_Delay(500);
   sprintf(str_tx,"USB send data\n");
+
+  testMatrix();
+
   puts("Enter to loop");
   while (1)
   {
@@ -146,7 +151,7 @@ int main(void)
 //    HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
 //    puts("after sleep\n");
 
-    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+//    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
 //    if( CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx)) != USBD_OK)
 //    {
 //      puts("Error send via USB");

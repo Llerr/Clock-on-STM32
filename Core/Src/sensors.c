@@ -14,7 +14,7 @@
 
 void initSensors()
 {
-  AHT10Init(&hi2c1);
+  AHT10Init(&hi2c2);
   BMP280Init(&hi2c1);
 }
 

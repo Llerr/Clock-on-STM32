@@ -58,6 +58,14 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define MATRX_R1_Pin GPIO_PIN_0
+#define MATRX_R1_GPIO_Port GPIOC
+#define MATRX_G1_Pin GPIO_PIN_1
+#define MATRX_G1_GPIO_Port GPIOC
+#define MATRX_B1_Pin GPIO_PIN_2
+#define MATRX_B1_GPIO_Port GPIOC
+#define MATRX_R2_Pin GPIO_PIN_3
+#define MATRX_R2_GPIO_Port GPIOC
 #define BTN_RESET_Pin GPIO_PIN_0
 #define BTN_RESET_GPIO_Port GPIOA
 #define BTN_RESET_EXTI_IRQn EXTI0_IRQn
@@ -79,10 +87,31 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 #define BTN_UP_Pin GPIO_PIN_6
 #define BTN_UP_GPIO_Port GPIOA
 #define BTN_UP_EXTI_IRQn EXTI9_5_IRQn
-#define LED_Pin GPIO_PIN_11
-#define LED_GPIO_Port GPIOB
+#define MATRX_G2_Pin GPIO_PIN_4
+#define MATRX_G2_GPIO_Port GPIOC
+#define MATRX_B2_Pin GPIO_PIN_5
+#define MATRX_B2_GPIO_Port GPIOC
+#define MATRX_A_Pin GPIO_PIN_6
+#define MATRX_A_GPIO_Port GPIOC
+#define MATRX_B_Pin GPIO_PIN_7
+#define MATRX_B_GPIO_Port GPIOC
+#define MATRX_C_Pin GPIO_PIN_8
+#define MATRX_C_GPIO_Port GPIOC
+#define MATRX_D_Pin GPIO_PIN_9
+#define MATRX_D_GPIO_Port GPIOC
+#define MATRX_CLK_Pin GPIO_PIN_10
+#define MATRX_CLK_GPIO_Port GPIOC
+#define MATRX_STB_Pin GPIO_PIN_11
+#define MATRX_STB_GPIO_Port GPIOC
+#define MATRX_OE_Pin GPIO_PIN_12
+#define MATRX_OE_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
-
+#define MATRX_GPIO_Port GPIOC
+#define  MATRX_RGB1_Pins (MATRX_R1_Pin|MATRX_G1_Pin|MATRX_B1_Pin)
+#define  MATRX_RGB2_Pins (MATRX_R2_Pin|MATRX_G2_Pin|MATRX_B2_Pin)
+#define  MATRX_RGB_Pins  (MATRX_RGB1_Pins|MATRX_RGB2_Pins)
+#define  MATRX_ADDR_Pins (MATRX_A_Pin|MATRX_B_Pin|MATRX_C_Pin|MATRX_D_Pin)
+#define  MATRX_ALL_Pins  (MATRX_RGB_Pins|MATRX_ADDR_Pins|MATRX_CLK_Pin|MATRX_STB_Pin|MATRX_OE_Pin)
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
