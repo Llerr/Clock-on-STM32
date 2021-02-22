@@ -22,6 +22,7 @@
 #include "main.h"
 #include "i2c.h"
 #include "rtc.h"
+#include "tim.h"
 #include "usb_device.h"
 #include "gpio.h"
 
@@ -119,17 +120,21 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   sTime.Hours = 16;
   sTime.Minutes = 32;
   sTime.Seconds = 51;
   HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
-  // Для секундного таймера
   puts(" "); // Для вывода первого символа, чтобы не съедало
+  // Для секундного таймера
   HAL_RTCEx_SetSecond_IT(&hrtc);
   //для i2c
   HAL_I2C_EV_IRQHandler(&hi2c1);
+  //Таймер для экрана
+  HAL_TIM_Base_Start_IT(&htim2);
+
   initSensors();
   //HAL_RTC_GetAlarm();
   /* USER CODE END 2 */
@@ -142,7 +147,7 @@ int main(void)
   HAL_Delay(500);
   sprintf(str_tx,"USB send data\n");
 
-  testMatrix();
+  HAL_GPIO_EXTI_Callback(0);
 
   puts("Enter to loop");
   while (1)

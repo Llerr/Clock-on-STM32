@@ -138,7 +138,7 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef* rtcHandle)
 /* USER CODE BEGIN 1 */
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
-  printf("============Alarm event===========\n");
+//  printf("============Alarm event===========\n");
 }
 
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
