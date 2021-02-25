@@ -106,6 +106,7 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 #define MATRX_OE_Pin GPIO_PIN_12
 #define MATRX_OE_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
+#define BTN_GPIO_Port BTN_DOWN_GPIO_Port
 #define MATRX_GPIO_Port GPIOC
 #define  MATRX_RGB1_Pins (MATRX_R1_Pin|MATRX_G1_Pin|MATRX_B1_Pin)
 #define  MATRX_RGB2_Pins (MATRX_R2_Pin|MATRX_G2_Pin|MATRX_B2_Pin)

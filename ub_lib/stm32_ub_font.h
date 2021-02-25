@@ -89,16 +89,14 @@ extern UB_pFont32 pDejaV_21;
 //--------------------------------------------------------------
 // Глобальная функция
 //--------------------------------------------------------------
-void UB_Font_DrawChar1(uint16_t x, uint16_t y, uint8_t ascii, UB_Font *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawString1(uint16_t x, uint16_t y,char *ptr, UB_Font *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawChar(uint16_t x, uint16_t y, uint8_t ascii, UB_Font *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawString(uint16_t x, uint16_t y,char *ptr, UB_Font *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_Font32 *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawString32(uint16_t x, uint16_t y,char *ptr, UB_Font32 *font, uint16_t fg, uint16_t bg);
-uint16_t UB_Font_DrawPChar(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawPString(uint16_t x, uint16_t y,char *ptr, UB_pFont *font, uint16_t fg, uint16_t bg);
-uint16_t UB_Font_DrawPChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont32 *font, uint16_t fg, uint16_t bg);
-void UB_Font_DrawPString32(uint16_t x, uint16_t y,char *ptr, UB_pFont32 *font, uint16_t fg, uint16_t bg);
+void UB_Font_DrawChar(int16_t x, int16_t y, uint8_t ascii, UB_Font *font, uint16_t fg);
+void UB_Font_DrawString(int16_t x, int16_t y,char *ptr, UB_Font *font, uint16_t fg);
+void UB_Font_DrawChar32(int16_t x, int16_t y, uint8_t ascii, UB_Font32 *font, uint16_t fg);
+void UB_Font_DrawString32(int16_t x, int16_t y,char *ptr, UB_Font32 *font, uint16_t fg);
+uint16_t UB_Font_DrawPChar(int16_t x, int16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg);
+void UB_Font_DrawPString(int16_t x, int16_t y,char *ptr, UB_pFont *font, uint16_t fg);
+uint16_t UB_Font_DrawPChar32(int16_t x, int16_t y, uint8_t ascii, UB_pFont32 *font, uint16_t fg);
+void UB_Font_DrawPString32(int16_t x, int16_t y,char *ptr, UB_pFont32 *font, uint16_t fg);
 
 //--------------------------------------------------------------
 #endif // __STM32F4_UB_FONT_H

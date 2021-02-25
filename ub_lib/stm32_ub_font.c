@@ -26,7 +26,7 @@
 // Цвет шрифта и фон (шрифт = макс 16 пикселей в ширину)
 // Шрифт должен быть передан с оператором &
 //--------------------------------------------------------------
-void UB_Font_DrawChar(uint16_t x, uint16_t y, uint8_t ascii, UB_Font *font, uint16_t fg, uint16_t bg)
+void UB_Font_DrawChar(int16_t x, int16_t y, uint8_t ascii, UB_Font *font, uint16_t fg)
 {
   uint16_t xn = 0;
   uint16_t yn = 0;
@@ -49,12 +49,7 @@ void UB_Font_DrawChar(uint16_t x, uint16_t y, uint8_t ascii, UB_Font *font, uint
     {
       if( (x+xn) > (MATRIX_WIDTH-1) || (x+xn) < 0 )
         continue;
-      if((symb[yn] & mask) == 0x00)
-      {
-        // Рисование пикселя цветом фона
-        matrix[y+yn][x+xn] = bg;
-      }
-      else
+      if(symb[yn] & mask)
       {
         // Рисование пикселя шрифта
         matrix[y+yn][x+xn] = fg;
@@ -71,13 +66,13 @@ void UB_Font_DrawChar(uint16_t x, uint16_t y, uint8_t ascii, UB_Font *font, uint
 // Цвет шрифта и фон (шрифт = макс 16 пикселей в ширину)
 // Шрифт должен быть передан с оператором & 
 //--------------------------------------------------------------
-void UB_Font_DrawString(uint16_t x, uint16_t y,char *ptr, UB_Font *font, uint16_t vg, uint16_t bg)
+void UB_Font_DrawString(int16_t x, int16_t y,char *ptr, UB_Font *font, uint16_t fg)
 {
   uint16_t pos = x;
 
   while (*ptr != 0)
   {
-    UB_Font_DrawChar(pos,y,*ptr,font,vg,bg);
+    UB_Font_DrawChar(pos,y,*ptr,font,fg);
     pos+=font->width;
     ptr++;
   }
@@ -91,7 +86,7 @@ void UB_Font_DrawString(uint16_t x, uint16_t y,char *ptr, UB_Font *font, uint16_
 // Цвет шрифта и фон (шрифт = макс 32 пикселя в ширину)
 // Шрифт должен быть передан с оператором & 
 //--------------------------------------------------------------
-void UB_Font_DrawChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_Font32 *font, uint16_t fg, uint16_t bg)
+void UB_Font_DrawChar32(int16_t x, int16_t y, uint8_t ascii, UB_Font32 *font, uint16_t fg)
 {
   uint16_t xn;
   uint16_t yn;
@@ -115,12 +110,8 @@ void UB_Font_DrawChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_Font32 *font, 
     {
       if( (x+xn) > (MATRIX_WIDTH-1) || (x+xn) < 0 )
         continue;
-      if((symb[yn] & mask) == 0x00)
+      if(symb[yn] & mask)
       {
-        // Рисование пикселя цветом фона
-        matrix[y+yn][x+xn] = bg;
-      }
-      else {
         // Рисование пикселя шрифта
         matrix[y+yn][x+xn] = fg;
       }
@@ -135,13 +126,13 @@ void UB_Font_DrawChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_Font32 *font, 
 // Цвет шрифта и фон (шрифт = макс 32 пикселя в ширину)
 // Шрифт должен быть передан с оператором & 
 //--------------------------------------------------------------
-void UB_Font_DrawString32(uint16_t x, uint16_t y,char *ptr, UB_Font32 *font, uint16_t fg, uint16_t bg)
+void UB_Font_DrawString32(int16_t x, int16_t y,char *ptr, UB_Font32 *font, uint16_t fg)
 {
   uint16_t pos = x;
 
   while (*ptr != 0)
   {
-    UB_Font_DrawChar32(pos,y,*ptr,font,fg,bg);
+    UB_Font_DrawChar32(pos,y,*ptr,font,fg);
     pos+=font->width;
     ptr++;
   }
@@ -154,7 +145,7 @@ void UB_Font_DrawString32(uint16_t x, uint16_t y,char *ptr, UB_Font32 *font, uin
 // Шрифт должен быть передан с оператором & 
 // Возвращает: ширину нарисованного символа
 //--------------------------------------------------------------
-uint16_t UB_Font_DrawPChar(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg, uint16_t bg)
+uint16_t UB_Font_DrawPChar(int16_t x, int16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg)
 {
   uint16_t xn=0;
   uint16_t yn=0;
@@ -186,12 +177,7 @@ uint16_t UB_Font_DrawPChar(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont *font
 //      printf("0x%02X|", mask);
       if( (x+xn) > (MATRIX_WIDTH-1) || (x+xn) < 0 )
         continue;
-      if((symb[yn+1] & mask) == 0x00)
-      {
-        // Рисование пикселя цветом фона
-//        matrix[y+yn][x+xn] = bg;
-      }
-      else
+      if(symb[yn+1] & mask)
       {
         // Рисование пикселя шрифта
         matrix[y+yn][x+xn] = fg;
@@ -209,14 +195,14 @@ uint16_t UB_Font_DrawPChar(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont *font
 // Цвет шрифта плана и фона (шрифт = макс 16 пикселей в ширину)
 // Шрифт должен быть передан с оператором & 
 //--------------------------------------------------------------
-void UB_Font_DrawPString(uint16_t x, uint16_t y,char *ptr, UB_pFont *font, uint16_t fg, uint16_t bg)
+void UB_Font_DrawPString(int16_t x, int16_t y,char *ptr, UB_pFont *font, uint16_t fg)
 {
   uint16_t pos = x;
   uint16_t width=0;
 
   while (*ptr != 0)
   {
-    width=UB_Font_DrawPChar(pos,y,*ptr,font,fg,bg);
+    width=UB_Font_DrawPChar(pos,y,*ptr,font,fg);
     pos+=width;
     ptr++;
   }
@@ -228,7 +214,7 @@ void UB_Font_DrawPString(uint16_t x, uint16_t y,char *ptr, UB_pFont *font, uint1
 // Шрифт должен быть передан с оператором & 
 // Возвращает: ширину нарисованного символа
 //--------------------------------------------------------------
-uint16_t UB_Font_DrawPChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont32 *font, uint16_t fg, uint16_t bg)
+uint16_t UB_Font_DrawPChar32(int16_t x, int16_t y, uint8_t ascii, UB_pFont32 *font, uint16_t fg)
 {
   uint16_t xn;
   uint16_t yn;
@@ -258,12 +244,7 @@ uint16_t UB_Font_DrawPChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont32 *
     {
       if( (x+xn) > (MATRIX_WIDTH-1) || (x+xn) < 0 )
         continue;
-      if((symb[yn+1] & mask) == 0x00)
-      {
-        // Рисование пикселя цветом фона
-//        matrix[y+yn][x+xn] = bg;
-      }
-      else
+      if(symb[yn+1] & mask)
       {
         // Рисование пикселя шрифта
         matrix[y+yn][x+xn] = fg;
@@ -281,7 +262,7 @@ uint16_t UB_Font_DrawPChar32(uint16_t x, uint16_t y, uint8_t ascii, UB_pFont32 *
 // Цвет шрифта плана и фона (шрифт = макс 32 пикселя в ширину)
 // Шрифт должен быть передан с оператором & 
 //--------------------------------------------------------------
-void UB_Font_DrawPString32(uint16_t x, uint16_t y,char *ptr, UB_pFont32 *font, uint16_t fg, uint16_t bg)
+void UB_Font_DrawPString32(int16_t x, int16_t y,char *ptr, UB_pFont32 *font, uint16_t fg)
 {
   uint16_t pos = x;
   uint16_t width = 0;
@@ -289,7 +270,7 @@ void UB_Font_DrawPString32(uint16_t x, uint16_t y,char *ptr, UB_pFont32 *font, u
 
   while (*ptr != 0)
   {
-    width=UB_Font_DrawPChar32(pos,y,*ptr,font,fg,bg);
+    width=UB_Font_DrawPChar32(pos,y,*ptr,font,fg);
     pos+=width;
     ptr++;
   }

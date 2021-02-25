@@ -121,6 +121,7 @@ int main(void)
   MX_I2C1_Init();
   MX_I2C2_Init();
   MX_TIM2_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   sTime.Hours = 16;
   sTime.Minutes = 32;
@@ -134,6 +135,7 @@ int main(void)
   HAL_I2C_EV_IRQHandler(&hi2c1);
   //Таймер для экрана
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_OC_Start_IT(&htim3, TIM_CHANNEL_1);
 
   initSensors();
   //HAL_RTC_GetAlarm();
@@ -141,12 +143,12 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  char str_tx[30];
+//  char str_tx[30];
 //  char str_rx[255];
 //  uint32_t len=0;
-  HAL_Delay(500);
-  sprintf(str_tx,"USB send data\n");
-
+//  HAL_Delay(500);
+//  sprintf(str_tx,"USB send data\n");
+//  HAL_TIM_Base_Start_IT(&htim3);
   HAL_GPIO_EXTI_Callback(0);
 
   puts("Enter to loop");
@@ -234,6 +236,28 @@ void ReceiveUSB(uint8_t *str, uint32_t len)
   str[len] = 0;
   printf("Receeive string[%s], len: %lu\n", str, len);
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == TIM2) //check if the interrupt comes from TIM2
+  {
+    updateScreen();
+  }
+  else if(htim->Instance == TIM3)
+  {
+//      printf("HAL_TIM_PeriodElapsedCallback\n");
+      longPress();
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
+{
+//  printf("HAL_TIM_OC_DelayElapsedCallback\n");
+  enableInterupt();
+}
+
 /* USER CODE END 4 */
 
 /**

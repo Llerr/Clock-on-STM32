@@ -98,6 +98,7 @@ void MX_GPIO_Init(void)
   reinitUSB();
 
 /* USER CODE BEGIN 2 */
+  reinitUSB();
 }
 
 void reinitUSB(void)
