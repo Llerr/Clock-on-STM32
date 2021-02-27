@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <limits.h>
 
+#include "stm32_ub_font.h"
+
 #define RED     1
 #define GREEN   2
 #define BLUE    4

@@ -17,6 +17,7 @@
  ******************************************************************************
  */
 // FLASH 512 Kb RAM 64Kb
+//volatile
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -37,6 +38,7 @@
 
 #include "aht10.h"
 #include "MatrixRGB.h"
+#include "Screens.h"
 
 /* USER CODE END Includes */
 
@@ -135,7 +137,6 @@ int main(void)
   HAL_I2C_EV_IRQHandler(&hi2c1);
   //Таймер для экрана
   HAL_TIM_Base_Start_IT(&htim2);
-  HAL_TIM_OC_Start_IT(&htim3, TIM_CHANNEL_1);
 
   initSensors();
   //HAL_RTC_GetAlarm();
@@ -149,7 +150,7 @@ int main(void)
 //  HAL_Delay(500);
 //  sprintf(str_tx,"USB send data\n");
 //  HAL_TIM_Base_Start_IT(&htim3);
-  HAL_GPIO_EXTI_Callback(0);
+  drawScreen(&mainScreen);
 
   puts("Enter to loop");
   while (1)
@@ -170,7 +171,8 @@ int main(void)
 //    else
 //      puts("Send: {USB send data}");
 //    CDC_Receive_FS(str_rx, &len);
-    HAL_Delay(500);
+//    HAL_Delay(500);
+//    printf("tick\n");
     //		printf("i: %d\n", i);
 
     //		trace_printf("Test\n");
@@ -247,7 +249,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   else if(htim->Instance == TIM3)
   {
 //      printf("HAL_TIM_PeriodElapsedCallback\n");
-      longPress();
+    longClickButton();
   }
 }
 

@@ -13,6 +13,11 @@
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 void enableInterupt();
-void longPress();
+void disableInterupt();
+
+void clearFlag();
+
+void clickButton();
+void longClickButton();
 
 #endif /* INC_BUTTONS_H_ */

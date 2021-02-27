@@ -22,110 +22,84 @@
 //#define BTN_DOWN_EXTI_IRQn EXTI9_5_IRQn
 //#define BTN_UP_EXTI_IRQn EXTI9_5_IRQn
 
-uint16_t GPIO_Press_Pin = 0;
+#define CHATTER_TIME 700 ///< Время для подавления дребезга в миллисекундах
+
+volatile uint16_t GPIO_Press_Pin = 0;
+volatile uint8_t longPress = 0;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  static int number = 0;
+//  static int number = 0;
   uint8_t state = HAL_GPIO_ReadPin(BTN_GPIO_Port, GPIO_Pin);
-  // либо выполняем какое-то действие прямо тут, либо поднимаем флажок
-//  static int x = 0;
-//  static int y = 0;
 
-  printf("\n\n%d ----------------------------------\n", number++);
-  printf("Pressed button: %d, state: %d\n", GPIO_Pin, state);
-  if(!state)
+  GPIO_Press_Pin = GPIO_Pin;
+  if(!state) //Если нажали
   {
-    printf("----------\ndisable interapt\n");
-    switch(GPIO_Pin)
-    {
-    case BTN_UP_Pin:
-      HAL_NVIC_DisableIRQ(BTN_UP_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-      break;
-    case BTN_DOWN_Pin:
-      HAL_NVIC_DisableIRQ(BTN_DOWN_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-      break;
-    case BTN_LEFT_Pin:
-      HAL_NVIC_DisableIRQ(BTN_LEFT_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-      break;
-    case BTN_RIGHT_Pin:
-      HAL_NVIC_DisableIRQ(BTN_RIGHT_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-      break;
-    case BTN_MID_Pin:
-      HAL_NVIC_DisableIRQ(BTN_MID_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-      break;
-    case BTN_SET_Pin:
-      HAL_NVIC_DisableIRQ(BTN_SET_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-      break;
-    }
-    HAL_StatusTypeDef ret = HAL_TIM_Base_Start_IT(&htim3);
-    if(ret!=HAL_OK) // запускаем таймер
-    {
-      printf("Error start timer %d\n", ret);
-    }
-    GPIO_Press_Pin = GPIO_Pin; // Сохраним нажатую кнопку
-  }
-  else
-  {
-    HAL_TIM_Base_Stop_IT(&htim3);
+//    printf("Pressed button: %d, curTime: %lu \n", GPIO_Pin, curTime);
+    longPress = 0;
+
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_SR_UIF); // очищаем флаг
-
-    printf("Button click: %d\n", GPIO_Pin);
+    HAL_TIM_Base_Start_IT(&htim3);
+    return;
   }
-//  clearMatrix();
-//  UB_Font_DrawString32(x, y, "12", &Arial_18x27, 7, 0);
-//  UB_Font_DrawString(x, y, "1234567890", &Font_4x6, 7, 0);
-//  UB_Font_DrawString(x, y+6, "1234567890", &Font_5x8, 7, 0);
-//  UB_Font_DrawString(x, y, "1", &Arial_7x10, 7, 0);
-//  UB_Font_DrawString(x+7, y, "1", &Arial_8x13, 7, 0);
-//  UB_Font_DrawString(x+7+8, y, "1", &Arial_10x15, 7, 0);
-//  UB_Font_DrawString(x+25, y, "12", &Arial_11x18, 7, 0);
-//  UB_Font_DrawPString(x, y, "12:15", &pComic_16, 7, 0);
-//  UB_Font_DrawPString(x, y, "$25.2C #36.1% D700", &pLcd_4x6, 7);
-//  UB_Font_DrawPString(x, y+1, "22:15", &pDigital_7_28, 7);
-//  UB_Font_DrawPString(x, y+27, "12.06.2021 BT pT @", &pLcd_4x6, 7);
-  drawScreen(&mainScreen);
-//  printf("[%d,%d]\n",x,y);
-//  drawPointT(x, y);
-//  testDraw(x, y);
-//  updateScreen();
-//  dumpScreen();
+  else //Если отпустили
+  {
+    uint32_t CNR = htim3.Instance->CNT;
+    HAL_TIM_Base_Stop_IT(&htim3);
+    htim3.Instance->CNT = 0;
+//    printf("Release button: %d, CNR: %lu\n", GPIO_Pin, CNR);
+    if( (CNR < CHATTER_TIME) || longPress) // Проверка на дребезг и долгое нажатие
+    {
+      longPress = 0;
+      return;
+    }
+
+    clickButton();
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void enableInterupt()
 {
-  printf("enableInterupt\n");
-  // Сработал таймер, разрешим прерывания
-  switch(GPIO_Press_Pin)
-  {
-  case BTN_UP_Pin:
-    HAL_NVIC_EnableIRQ(BTN_UP_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-    break;
-  case BTN_DOWN_Pin:
-    HAL_NVIC_EnableIRQ(BTN_DOWN_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-    break;
-  case BTN_LEFT_Pin:
-    HAL_NVIC_EnableIRQ(BTN_LEFT_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-    break;
-  case BTN_RIGHT_Pin:
-    HAL_NVIC_EnableIRQ(BTN_RIGHT_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-    break;
-  case BTN_MID_Pin:
-    HAL_NVIC_EnableIRQ(BTN_MID_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-    break;
-  case BTN_SET_Pin:
-    HAL_NVIC_EnableIRQ(BTN_SET_EXTI_IRQn); // сразу же отключаем прерывания на этом пине
-    break;
-  }
-  HAL_TIM_Base_Stop_IT(&htim3);
+  HAL_NVIC_EnableIRQ(BTN_UP_EXTI_IRQn);
+  HAL_NVIC_EnableIRQ(BTN_DOWN_EXTI_IRQn);
+  HAL_NVIC_EnableIRQ(BTN_LEFT_EXTI_IRQn);
+  HAL_NVIC_EnableIRQ(BTN_RIGHT_EXTI_IRQn);
+  HAL_NVIC_EnableIRQ(BTN_MID_EXTI_IRQn);
+  HAL_NVIC_EnableIRQ(BTN_SET_EXTI_IRQn);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void longPress()
+void disableInterupt()
 {
-  printf("Long press %d\n", GPIO_Press_Pin);
-  HAL_TIM_Base_Stop_IT(&htim3);
-  __HAL_TIM_CLEAR_FLAG(&htim3, TIM_SR_UIF); // очищаем флаг
-  enableInterupt();
+    HAL_NVIC_DisableIRQ(BTN_UP_EXTI_IRQn);
+    HAL_NVIC_DisableIRQ(BTN_DOWN_EXTI_IRQn);
+    HAL_NVIC_DisableIRQ(BTN_LEFT_EXTI_IRQn);
+    HAL_NVIC_DisableIRQ(BTN_RIGHT_EXTI_IRQn);
+    HAL_NVIC_DisableIRQ(BTN_MID_EXTI_IRQn);
+    HAL_NVIC_DisableIRQ(BTN_SET_EXTI_IRQn);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void clearFlag()
+{
+  __HAL_GPIO_EXTI_CLEAR_FLAG(BTN_UP_EXTI_IRQn);
+  __HAL_GPIO_EXTI_CLEAR_FLAG(BTN_DOWN_EXTI_IRQn);
+  __HAL_GPIO_EXTI_CLEAR_FLAG(BTN_LEFT_EXTI_IRQn);
+  __HAL_GPIO_EXTI_CLEAR_FLAG(BTN_RIGHT_EXTI_IRQn);
+  __HAL_GPIO_EXTI_CLEAR_FLAG(BTN_MID_EXTI_IRQn);
+  __HAL_GPIO_EXTI_CLEAR_FLAG(BTN_SET_EXTI_IRQn);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void clickButton()
+{
+  printf("Click %d\n", GPIO_Press_Pin);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void longClickButton()
+{
+  printf("Long click %d\n", GPIO_Press_Pin);
+  longPress = 1;
 }
