@@ -35,8 +35,10 @@ extern RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN Private defines */
 extern RTC_TimeTypeDef sTime;
-extern RTC_DateTypeDef DateToUpdate;
+extern RTC_DateTypeDef sDate;
 extern RTC_AlarmTypeDef sAlarm; // структура будильника
+
+extern uint8_t counterForScreens;
 
 /* USER CODE END Private defines */
 

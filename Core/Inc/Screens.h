@@ -16,36 +16,46 @@
 #define YELLOW  RED|GREEN
 #define VIOLET  RED|BLUE
 #define MAGENTA GREEN|BLUE
+#define TRANSPARENT 8      ///< Прозрачный
 
+#define NUM_MAIN_SCREENS 4
 
-enum ScreensTypeEnum
+enum StateTypeEnum
 {
-  screenTypeTime,
-  screenTypeTimer,
-  screenTypeCountDown
+  stateTime,
+  stateTimer,
+  stateCountDown,
+  stateBrightness,
+  stateMenu
 };
 
 enum TextTypeEnum
 {
-  txtTemperature=0, ///< 1 для вывода температуры
-  txtHumidity,      ///< 2 для вывода влажности
-  txtPressure,      ///< 3 для вывода давления
-  txtTime,          ///< 4 для вывода времени
-  txtDate,          ///< 5 для вывода даты
-  txtAlarm,         ///< 6 для вывода будильниика
-  txtTimer,         ///< 7 для вывода секундомера
-  txtCountdown,     ///< 8 для вывода таймера
+  txtTemperature=0, ///< 1  для вывода температуры
+  txtHumidity,      ///< 2  для вывода влажности
+  txtPressure,      ///< 3  для вывода давления
+  txtTime,          ///< 4  для вывода времени
+  txtDate,          ///< 5  для вывода даты
+  txtAlarm,         ///< 6  для вывода будильниика
+  txtTimer,         ///< 7  для вывода секундомера
+  txtCountdown,     ///< 8  для вывода таймера
+  txtBrightness,    ///< 9  для вывода яркости
+  txtText,          ///< 10 для вывода текста
   txtEnumLength
 };
 
-
+extern int stateDev; ///< Текущее состояние
+extern int mode;  ///<  Режим состояния
 
 typedef struct TextSets_t
 {
+  uint8_t type;
   int16_t x;
   int16_t y;
-  uint8_t color;
+  uint8_t colorFont;
+  uint8_t colorBack;
   UB_pFont *font;
+  UB_pFont32 *font32;
 } TextSets;
 
 /**
@@ -53,22 +63,26 @@ typedef struct TextSets_t
  */
 typedef struct ScreenDescript_t
 {
-  enum ScreensTypeEnum type; ///< Тип экрана
-
-  TextSets temp; ///< 1 для вывода температуры
-  TextSets hum;  ///< 2 для вывода влажности
-  TextSets press;     ///< 3 для вывода давления
-  TextSets time;      ///< 4 для вывода времени
-  TextSets date;      ///< 5 для вывода даты
-  TextSets alarm;     ///< 6 для вывода будильниика
-  TextSets timer;     ///< 7 для вывода секундомера
-  TextSets count;     ///< 8 для вывода таймера
+  enum StateTypeEnum type; ///< Тип экрана
+  TextSets *blink; ///< Строка для мигания
+  uint8_t numText; ///< Количество строк
+  TextSets *text[]; ///< Массив строк, для вывода
 } ScreenDescript;
 
 /**
  * Отрасовка экрана
  */
-void drawScreen(ScreenDescript *screen);
+void drawScreen();
+void setScreenCurent();
+void nextScreenMode();
+/**
+ * Функция переодически рисующая то цветом фона то основным.
+ */
+void blink();
 
-extern ScreenDescript mainScreen; ///< Основной экран
+extern ScreenDescript *screenCur;  ///< Текущий экран
 
+extern ScreenDescript *screenMain[]; ///< Основной экран
+extern ScreenDescript screenTimer; ///< Экран секундомера
+extern ScreenDescript screenCountdown; ///< Экран счётчика
+extern ScreenDescript screenBrightness; ///< Экран яркости

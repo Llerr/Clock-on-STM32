@@ -16,6 +16,9 @@
 extern "C" {
 #endif
 
+extern int AHT10_Temperature;
+extern uint32_t AHT10_Humidity;
+
 /**
  * Инициализировать датчик AHT10
  * @param hi2c указатель на обмен i2c

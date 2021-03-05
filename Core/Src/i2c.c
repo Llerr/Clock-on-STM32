@@ -23,6 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include <stdio.h>
 #include "aht10.h"
+#include "bmp280.h"
 /* USER CODE END 0 */
 
 I2C_HandleTypeDef hi2c1;
@@ -184,6 +185,10 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 //  printf("HAL_I2C_MasterTxCpltCallback: 0x%lX\n", hi2c->Devaddress>>1);
+//  if(hi2c->Instance == I2C1)
+//    printf("I2C1\n");
+//  else
+//    printf("I2C2\n");
   if(AHT10_ADRESS == hi2c->Devaddress)
   {
     AHT10MasterTxCpltCallback(hi2c);
@@ -193,9 +198,17 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
 //  printf("HAL_I2C_MasterRxCpltCallback: 0x%lX\n", hi2c->Devaddress>>1);
-  if(AHT10_ADRESS == hi2c->Devaddress)
+//  if(hi2c->Instance == I2C1)
+//     printf("I2C1\n");
+//   else
+//     printf("I2C2\n");
+ if(AHT10_ADRESS == hi2c->Devaddress)
   {
     AHT10MasterRxCpltCallback(hi2c);
+  }
+  if(BMP280_ADDRESS == hi2c->Devaddress)
+  {
+    BMP280MasterRxCpltCallback(hi2c);
   }
 }
 

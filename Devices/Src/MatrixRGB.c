@@ -9,6 +9,7 @@
 
 #include "main.h"
 #include "MatrixRGB.h"
+#include "Screens.h"
 
 uint8_t matrix[MATRIX_HEIGHT][MATRIX_WIDTH];
 
@@ -50,9 +51,14 @@ void updateScreen()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawLine(int sX, int sY, int eX, int eY)
+void drawPoint(int x, int y, uint16_t color)
 {
-
+  if( y > (MATRIX_HEIGHT-1) || y < 0)
+    return;
+  if( x > (MATRIX_WIDTH-1) || x < 0)
+    return;
+  if(TRANSPARENT == color) return;
+  matrix[y][x] = color;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -82,6 +88,7 @@ void testDraw(uint16_t x, uint16_t y)
   matrix[y+2][x+2] = 4;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void dumpScreen()
 {
   printf("-----------------------------------------------------------------\n");
@@ -120,38 +127,38 @@ void tick(uint16_t pin)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawPointT(int x, int y)
-{
-  printf("draw(%d, %d)\n", x, y);
-  clearMatrixT();
-  y = (y==0)?32:y;
-  y = MATRIX_HEIGHT - y;
-  y = (y<0)?0:y;
-  int half = y/(MATRIX_HEIGHT/2); // Определим половину
-  y = y%(MATRIX_HEIGHT/2); // Определим смещение
-  //disable output
-//  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_OE_Pin, GPIO_PIN_SET);
-  //--------------------------------------------------------------------------------------------------------------------
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_OE_Pin|MATRX_STB_Pin, GPIO_PIN_SET);
-  MATRX_GPIO_Port->BRR = MATRX_ADDR_Pins; // Сбросим адрес
-  MATRX_GPIO_Port->BSRR = y<<6;
-  // Shift in some data
-  if(half)
-    HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB2_Pins, GPIO_PIN_SET);
-  else
-    HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB1_Pins, GPIO_PIN_SET);
-
-  tick(MATRX_CLK_Pin);
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB1_Pins, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB2_Pins, GPIO_PIN_RESET);
-
-  for(int i = 0; i < x; ++i)
-  {
-    tick(MATRX_CLK_Pin);
-  }
-//  tick(MATRX_STB_Pin);
-  tick(MATRX_STB_Pin|MATRX_OE_Pin);
-}
+//void drawPointT(int x, int y)
+//{
+//  printf("draw(%d, %d)\n", x, y);
+//  clearMatrixT();
+//  y = (y==0)?32:y;
+//  y = MATRIX_HEIGHT - y;
+//  y = (y<0)?0:y;
+//  int half = y/(MATRIX_HEIGHT/2); // Определим половину
+//  y = y%(MATRIX_HEIGHT/2); // Определим смещение
+//  //disable output
+////  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_OE_Pin, GPIO_PIN_SET);
+//  //--------------------------------------------------------------------------------------------------------------------
+//  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_OE_Pin|MATRX_STB_Pin, GPIO_PIN_SET);
+//  MATRX_GPIO_Port->BRR = MATRX_ADDR_Pins; // Сбросим адрес
+//  MATRX_GPIO_Port->BSRR = y<<6;
+//  // Shift in some data
+//  if(half)
+//    HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB2_Pins, GPIO_PIN_SET);
+//  else
+//    HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB1_Pins, GPIO_PIN_SET);
+//
+//  tick(MATRX_CLK_Pin);
+//  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB1_Pins, GPIO_PIN_RESET);
+//  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_RGB2_Pins, GPIO_PIN_RESET);
+//
+//  for(int i = 0; i < x; ++i)
+//  {
+//    tick(MATRX_CLK_Pin);
+//  }
+////  tick(MATRX_STB_Pin);
+//  tick(MATRX_STB_Pin|MATRX_OE_Pin);
+//}
 
 //----------------------------------------------------------------------------------------------------------------------
 void testMatrix()

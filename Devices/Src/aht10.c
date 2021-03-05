@@ -14,7 +14,7 @@ I2C_HandleTypeDef *hi2cAHT10 = NULL;
 /* Variables for AHT10 */
 uint8_t AHT10_RX_Data[6];
 int AHT10_Temperature;
-uint AHT10_Humidity;
+uint32_t AHT10_Humidity;
 
 //uint8_t AHT10_TmpHum_Cmd[3] = {0xAC, 0x33, 0x00};
 uint8_t AHT10_TmpHum_Cmd = 0xAC;
@@ -46,8 +46,6 @@ void AHT10Init(I2C_HandleTypeDef *hi2c)
 void AHT10RequestData()
 {
   if(!AHT10Present) return;
-  // Сбросим датчик
-  HAL_I2C_Master_Transmit(hi2cAHT10, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
   // Запросим данные
   HAL_I2C_Master_Transmit_IT(hi2cAHT10, AHT10_ADRESS, &AHT10_TmpHum_Cmd, 1);
 }
@@ -66,22 +64,13 @@ void AHT10MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
   uint32_t AHT10_ADC_Raw;
 
-//  printf("AHT10MasterRxCpltCallback: state(0x%X): %02X %02X %02X %02X %02X)\n",AHT10_RX_Data[0],
-//      AHT10_RX_Data[1], AHT10_RX_Data[2], AHT10_RX_Data[3], AHT10_RX_Data[4], AHT10_RX_Data[5]);
-//  if(~AHT10_RX_Data[0] & 0x80)
-  {
-    /* Convert to Temperature in °C */
-    AHT10_ADC_Raw = (((uint32_t)AHT10_RX_Data[3] & 15) << 16) | ((uint32_t)AHT10_RX_Data[4] << 8) | AHT10_RX_Data[5];
-    AHT10_Temperature = ((AHT10_ADC_Raw/1024) * 200*100 )/ 1024 - 50*100;
-//    printf("Temperature raw: %lu\n", AHT10_ADC_Raw);
-    /* Convert to Relative Humidity in % */
-    AHT10_ADC_Raw = ((uint32_t)AHT10_RX_Data[1] << 12) | ((uint32_t)AHT10_RX_Data[2] << 4) | (AHT10_RX_Data[3] >> 4);
-    AHT10_Humidity = (float)((AHT10_ADC_Raw/1024)*10000/1024);
-//    printf("Humidity raw: %lu\n", AHT10_ADC_Raw);
-    printf("Temperature %u, Humidity %u\n", AHT10_Temperature, AHT10_Humidity);
-  }
-//  else
-//  {
-//    puts("~AHT10_RX_Data[0] & 0x80");
-//  }
+  /* Convert to Temperature in °C */
+  AHT10_ADC_Raw = (((uint32_t)AHT10_RX_Data[3] & 15) << 16) | ((uint32_t)AHT10_RX_Data[4] << 8) | AHT10_RX_Data[5];
+  AHT10_Temperature = ((AHT10_ADC_Raw/1024) * 200*100 )/ 1024 - 50*100;
+  //    printf("Temperature raw: %lu\n", AHT10_ADC_Raw);
+  /* Convert to Relative Humidity in % */
+  AHT10_ADC_Raw = ((uint32_t)AHT10_RX_Data[1] << 12) | ((uint32_t)AHT10_RX_Data[2] << 4) | (AHT10_RX_Data[3] >> 4);
+  AHT10_Humidity = (float)((AHT10_ADC_Raw/1024)*10000/1024);
+  //    printf("Humidity raw: %lu\n", AHT10_ADC_Raw);
+  printf("Temperature %u, Humidity %lu\n", AHT10_Temperature, AHT10_Humidity);
 }

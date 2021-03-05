@@ -25,13 +25,15 @@
 
 #include "usbd_cdc_if.h"
 #include "sensors.h"
+#include "Screens.h"
 #include "i2c.h"
 #include "main.h"
 
 RTC_TimeTypeDef sTime = {0};
-RTC_DateTypeDef DateToUpdate = {0};
+RTC_DateTypeDef sDate = {0};
 RTC_AlarmTypeDef sAlarm = {0}; // структура будильника
 
+uint8_t counterForScreens = 0;
 /* USER CODE END 0 */
 
 RTC_HandleTypeDef hrtc;
@@ -41,7 +43,6 @@ void MX_RTC_Init(void)
 {
   RTC_TimeTypeDef sTime = {0};
   RTC_DateTypeDef DateToUpdate = {0};
-  RTC_AlarmTypeDef sAlarm = {0};
 
   /** Initialize RTC Only
   */
@@ -77,16 +78,6 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-  /** Enable the Alarm A
-  */
-  sAlarm.AlarmTime.Hours = 16;
-  sAlarm.AlarmTime.Minutes = 33;
-  sAlarm.AlarmTime.Seconds = 0;
-  sAlarm.Alarm = RTC_ALARM_A;
-  if (HAL_RTC_SetAlarm_IT(&hrtc, &sAlarm, RTC_FORMAT_BIN) != HAL_OK)
-  {
-    Error_Handler();
-  }
 
 }
 
@@ -105,7 +96,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef* rtcHandle)
     __HAL_RCC_RTC_ENABLE();
 
     /* RTC interrupt Init */
-    HAL_NVIC_SetPriority(RTC_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(RTC_IRQn, 1, 0);
     HAL_NVIC_EnableIRQ(RTC_IRQn);
     HAL_NVIC_SetPriority(RTC_Alarm_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
@@ -143,16 +134,23 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
-  return;
-  char str[20] = {0};
+//  char str[20] = {0};
   printf("\n------------> Second event\n");
   HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
-  sprintf(str, "Time %02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
-  puts(str);
-  CDC_Transmit_FS((uint8_t *)str, strlen(str));
+  HAL_RTC_GetDate(hrtc, &sDate, RTC_FORMAT_BIN);
+//  sprintf(str, "Time %02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
+//  puts(str);
+//  CDC_Transmit_FS((uint8_t *)str, strlen(str));
   requestDataSensors();
-
+  if(counterForScreens>3)
+  {
+    counterForScreens = 0;
+    nextScreenMode();
+  }
+  ++counterForScreens;
+  drawScreen();
 }
+
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

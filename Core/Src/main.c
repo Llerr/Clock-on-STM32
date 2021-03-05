@@ -124,11 +124,16 @@ int main(void)
   MX_I2C2_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   sTime.Hours = 16;
   sTime.Minutes = 32;
   sTime.Seconds = 51;
   HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+  sDate.Date = 20;
+  sDate.Month = 1;
+  sDate.Year = 21;
+  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
   puts(" "); // Для вывода первого символа, чтобы не съедало
   // Для секундного таймера
@@ -149,35 +154,24 @@ int main(void)
 //  uint32_t len=0;
 //  HAL_Delay(500);
 //  sprintf(str_tx,"USB send data\n");
-//  HAL_TIM_Base_Start_IT(&htim3);
-  drawScreen(&mainScreen);
+  setScreenCurent();
+  drawScreen(screenMain[0]);
+  HAL_TIM_Base_Start_IT(&htim4); // Таймер для миганий
 
   puts("Enter to loop");
   while (1)
   {
-//    puts("loop");
-//    HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFI);
-//    puts("after sleep\n");
-
-//    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-//    if( CDC_Transmit_FS((unsigned char*)str_tx, strlen(str_tx)) != USBD_OK)
-//    {
-//      puts("Error send via USB");
-//      puts("Deinint USB");
-//      MX_USB_DEVICE_DeInit();
-//      puts("Inint USB");
-//      MX_USB_DEVICE_Init();
-//    }
-//    else
-//      puts("Send: {USB send data}");
-//    CDC_Receive_FS(str_rx, &len);
-//    HAL_Delay(500);
-//    printf("tick\n");
-    //		printf("i: %d\n", i);
-
-    //		trace_printf("Test\n");
-    //"${stm32cubeide_openocd_path}/openocd"
-
+    switch(haveClick)
+    {
+    case buttonClick:
+      clickButton();
+      break;
+    case buttonLongClick:
+      longClickButton();
+      break;
+    default:
+      break;
+    }
   }
     /* USER CODE END WHILE */
 
@@ -249,7 +243,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   else if(htim->Instance == TIM3)
   {
 //      printf("HAL_TIM_PeriodElapsedCallback\n");
-    longClickButton();
+    longClickButtonCallback();
+  }
+  else if(htim->Instance == TIM4)
+  {
+    blink();
   }
 }
 

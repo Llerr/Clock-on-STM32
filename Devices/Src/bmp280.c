@@ -10,9 +10,6 @@
 #include "i2c.h"
 #include "bmp280.h"
 
-//Адрес устройства на шине i2c
-#define BMP280_ADDRESS (0x76<<1) /// BMP280 I2C ADDRES
-
 // Адреса регистров
 #define BMP280_REG_ID 0xD0 ///< BMP280 ID REGISTER
 #define BME280_REG_SOFTRESET 0xE0 ///< BMP280 reset register
@@ -112,8 +109,8 @@ char BMP280Present = 0;
 uint8_t BMP280Id = 0; ///< Идентификатор модуля
 uint8_t BMP280Data[6]; ///< Данные давление и температуры (содержимое регистров)
 
-int BMP280T = 0; ///< Пересчитаная температура
-int BMP280P = 0; ///< Пересчитаное давление
+int BMP280Temperature = -300; ///< Пересчитаная температура
+int BMP280Pressure = -1; ///< Пересчитаное давление
 //----------------------------------------------------------------------------------------------------------------------
 void BMP280Init(I2C_HandleTypeDef *hi2c)
 {
@@ -161,19 +158,17 @@ void BMP280ReadData()
   if(!BMP280Present)
     return;
   // Прочтём регистры за один проход
-  HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), TIME_OUT);
+  HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), 20);
 
   int32_t PressRAW = 0;
   PressRAW |= BMP280Data[0]<<12;
   PressRAW |= BMP280Data[1]<<4;
   PressRAW |= BMP280Data[2]>>4;
-//  printf("Press: 0x%04lX\n", PressRAW);
 
   int32_t TempRAW = 0;
   TempRAW |= BMP280Data[3]<<12;
   TempRAW |= BMP280Data[4]<<4;
   TempRAW |= BMP280Data[5]>>4;
-//  printf("Temp: 0x%04lX\n", TempRAW);
 
   int32_t realT = bmp280_compensate_T_int32(TempRAW);
   printf("T: %ld\n", realT);
@@ -183,7 +178,15 @@ void BMP280ReadData()
   // Норма атмосферного давления составляет 760 мм рт. ст., или 101 325 Па
   printf("P: %lu, mm.Hg: %lu\n", realP, mmHgP);
   //litlle endian
+  BMP280Temperature = realT; // Пересчитаная температура
+  BMP280Pressure = mmHgP; // Пересчитаное давление
 
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void BMP280MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+  printf("BMP280MasterRxCpltCallback\n");
 }
 
 //----------------------------------------------------------------------------------------------------------------------

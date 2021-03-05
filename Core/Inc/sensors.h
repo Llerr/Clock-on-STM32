@@ -10,6 +10,10 @@
 
 //#include "aht10.h"
 
+extern int temperature;
+extern int humidity;
+extern int pressure;
+
 #ifdef __cplusplus
 extern "C" {
 #endif

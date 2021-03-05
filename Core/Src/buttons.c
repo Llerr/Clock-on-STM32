@@ -13,6 +13,7 @@
 #include "stm32_ub_font.h"
 #include "Screens.h"
 #include "tim.h"
+#include "rtc.h"
 
 //#define BTN_RESET_EXTI_IRQn EXTI0_IRQn
 //#define BTN_SET_EXTI_IRQn EXTI1_IRQn
@@ -26,7 +27,51 @@
 
 volatile uint16_t GPIO_Press_Pin = 0;
 volatile uint8_t longPress = 0;
+volatile ButtonClick haveClick = buttonNoClick;
 
+//----------------------------------------------------------------------------------------------------------------------
+void clickButton()
+{
+  haveClick = buttonNoClick;
+  printf("clickButton %d\n",GPIO_Press_Pin);
+//  static int screen = 0;/
+  counterForScreens = 0;
+  switch(GPIO_Press_Pin)
+  {
+  case BTN_LEFT_Pin:
+    --mode;
+    printf("Left %d\n", mode);
+    break;
+  case BTN_RIGHT_Pin:
+    ++mode;
+    printf("Right %d\n", mode);
+    break;
+  case BTN_UP_Pin:
+    clearMatrix();
+    ++stateDev;
+    break;
+  case BTN_DOWN_Pin:
+    clearMatrix();
+    --stateDev;
+    break;
+  }
+  if(mode < 0) mode = NUM_MAIN_SCREENS-1;
+  if((NUM_MAIN_SCREENS-1) < mode) mode = 0;
+
+  if(stateDev < 0) stateDev = stateBrightness;
+  if(stateBrightness < stateDev) stateDev = 0;
+  setScreenCurent();
+  drawScreen();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void longClickButton()
+{
+  printf("long clickButton %d\n",GPIO_Press_Pin);
+  haveClick = buttonNoClick;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 //  static int number = 0;
@@ -35,7 +80,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   GPIO_Press_Pin = GPIO_Pin;
   if(!state) //Если нажали
   {
-//    printf("Pressed button: %d, curTime: %lu \n", GPIO_Pin, curTime);
     longPress = 0;
 
     __HAL_TIM_CLEAR_FLAG(&htim3, TIM_SR_UIF); // очищаем флаг
@@ -47,14 +91,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     uint32_t CNR = htim3.Instance->CNT;
     HAL_TIM_Base_Stop_IT(&htim3);
     htim3.Instance->CNT = 0;
-//    printf("Release button: %d, CNR: %lu\n", GPIO_Pin, CNR);
     if( (CNR < CHATTER_TIME) || longPress) // Проверка на дребезг и долгое нажатие
     {
       longPress = 0;
       return;
     }
-
-    clickButton();
+    haveClick = buttonClick; // Взведём флаги, для быстрого выхода из перрывания
   }
 }
 
@@ -92,14 +134,8 @@ void clearFlag()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void clickButton()
+void longClickButtonCallback()
 {
-  printf("Click %d\n", GPIO_Press_Pin);
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void longClickButton()
-{
-  printf("Long click %d\n", GPIO_Press_Pin);
   longPress = 1;
+  haveClick = buttonLongClick; // Взведём флаги, для быстрого выхода из перрывания
 }

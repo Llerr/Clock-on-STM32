@@ -10,6 +10,19 @@
 
 #include <buttons.h>
 
+typedef enum ButtonClick_t
+{
+  buttonNoClick,
+  buttonClick,
+  buttonLongClick
+}ButtonClick;
+
+extern volatile uint16_t GPIO_Press_Pin;
+extern volatile ButtonClick haveClick;
+
+void clickButton();
+void longClickButton();
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 
 void enableInterupt();
@@ -17,7 +30,6 @@ void disableInterupt();
 
 void clearFlag();
 
-void clickButton();
-void longClickButton();
+void longClickButtonCallback();
 
 #endif /* INC_BUTTONS_H_ */

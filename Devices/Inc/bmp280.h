@@ -15,6 +15,12 @@
 extern "C" {
 #endif
 
+//Адрес устройства на шине i2c
+#define BMP280_ADDRESS (0x76<<1) /// BMP280 I2C ADDRES
+
+extern int BMP280Temperature; ///< Пересчитаная температура
+extern int BMP280Pressure; ///< Пересчитаное давление
+
 /**
  * Начальная инициализация и проверка наличия
  */
@@ -24,6 +30,9 @@ void BMP280Init(I2C_HandleTypeDef *hi2c);
  * Прочитать значение температуры и давления, пересчитать в реальные и сохранить в переменных
  */
 void BMP280ReadData();
+
+void BMP280MasterTxCpltCallback(I2C_HandleTypeDef *hi2c);
+void BMP280MasterRxCpltCallback(I2C_HandleTypeDef *hi2c);
 /**
  * Чтение из регистраs
  */
@@ -42,6 +51,8 @@ int32_t bmp280_compensate_T_int32(int32_t adc_T);
 
 /// Returns pressure in Pa as unsigned 32 bit integer. Output value of “96386” equals 96386 Pa = 963.86 hPa
 uint32_t bmp280_compensate_P_int32(int32_t adc_P);
+
+
 
 #ifdef __cplusplus
 }
