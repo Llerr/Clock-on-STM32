@@ -29,38 +29,92 @@ volatile uint16_t GPIO_Press_Pin = 0;
 volatile uint8_t longPress = 0;
 volatile ButtonClick haveClick = buttonNoClick;
 
+uint8_t edit = 0;
+
+void (*buttonReceiver)();
+
 //----------------------------------------------------------------------------------------------------------------------
-void clickButton()
+void buttonReceiverMenu()
 {
   haveClick = buttonNoClick;
-  printf("clickButton %d\n",GPIO_Press_Pin);
+  printf("buttonReceiverMenu %d\n",GPIO_Press_Pin);
 //  static int screen = 0;/
   counterForScreens = 0;
   switch(GPIO_Press_Pin)
   {
   case BTN_LEFT_Pin:
-    --mode;
-    printf("Left %d\n", mode);
+    screenCur = screenCur->prevMode;
+    printf("Left %d\n", menu);
     break;
   case BTN_RIGHT_Pin:
-    ++mode;
-    printf("Right %d\n", mode);
+    screenCur = screenCur->nextMode;
+    printf("Right %d\n", menu);
     break;
   case BTN_UP_Pin:
+   --menu;
+    if(menu < 0) menu = 0;
+    printf("Up, menu %d\n", menu);
     clearMatrix();
-    ++stateDev;
+    screenCur = screenCur->nextState;
     break;
   case BTN_DOWN_Pin:
+   ++menu;
+    if(menu == NUM_MENU) menu = 3;
+    printf("Down, menu %d\n", menu);
     clearMatrix();
-    --stateDev;
+    screenCur = screenCur->prevState;
+    break;
+  case BTN_MID_Pin:
+    printf("Work, menu %d\n", menu);
+    switch(screenCur->type)
+    {
+    case stateMenuTime:
+      buttonReceiver = buttonReceiverTimeEdit;
+      screenCur = &screenEditTime;
+      clearScreen();
+      break;
+    case stateMenuDate:
+      break;
+    case stateMenuBrightness:
+      break;
+    case stateMenuAlarm1:
+      break;
+    case stateMenuAlarm2:
+      break;
+    case stateMenuAlarm3:
+      break;
+    default:
+      break;
+    }
     break;
   }
-  if(mode < 0) mode = NUM_MAIN_SCREENS-1;
-  if((NUM_MAIN_SCREENS-1) < mode) mode = 0;
+}
 
-  if(stateDev < 0) stateDev = stateBrightness;
-  if(stateBrightness < stateDev) stateDev = 0;
-  setScreenCurent();
+//----------------------------------------------------------------------------------------------------------------------
+void buttonReceiverTimeEdit()
+{
+  haveClick = buttonNoClick;
+  printf("buttonReceiverTimeEdit %d\n",GPIO_Press_Pin);
+//  static int screen = 0;/
+  switch(GPIO_Press_Pin)
+  {
+  case BTN_LEFT_Pin:
+    break;
+  case BTN_RIGHT_Pin:
+    break;
+  case BTN_UP_Pin:
+    break;
+  case BTN_DOWN_Pin:
+    break;
+  case BTN_MID_Pin:
+     break;
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void clickButton()
+{
+  buttonReceiver();
   drawScreen();
 }
 
@@ -69,6 +123,62 @@ void longClickButton()
 {
   printf("long clickButton %d\n",GPIO_Press_Pin);
   haveClick = buttonNoClick;
+  switch(GPIO_Press_Pin)
+  {
+  case BTN_LEFT_Pin:
+    screenCur = screenCur->backState;
+    switch(screenCur->type)
+    {
+    case stateTimeEdit:
+      break;
+    default:
+      buttonReceiver = buttonReceiverMenu;
+    }
+    break;
+  case BTN_RIGHT_Pin:
+    break;
+  case BTN_UP_Pin:
+    break;
+  case BTN_DOWN_Pin:
+    break;
+  case BTN_MID_Pin:
+    printf("Menu \n");
+    switch(screenCur->type)
+    {
+    case stateTime:
+    case stateTimer:
+    case stateCountDown:
+    case stateBrightness:
+      //Если в основных экранах то падаем в меню
+      menu = 0;
+      screenCur = &screenMenu0;
+      break;
+    default:
+      break;
+    }
+    break;
+  }
+  clearScreen();
+  drawScreen();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void clickMidButton()
+{
+  switch(screenCur->type)
+  {
+  case stateMenuTime:
+    edit = 1;
+    break;
+  default:
+    break;
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void initButtons()
+{
+  buttonReceiver = buttonReceiverMenu;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -139,3 +249,6 @@ void longClickButtonCallback()
   longPress = 1;
   haveClick = buttonLongClick; // Взведём флаги, для быстрого выхода из перрывания
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------

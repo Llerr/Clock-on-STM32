@@ -84,7 +84,7 @@
 
 
 //Время ожидания записи
-#define TIME_OUT 100
+#define TIME_OUT 1000
 
 // Структура калибровочных коэффициентов
 typedef struct
@@ -109,7 +109,7 @@ char BMP280Present = 0;
 uint8_t BMP280Id = 0; ///< Идентификатор модуля
 uint8_t BMP280Data[6]; ///< Данные давление и температуры (содержимое регистров)
 
-int BMP280Temperature = -300; ///< Пересчитаная температура
+int BMP280Temperature = -30000; ///< Пересчитаная температура
 int BMP280Pressure = -1; ///< Пересчитаное давление
 //----------------------------------------------------------------------------------------------------------------------
 void BMP280Init(I2C_HandleTypeDef *hi2c)
@@ -124,9 +124,10 @@ void BMP280Init(I2C_HandleTypeDef *hi2c)
   if(BMP280_ID != BMP280Id)
   {
     BMP280Present = 0;
-    printf("BMP280 not found!\n");
+    printf("- BMP280 not found!\n");
     return;
   }
+  printf("+ BMP280 found!\n");
   BMP280Present = 1;
   // Перезапустим
   BMP280_WriteReg(BME280_REG_SOFTRESET,BME280_SOFTRESET_VALUE);
@@ -158,7 +159,7 @@ void BMP280ReadData()
   if(!BMP280Present)
     return;
   // Прочтём регистры за один проход
-  HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), 20);
+  HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), TIME_OUT);
 
   int32_t PressRAW = 0;
   PressRAW |= BMP280Data[0]<<12;

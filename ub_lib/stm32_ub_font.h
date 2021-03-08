@@ -91,8 +91,10 @@ extern UB_pFont32 pTimes_18;
 //--------------------------------------------------------------
 // Глобальная функция
 //--------------------------------------------------------------
+uint16_t  UB_Font_WidthPChar(uint8_t ascii, UB_pFont *font);
 uint16_t UB_Font_DrawPChar(int16_t x, int16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg, uint16_t bg);
 uint16_t UB_Font_DrawPString(int16_t x, int16_t y,char *ptr, UB_pFont *font, uint16_t fg, uint16_t bg);
+uint16_t UB_Font_WidthPChar32(uint8_t ascii, UB_pFont32 *font);
 uint16_t UB_Font_DrawPChar32(int16_t x, int16_t y, uint8_t ascii, UB_pFont32 *font, uint16_t fg, uint16_t bg);
 uint16_t UB_Font_DrawPString32(int16_t x, int16_t y,char *ptr, UB_pFont32 *font, uint16_t fg, uint16_t bg);
 

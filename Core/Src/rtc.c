@@ -33,6 +33,9 @@ RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef sDate = {0};
 RTC_AlarmTypeDef sAlarm = {0}; // структура будильника
 
+RTC_TimeTypeDef sTimeEdit; ///< Время для редактирования
+RTC_DateTypeDef sDateEdit; ///< Дата для редактирования
+
 uint8_t counterForScreens = 0;
 /* USER CODE END 0 */
 
@@ -41,8 +44,6 @@ RTC_HandleTypeDef hrtc;
 /* RTC init function */
 void MX_RTC_Init(void)
 {
-  RTC_TimeTypeDef sTime = {0};
-  RTC_DateTypeDef DateToUpdate = {0};
 
   /** Initialize RTC Only
   */
@@ -57,6 +58,7 @@ void MX_RTC_Init(void)
   /* USER CODE BEGIN Check_RTC_BKUP */
   //Чтобы не забыть закоментировать установку времени
 //  ++checkVar;
+#ifdef SET_DATA
   /* USER CODE END Check_RTC_BKUP */
 
   /** Initialize RTC and set the Time and Date
@@ -78,7 +80,7 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-
+#endif // SET_DATA
 }
 
 void HAL_RTC_MspInit(RTC_HandleTypeDef* rtcHandle)
@@ -134,6 +136,7 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
+//  return;
 //  char str[20] = {0};
   printf("\n------------> Second event\n");
   HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD

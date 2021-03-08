@@ -18,6 +18,7 @@ extern "C" {
 
 extern int AHT10_Temperature;
 extern uint32_t AHT10_Humidity;
+extern char AHT10Present;
 
 /**
  * Инициализировать датчик AHT10

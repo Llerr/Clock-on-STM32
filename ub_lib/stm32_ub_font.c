@@ -21,6 +21,18 @@
 #include "stm32_ub_font.h"
 #include "MatrixRGB.h"
 
+uint16_t  UB_Font_WidthPChar(uint8_t ascii, UB_pFont *font)
+{
+  const uint16_t *symb;
+  // Проверка границы символа
+  if(ascii<font->first_char) return 0;
+  if(ascii>font->last_char) return 0;
+
+  ascii -= font->first_char;
+  symb=&font->table[ascii * (font->height+1)];
+  return symb[0];
+}
+
 //--------------------------------------------------------------
 // Рисование ASCII символ пропорционального шрифта с позицией X, Y
 // Цвет шрифта плана и фона (шрифт = макс 16 пикселей в ширину)
@@ -90,6 +102,19 @@ uint16_t UB_Font_DrawPString(int16_t x, int16_t y,char *ptr, UB_pFont *font, uin
     ptr++;
   }
   return pos;
+}
+
+uint16_t UB_Font_WidthPChar32(uint8_t ascii, UB_pFont32 *font)
+{
+  const uint32_t *symb;
+
+  // Проверка границы символа
+  if(ascii<font->first_char) return 0;
+  if(ascii>font->last_char) return 0;
+  printf("symb: %c [%d],", ascii, ascii);
+  ascii -= font->first_char;
+  symb=&font->table[ascii * (font->height+1)];
+  return symb[0];
 }
 
 //--------------------------------------------------------------

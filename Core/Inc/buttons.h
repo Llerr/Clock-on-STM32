@@ -20,8 +20,14 @@ typedef enum ButtonClick_t
 extern volatile uint16_t GPIO_Press_Pin;
 extern volatile ButtonClick haveClick;
 
+void buttonReceiverMenu();
+void buttonReceiverTimeEdit();
+
 void clickButton();
 void longClickButton();
+void clickMidButton();
+
+void initButtons();
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 

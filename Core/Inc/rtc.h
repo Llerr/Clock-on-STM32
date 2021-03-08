@@ -38,6 +38,9 @@ extern RTC_TimeTypeDef sTime;
 extern RTC_DateTypeDef sDate;
 extern RTC_AlarmTypeDef sAlarm; // структура будильника
 
+extern RTC_TimeTypeDef sTimeEdit; ///< Время для редактирования
+extern RTC_DateTypeDef sDateEdit; ///< Дата для редактирования
+
 extern uint8_t counterForScreens;
 
 /* USER CODE END Private defines */

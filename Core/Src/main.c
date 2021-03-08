@@ -126,24 +126,22 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
-  sTime.Hours = 16;
-  sTime.Minutes = 32;
-  sTime.Seconds = 51;
-  HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-  sDate.Date = 20;
-  sDate.Month = 1;
-  sDate.Year = 21;
-  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+//  sTime.Hours = 16;
+//  sTime.Minutes = 32;
+//  sTime.Seconds = 51;
+//  HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+//  sDate.Date = 20;
+//  sDate.Month = 1;
+//  sDate.Year = 21;
+//  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
   puts(" "); // Для вывода первого символа, чтобы не съедало
-  // Для секундного таймера
-  HAL_RTCEx_SetSecond_IT(&hrtc);
+
+  initButtons();
+  initSensors();
   //для i2c
   HAL_I2C_EV_IRQHandler(&hi2c1);
-  //Таймер для экрана
-  HAL_TIM_Base_Start_IT(&htim2);
 
-  initSensors();
   //HAL_RTC_GetAlarm();
   /* USER CODE END 2 */
 
@@ -154,8 +152,13 @@ int main(void)
 //  uint32_t len=0;
 //  HAL_Delay(500);
 //  sprintf(str_tx,"USB send data\n");
-  setScreenCurent();
-  drawScreen(screenMain[0]);
+
+  // Для секундного таймера
+  HAL_RTCEx_SetSecond_IT(&hrtc);
+  //Таймер для экрана
+  HAL_TIM_Base_Start_IT(&htim2);
+  initScreens();
+  drawScreen(screenCur);
   HAL_TIM_Base_Start_IT(&htim4); // Таймер для миганий
 
   puts("Enter to loop");

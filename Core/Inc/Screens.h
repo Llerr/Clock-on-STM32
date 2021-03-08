@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <limits.h>
 
+#include "MatrixRGB.h"
 #include "stm32_ub_font.h"
 
 #define RED     1
@@ -18,7 +19,7 @@
 #define MAGENTA GREEN|BLUE
 #define TRANSPARENT 8      ///< Прозрачный
 
-#define NUM_MAIN_SCREENS 4
+#define NUM_MENU 4 ///< Количество пунктов меню
 
 enum StateTypeEnum
 {
@@ -26,7 +27,18 @@ enum StateTypeEnum
   stateTimer,
   stateCountDown,
   stateBrightness,
-  stateMenu
+//  stateMenu,
+  stateMenuTime,
+  stateMenuDate,
+  stateMenuAlarm,
+  stateMenuBrightness,
+  stateMenuAlarm1,
+  stateMenuAlarm2,
+  stateMenuAlarm3,
+//  stateMenuAlarm,
+
+  stateTimeEdit,
+  stateDateEdtit,
 };
 
 enum TextTypeEnum
@@ -41,11 +53,12 @@ enum TextTypeEnum
   txtCountdown,     ///< 8  для вывода таймера
   txtBrightness,    ///< 9  для вывода яркости
   txtText,          ///< 10 для вывода текста
+  txtMenu,          ///< 11 для вывода меню
+  txtMenuSel,          ///< 11 для вывода меню
+  txtTimeEdit,
+  txtDateEdit,
   txtEnumLength
 };
-
-extern int stateDev; ///< Текущее состояние
-extern int mode;  ///<  Режим состояния
 
 typedef struct TextSets_t
 {
@@ -54,8 +67,10 @@ typedef struct TextSets_t
   int16_t y;
   uint8_t colorFont;
   uint8_t colorBack;
-  UB_pFont *font;
-  UB_pFont32 *font32;
+  void *font;
+//  UB_pFont32 *font32;
+  void (*draw)(struct TextSets_t *set); ///< Функция для отрисовки текста
+  char *text; ///< Текст для вывода
 } TextSets;
 
 /**
@@ -65,15 +80,30 @@ typedef struct ScreenDescript_t
 {
   enum StateTypeEnum type; ///< Тип экрана
   TextSets *blink; ///< Строка для мигания
+  struct ScreenDescript_t *nextMode; ///< следующий экран режима
+  struct ScreenDescript_t *prevMode; ///< предыдущий экран режима
+  struct ScreenDescript_t *nextState; ///< следующий режим
+  struct ScreenDescript_t *prevState; ///< предыдущий режим
+  struct ScreenDescript_t *backState; ///< режим, при долгом нажатии влево. (выход из меню, из редактирования)
+
   uint8_t numText; ///< Количество строк
   TextSets *text[]; ///< Массив строк, для вывода
 } ScreenDescript;
+
+
+extern int menu;      ///< Текущий пенкт меню
+extern char editMode; ///< Флаг редактирования
+
+/**
+ * Создание структуры окон
+ */
+void initScreens();
 
 /**
  * Отрасовка экрана
  */
 void drawScreen();
-void setScreenCurent();
+void clearScreen();
 void nextScreenMode();
 /**
  * Функция переодически рисующая то цветом фона то основным.
@@ -82,7 +112,28 @@ void blink();
 
 extern ScreenDescript *screenCur;  ///< Текущий экран
 
-extern ScreenDescript *screenMain[]; ///< Основной экран
-extern ScreenDescript screenTimer; ///< Экран секундомера
-extern ScreenDescript screenCountdown; ///< Экран счётчика
-extern ScreenDescript screenBrightness; ///< Экран яркости
+extern TextSets textBlinkTimeEdit;
+
+extern ScreenDescript screenMain1;
+extern ScreenDescript screenMain2;
+extern ScreenDescript screenMain3;
+extern ScreenDescript screenMain4;
+extern ScreenDescript screenTimer;
+extern ScreenDescript screenCountdown;
+extern ScreenDescript screenBrightness;
+extern ScreenDescript screenMenu0;
+extern ScreenDescript screenMenu1;
+extern ScreenDescript screenMenu2;
+extern ScreenDescript screenMenu3;
+extern ScreenDescript screenMenuAlr0;
+extern ScreenDescript screenMenuAlr1;
+extern ScreenDescript screenMenuAlr2;
+
+extern ScreenDescript screenEditTime;
+
+
+//extern ScreenDescript *screenMain[]; ///< Основной экран
+//extern ScreenDescript screenTimer; ///< Экран секундомера
+//extern ScreenDescript screenCountdown; ///< Экран счётчика
+//extern ScreenDescript screenBrightness; ///< Экран яркости
+//extern ScreenDescript *screenMenu[]; ///< Экран с меню

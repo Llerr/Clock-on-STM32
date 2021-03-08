@@ -13,8 +13,8 @@ I2C_HandleTypeDef *hi2cAHT10 = NULL;
 
 /* Variables for AHT10 */
 uint8_t AHT10_RX_Data[6];
-int AHT10_Temperature;
-uint32_t AHT10_Humidity;
+int AHT10_Temperature = 30000;
+uint32_t AHT10_Humidity = 11111;
 
 //uint8_t AHT10_TmpHum_Cmd[3] = {0xAC, 0x33, 0x00};
 uint8_t AHT10_TmpHum_Cmd = 0xAC;
@@ -29,16 +29,16 @@ char AHT10Present = 0;
 void AHT10Init(I2C_HandleTypeDef *hi2c)
 {
   printf("Start AHT10\n");
-  if(HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Init_Cmd, 1, 100)!= HAL_OK)
+  if(HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Init_Cmd, 1, 1000)!= HAL_OK)
   {
-    printf("AHT10 not found!\n");
+    printf("- AHT10 not found!\n");
     AHT10Present = 0;
     return;
   }
   hi2cAHT10 = hi2c;
   AHT10Present = 1;
-  HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 100);
-  printf("AHT10 started\n");
+  HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 1000);
+  printf("+ AHT10 started!\n");
 //  HAL_I2C_Master_Transmit_IT (&hi2c1, AHT10_Adress, uint8_t *pData, uint16_t Size);
 }
 
