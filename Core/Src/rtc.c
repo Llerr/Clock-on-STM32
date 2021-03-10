@@ -129,22 +129,34 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef* rtcHandle)
 }
 
 /* USER CODE BEGIN 1 */
+//----------------------------------------------------------------------------------------------------------------------
+void setTime(RTC_TimeTypeDef *time)
+{
+  HAL_RTC_SetTime(&hrtc, time, RTC_FORMAT_BIN);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void getTime(RTC_TimeTypeDef *time)
+{
+  HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
 //  printf("============Alarm event===========\n");
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
 //  return;
 //  char str[20] = {0};
-  printf("\n------------> Second event\n");
-  HAL_RTC_GetTime(hrtc, &sTime, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
+//  printf("\n------------> Second event\n");
+  getTime( &sTime);
   HAL_RTC_GetDate(hrtc, &sDate, RTC_FORMAT_BIN);
-//  sprintf(str, "Time %02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
-//  puts(str);
-//  CDC_Transmit_FS((uint8_t *)str, strlen(str));
-  requestDataSensors();
+
+//  requestDataSensors();
   if(counterForScreens>3)
   {
     counterForScreens = 0;

@@ -19,6 +19,7 @@ typedef enum ButtonClick_t
 
 extern volatile uint16_t GPIO_Press_Pin;
 extern volatile ButtonClick haveClick;
+extern int8_t editNum;
 
 void buttonReceiverMenu();
 void buttonReceiverTimeEdit();

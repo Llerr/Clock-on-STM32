@@ -48,7 +48,8 @@ extern uint8_t counterForScreens;
 void MX_RTC_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-//void setTime();
+void setTime(RTC_TimeTypeDef *time);
+void getTime(RTC_TimeTypeDef *time);
 //void setDate();
 //void setAlarm(int timer);
 

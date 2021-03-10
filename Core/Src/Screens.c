@@ -3,6 +3,7 @@
 #include "stm32_ub_font.h"
 #include "MatrixRGB.h"
 #include "sensors.h"
+#include "buttons.h"
 #include "rtc.h"
 
 #include "Screens.h"
@@ -46,7 +47,7 @@ void initScreens()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawTemperature(TextSets *set)
+void drawTemperature(TextSets *set, void *dataPtr)
 {
   char buff[32];
   if (temperature > -300)
@@ -58,7 +59,7 @@ void drawTemperature(TextSets *set)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawHumidity(TextSets *set)
+void drawHumidity(TextSets *set, void *dataPtr)
 {
   char buff[32];
   if(humidity > 0)
@@ -69,7 +70,7 @@ void drawHumidity(TextSets *set)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawPressure(TextSets *set)      // 3 для вывода давления
+void drawPressure(TextSets *set, void *dataPtr)      // 3 для вывода давления
 {
   char buff[32];
   if(pressure > 0)
@@ -80,15 +81,23 @@ void drawPressure(TextSets *set)      // 3 для вывода давления
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawTime(TextSets *set)          // 4 для вывода времени
+void drawHour(TextSets *set, void *dataPtr)          // 4 для вывода времени
 {
   char buff[32];
-  sprintf(buff, "%02d:%02d", sTime.Hours, sTime.Minutes);
+  sprintf(buff, "%02d", sTime.Hours);
   UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawDate(TextSets *set)          // 5 для вывода даты
+void drawMinute(TextSets *set, void *dataPtr)          // 4 для вывода времени
+{
+  char buff[32];
+  sprintf(buff, "%02d", sTime.Minutes);
+  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void drawDate(TextSets *set, void *dataPtr)          // 5 для вывода даты
 {
   char buff[32];
   sprintf(buff, "%02d.%02d.%02d", sDate.Date, sDate.Month, sDate.Year);
@@ -102,27 +111,27 @@ void drawDate(TextSets *set)          // 5 для вывода даты
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawAlarm(TextSets *set)         // 6 для вывода будильниика
+void drawAlarm(TextSets *set, void *dataPtr)         // 6 для вывода будильниика
 {
 //  char buff[32];
   UB_Font_DrawPString(set->x, set->y, "@", set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawTimer(TextSets *set)         // 7 для вывода секундомера
+void drawTimer(TextSets *set, void *dataPtr)         // 7 для вывода секундомера
 {
 //  char buff[32];
   UB_Font_DrawPString(set->x, set->y, "000:00.00", set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawCountdown(TextSets *set)     // 8 для вывода таймера
+void drawCountdown(TextSets *set, void *dataPtr)     // 8 для вывода таймера
 {
 //  char buff[32];
   UB_Font_DrawPString32(set->x, set->y, "00:00:00", set->font, set->colorFont, set->colorBack);
 }
 //----------------------------------------------------------------------------------------------------------------------
-void drawBrightness(TextSets *set)     // 8 для вывода таймера
+void drawBrightness(TextSets *set, void *dataPtr)     // 8 для вывода таймера
 {
 //  char buff[32];
   UB_Font_DrawPString32(set->x, set->y, "00000", set->font, set->colorFont, set->colorBack);
@@ -130,46 +139,41 @@ void drawBrightness(TextSets *set)     // 8 для вывода таймера
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawText(TextSets *set)
+void drawText(TextSets *set, void *dataPtr)
 {
 //  char buff[32];
   UB_Font_DrawPString(set->x, set->y, set->text, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawMenu(TextSets *set)
+void drawMenu(TextSets *set, void *dataPtr)
 {
 //  char buff[32];
   UB_Font_DrawPString(set->x, set->y, set->text, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawTimeEdit(TextSets *set)
+void drawTimeEdit(TextSets *set, void *dataPtr)
 {
   char buff[32];
-  static uint8_t editNum = 0;
-  sTimeEdit = sTime;
-  uint8_t delimSize = UB_Font_WidthPChar(':', set->font);
-  uint8_t digitSize = UB_Font_WidthPChar('1', set->font); // Пока все цифры одной ширины
-  textBlinkTimeEdit.x = set->x;
-  textBlinkTimeEdit.y = set->y + editNum * digitSize + (editNum/2)*delimSize;
   sprintf(buff, "%02d:%02d", sTimeEdit.Hours, sTimeEdit.Minutes);
-  blinkText[0] = buff[editNum];
-  blinkText[1] = '\0';
-
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  buff[editNum + editNum/2] = 127; // Пробел под цифру
+  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, TRANSPARENT);
+//  blink(0);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawBlink(TextSets *set)
+void drawBlink(TextSets *set, void *dataPtr)
 {
-  UB_Font_DrawPString(set->x, set->y, ":", set->font, set->colorFont, TRANSPARENT);
+  uint8_t *color = (uint8_t *)(dataPtr);
+  UB_Font_DrawPString(set->x, set->y, ":", set->font, *color, TRANSPARENT);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawBlinkTimeEdit(TextSets *set)
+void drawBlinkTimeEdit(TextSets *set, void *dataPtr)
 {
-  UB_Font_DrawPString(set->x, set->y, set->text, set->font, set->colorFont, TRANSPARENT);
+  uint8_t *color = (uint8_t *)(dataPtr);
+  UB_Font_DrawPString(set->x, set->y, set->text, set->font, *color, TRANSPARENT);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -182,8 +186,9 @@ void drawScreen()
 //  clearMatrix();
   for(int i = 0; i < screenCur->numText; ++i)
   {
-    screenCur->text[i]->draw(screenCur->text[i]);
+    screenCur->text[i]->draw(screenCur->text[i], NULL);
   }
+//  blink(0); // перересуем соответствующим цветом, то что должно мигать
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -200,26 +205,32 @@ void nextScreenMode()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void blink()
+void blink(uint8_t change)
 {
   if(!screenCur->blink) // Если нет мигания
     return;
   static uint8_t blinkStep = 0;
-  uint8_t color;
-  color = (blinkStep)?screenCur->blink->colorFont:screenCur->blink->colorBack;
-  screenCur->blink->colorFont = color;
-  screenCur->blink->draw(screenCur->blink);
-
-  blinkStep = !blinkStep;
+  static uint8_t color;
+  if(change)
+  {
+    color = (!blinkStep)?screenCur->blink->colorFont:screenCur->blink->colorBack;
+    blinkStep = !blinkStep;
+  }
+//  screenCur->blink->colorFont = color;
+//  printf("%lu: Blink, color( %d ) \n", HAL_GetTick(), color);
+  screenCur->blink->draw(screenCur->blink, &color);
 }
 
-TextSets textBlinkTime = {txtTime, 1+13*2, -5, WHITE, BLACK, &pDigital_7_28, drawBlink, ":"}; // Двоеточие для мигания
+//----------------------------------------------------------------------------------------------------------------------
+//                                  1+13*2
+TextSets textBlinkTime =   {txtTime, 27,   -5, WHITE, BLACK, &pDigital_7_28, drawBlink, ":"}; // Двоеточие для мигания
 
-TextSets textTime =        {txtTime,        1, -5, WHITE,  BLACK, &pDigital_7_28, drawTime,        NULL}; // Время
-TextSets textDate =        {txtDate,        0, 21, YELLOW, BLACK, &pArial_13,     drawDate,        NULL}; // Дата
-TextSets textTemperature = {txtTemperature, 0, 21, YELLOW, BLACK, &pArial_13,     drawTemperature, NULL}; // температура
-TextSets textHumidity =    {txtHumidity,    0, 21, YELLOW, BLACK, &pArial_13,     drawHumidity,    NULL}; // Влажность
-TextSets textPressure =    {txtPressure,    0, 21, YELLOW, BLACK, &pArial_13,     drawPressure,    NULL}; // Давление
+TextSets textHour   =        {txtTime,        1, -5, WHITE,  BLACK, &pDigital_7_28, drawHour,        NULL}; // Время
+TextSets textMinute =        {txtTime,     27+4, -5, WHITE,  BLACK, &pDigital_7_28, drawMinute,      NULL}; // Время
+TextSets textDate =        {txtDate,          0, 21, YELLOW, BLACK, &pArial_13,     drawDate,        NULL}; // Дата
+TextSets textTemperature = {txtTemperature,   0, 21, YELLOW, BLACK, &pArial_13,     drawTemperature, NULL}; // температура
+TextSets textHumidity =    {txtHumidity,      0, 21, YELLOW, BLACK, &pArial_13,     drawHumidity,    NULL}; // Влажность
+TextSets textPressure =    {txtPressure,      0, 21, YELLOW, BLACK, &pArial_13,     drawPressure,    NULL}; // Давление
 
 TextSets textTimer =      {txtTimer,      0, 0, YELLOW, BLACK, &pComic_16, drawTimer,      NULL};
 TextSets textCountDown =  {txtCountdown,  0, 0, YELLOW, BLACK, &pTimes_18, drawCountdown,  NULL};
@@ -257,8 +268,8 @@ ScreenDescript screenMain1 =
     &screenTimer,
     &screenBrightness,
     &screenMain1,
-    2,
-    {&textTime, &textTemperature}
+    3,
+    {&textHour, &textMinute, &textTemperature}
 };
 
 ScreenDescript screenMain2 =
@@ -271,8 +282,8 @@ ScreenDescript screenMain2 =
     &screenTimer,
     &screenBrightness,
     &screenMain2,
-    2,
-    {&textTime, &textHumidity}
+    3,
+    {&textHour, &textMinute, &textHumidity}
 };
 
 ScreenDescript screenMain3 =
@@ -285,8 +296,8 @@ ScreenDescript screenMain3 =
     &screenTimer,
     &screenBrightness,
     &screenMain3,
-    2,
-    {&textTime, &textPressure}
+    3,
+    {&textHour, &textMinute, &textPressure}
 };
 
 ScreenDescript screenMain4 =
@@ -299,8 +310,8 @@ ScreenDescript screenMain4 =
     &screenTimer,
     &screenBrightness,
     &screenMain4,
-    2,
-    {&textTime, &textDate}
+    3,
+    {&textHour, &textMinute, &textDate}
 };
 
 ScreenDescript screenTimer =

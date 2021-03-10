@@ -250,7 +250,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   }
   else if(htim->Instance == TIM4)
   {
-    blink();
+    blink(1); // Тут меняем цвет
   }
 }
 

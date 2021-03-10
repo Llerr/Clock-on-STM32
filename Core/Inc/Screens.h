@@ -69,7 +69,7 @@ typedef struct TextSets_t
   uint8_t colorBack;
   void *font;
 //  UB_pFont32 *font32;
-  void (*draw)(struct TextSets_t *set); ///< Функция для отрисовки текста
+  void (*draw)(struct TextSets_t *set, void *dataPtr); ///< Функция для отрисовки текста
   char *text; ///< Текст для вывода
 } TextSets;
 
@@ -93,7 +93,7 @@ typedef struct ScreenDescript_t
 
 extern int menu;      ///< Текущий пенкт меню
 extern char editMode; ///< Флаг редактирования
-
+extern char blinkText[32]; ///< Текс для мигания
 /**
  * Создание структуры окон
  */
@@ -108,7 +108,7 @@ void nextScreenMode();
 /**
  * Функция переодически рисующая то цветом фона то основным.
  */
-void blink();
+void blink(uint8_t change);
 
 extern ScreenDescript *screenCur;  ///< Текущий экран
 

@@ -26,6 +26,8 @@ extern char AHT10Present;
  */
 void AHT10Init(I2C_HandleTypeDef *hi2c);
 
+void AHT10Reset();
+
 /**
  * Запросить данные у датчика AHT10
  * @param hi2c указатель на обмен i2c

@@ -30,13 +30,13 @@ volatile uint8_t longPress = 0;
 volatile ButtonClick haveClick = buttonNoClick;
 
 uint8_t edit = 0;
+int8_t editNum = 0;
 
 void (*buttonReceiver)();
 
 //----------------------------------------------------------------------------------------------------------------------
 void buttonReceiverMenu()
 {
-  haveClick = buttonNoClick;
   printf("buttonReceiverMenu %d\n",GPIO_Press_Pin);
 //  static int screen = 0;/
   counterForScreens = 0;
@@ -69,9 +69,13 @@ void buttonReceiverMenu()
     switch(screenCur->type)
     {
     case stateMenuTime:
-      buttonReceiver = buttonReceiverTimeEdit;
       screenCur = &screenEditTime;
       clearScreen();
+      GPIO_Press_Pin = 0;
+      getTime(&sTimeEdit);
+      sTimeEdit.Seconds = 0;
+      buttonReceiverTimeEdit();
+      buttonReceiver = buttonReceiverTimeEdit;
       break;
     case stateMenuDate:
       break;
@@ -91,29 +95,115 @@ void buttonReceiverMenu()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void getDigits(int8_t num, int8_t *d1, int8_t *d2, int8_t *max)
+{
+  if(num<2)//Правим часы
+  {
+    *d1 = sTimeEdit.Hours/10;
+    *d2 = sTimeEdit.Hours%10;
+    *max = 23;
+  }
+  else //Правим минуты
+  {
+    *d1 = sTimeEdit.Minutes/10;
+    *d2 = sTimeEdit.Minutes%10;
+    *max = 59;
+  }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void buttonReceiverTimeEdit()
 {
-  haveClick = buttonNoClick;
+  clearScreen();
   printf("buttonReceiverTimeEdit %d\n",GPIO_Press_Pin);
+  uint8_t maxNumber = 3;
+  static int8_t digit1 = 0;
+  static int8_t digit2 = 0;
+  static int8_t timeMax = 0;
+
+  getDigits(editNum, &digit1, &digit2, &timeMax);
+
+  printf("num edit: %d, digit1: %d, digit2: %d, max: %d, editNum/2: %d\n", editNum, digit1, digit2, timeMax, editNum%2);
 //  static int screen = 0;/
   switch(GPIO_Press_Pin)
   {
   case BTN_LEFT_Pin:
+    --editNum;
+    if(editNum < 0) editNum = maxNumber;
+    getDigits(editNum, &digit1, &digit2, &timeMax);
     break;
   case BTN_RIGHT_Pin:
+    ++editNum;
+    if(editNum > maxNumber) editNum = 0;
+    getDigits(editNum, &digit1, &digit2, &timeMax);
     break;
   case BTN_UP_Pin:
+    if(editNum%2)
+    {
+      ++digit2;
+      digit2 = (digit2 > 9)?9:digit2; // Сбросим до 9
+      digit2 = ((digit1*10 + digit2) > timeMax)?timeMax%10:digit2;
+    }
+    else
+    {
+      ++digit1;
+      digit1 = (digit1 > timeMax/10)?timeMax/10:digit1;
+      digit2 = (digit1 == timeMax/10)?timeMax%10:digit2;
+    }
     break;
   case BTN_DOWN_Pin:
+    if(editNum%2)
+    {
+      --digit2;
+      digit2 = (digit2 <0)?0:digit2;
+    }
+    else
+    {
+      --digit1;
+      digit1 = (digit1 <0 )?0:digit1;
+    }
     break;
   case BTN_MID_Pin:
-     break;
+     setTime(&sTimeEdit);
+     screenCur = &screenMenu0;
+     buttonReceiver = buttonReceiverMenu;
+    break;
   }
+  printf("num edit: %d, digit1: %d, digit2: %d, max: %d\n", editNum, digit1, digit2, timeMax);
+
+  if(editNum<2)//Правим часы
+  {
+    sTimeEdit.Hours = digit1*10 + digit2;
+  }
+  else //Правим минуты
+  {
+    sTimeEdit.Minutes = digit1*10 + digit2;
+  }
+
+//  uint8_t maxNumEdit = 3;
+  //  RTC_AlarmTypeDef *alarm = (RTC_AlarmTypeDef *)dataPtr; // Используем стандартную структуру. Вместо ID таймера будет маска по дням недели
+  //  if(dataPtr)
+  //    sTimeEdit = alarm->AlarmTime;
+  //  else
+
+  char buff[32];
+  sprintf(buff, "%02d:%02d", sTimeEdit.Hours, sTimeEdit.Minutes);
+
+  uint8_t delimSize = UB_Font_WidthPChar(':', screenCur->text[0]->font);
+  uint8_t digitSize = UB_Font_WidthPChar('1', screenCur->text[0]->font); // Пока все цифры одной ширины
+  textBlinkTimeEdit.x = screenCur->text[0]->x + editNum * digitSize + (editNum/2)*delimSize;
+  textBlinkTimeEdit.y = screenCur->text[0]->y;
+  printf("Edit num: %d, num %c, ( %d, %d)\n", editNum, buff[editNum], textBlinkTimeEdit.x, textBlinkTimeEdit.y);
+  blinkText[0] = buff[editNum + editNum/2];
+  blinkText[1] = '\0';
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void clickButton()
 {
+  haveClick = buttonNoClick;
   buttonReceiver();
   drawScreen();
 }
