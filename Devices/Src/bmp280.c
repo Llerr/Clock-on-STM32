@@ -172,12 +172,11 @@ void BMP280ReadData()
   TempRAW |= BMP280Data[5]>>4;
 
   int32_t realT = bmp280_compensate_T_int32(TempRAW);
-  printf("T: %ld\n", realT);
   uint32_t realP = bmp280_compensate_P_int32(PressRAW);
   uint32_t mmHgP = realP*3/4;
   // 101 325 / 760 ≈ 133,322 368 4 Па.
   // Норма атмосферного давления составляет 760 мм рт. ст., или 101 325 Па
-  printf("P: %lu, mm.Hg: %lu\n", realP, mmHgP);
+  printf("BMP280 T: %ld, P: %lu, mm.Hg: %lu\n", realT, realP, mmHgP);
   //litlle endian
   BMP280Temperature = realT; // Пересчитаная температура
   BMP280Pressure = mmHgP; // Пересчитаное давление

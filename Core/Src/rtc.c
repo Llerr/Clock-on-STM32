@@ -28,6 +28,7 @@
 #include "Screens.h"
 #include "i2c.h"
 #include "main.h"
+#include "sensors.h"
 
 RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef sDate = {0};
@@ -45,6 +46,16 @@ RTC_HandleTypeDef hrtc;
 void MX_RTC_Init(void)
 {
 
+  /* USER CODE BEGIN RTC_Init 0 */
+#ifdef SET_DATA
+  /* USER CODE END RTC_Init 0 */
+
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef DateToUpdate = {0};
+
+  /* USER CODE BEGIN RTC_Init 1 */
+#endif
+  /* USER CODE END RTC_Init 1 */
   /** Initialize RTC Only
   */
   hrtc.Instance = RTC;
@@ -80,7 +91,10 @@ void MX_RTC_Init(void)
   {
     Error_Handler();
   }
-#endif // SET_DATA
+  /* USER CODE BEGIN RTC_Init 2 */
+#endif
+  /* USER CODE END RTC_Init 2 */
+
 }
 
 void HAL_RTC_MspInit(RTC_HandleTypeDef* rtcHandle)
@@ -156,7 +170,7 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
   getTime( &sTime);
   HAL_RTC_GetDate(hrtc, &sDate, RTC_FORMAT_BIN);
 
-//  requestDataSensors();
+  requestDataSensors();
   if(counterForScreens>3)
   {
     counterForScreens = 0;
@@ -164,6 +178,7 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
   }
   ++counterForScreens;
   drawScreen();
+  printf("T: %d, H: %d, P: %d\n", temperature, humidity, pressure);
 }
 
 /* USER CODE END 1 */
