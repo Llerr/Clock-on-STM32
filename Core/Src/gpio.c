@@ -69,9 +69,9 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PAPin PAPin PAPin PAPin
-                           PAPin PAPin PAPin */
-  GPIO_InitStruct.Pin = BTN_RESET_Pin|BTN_SET_Pin|BTN_MID_Pin|BTN_RIGHT_Pin
-                          |BTN_LEFT_Pin|BTN_DOWN_Pin|BTN_UP_Pin;
+                           PAPin PAPin */
+  GPIO_InitStruct.Pin = BTN_LEFT_Pin|BTN_SET_Pin|BTN_MID_Pin|BTN_RIGHT_Pin
+                          |BTN_UP_Pin|BTN_DOWN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -89,12 +89,8 @@ void MX_GPIO_Init(void)
   HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI3_IRQn);
 
-  HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
-
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
 
 /* USER CODE BEGIN 2 */
   reinitUSB();

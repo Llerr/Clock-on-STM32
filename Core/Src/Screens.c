@@ -201,7 +201,8 @@ void clearScreen()
 void nextScreenMode()
 {
 //  printf("Next main screen: cur: %p, next: %p\n", screenCur, screenCur->nextMode);
-  screenCur = screenCur->nextMode;
+  if(stateTime == screenCur->type)
+    screenCur = screenCur->nextMode;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
