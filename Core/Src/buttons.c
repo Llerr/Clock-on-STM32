@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <math.h>
 
 #include "main.h"
 #include "buttons.h"
@@ -14,6 +15,7 @@
 #include "Screens.h"
 #include "tim.h"
 #include "rtc.h"
+#include "sensors.h"
 
 //#define BTN_RESET_EXTI_IRQn EXTI0_IRQn
 //#define BTN_SET_EXTI_IRQn EXTI1_IRQn
@@ -32,7 +34,7 @@ volatile ButtonClick haveClick = buttonNoClick;
 uint8_t edit = 0;
 int8_t editNum = 0;
 
-void (*buttonReceiver)();
+void getDigits(int8_t num, int8_t *d1, int8_t *d2, int8_t *max);
 
 //----------------------------------------------------------------------------------------------------------------------
 void buttonReceiverMenu()
@@ -66,50 +68,13 @@ void buttonReceiverMenu()
     break;
   case BTN_MID_Pin:
     printf("Work, menu %d\n", menu);
-    switch(screenCur->type)
-    {
-    case stateMenuTime:
-      screenCur = &screenEditTime;
-      clearScreen();
-      GPIO_Press_Pin = 0;
-      getTime(&sTimeEdit);
-      sTimeEdit.Seconds = 0;
-      buttonReceiverTimeEdit();
-      buttonReceiver = buttonReceiverTimeEdit;
-      break;
-    case stateMenuDate:
-      break;
-    case stateMenuBrightness:
-      break;
-    case stateMenuAlarm1:
-      break;
-    case stateMenuAlarm2:
-      break;
-    case stateMenuAlarm3:
-      break;
-    default:
-      break;
-    }
+//    screenPrev = screenCur;
+    screenCur->midPress(NULL);
+    break;
+  case BTN_SET_Pin:
+    initSensors();
     break;
   }
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-void getDigits(int8_t num, int8_t *d1, int8_t *d2, int8_t *max)
-{
-  if(num<2)//Правим часы
-  {
-    *d1 = sTimeEdit.Hours/10;
-    *d2 = sTimeEdit.Hours%10;
-    *max = 23;
-  }
-  else //Правим минуты
-  {
-    *d1 = sTimeEdit.Minutes/10;
-    *d2 = sTimeEdit.Minutes%10;
-    *max = 59;
-  }
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -165,9 +130,7 @@ void buttonReceiverTimeEdit()
     }
     break;
   case BTN_MID_Pin:
-     setTime(&sTimeEdit);
-     screenCur = &screenMenu0;
-     buttonReceiver = buttonReceiverMenu;
+    screenCur->midPress(NULL);
     break;
   }
   printf("num edit: %d, digit1: %d, digit2: %d, max: %d\n", editNum, digit1, digit2, timeMax);
@@ -198,6 +161,72 @@ void buttonReceiverTimeEdit()
   blinkText[0] = buff[editNum + editNum/2];
   blinkText[1] = '\0';
 
+  sprintf(editText, "%02d:%02d", sTimeEdit.Hours, sTimeEdit.Minutes);
+  editText[editNum + editNum/2] = 127; // Пробел под цифру
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void buttonReceiverBrightEdit()
+{
+//  static int currBright = 255;
+  int mult[] = {100, 10, 1};
+  static int editNum = 0;
+  switch(GPIO_Press_Pin)
+  {
+  case BTN_LEFT_Pin:
+    --editNum;
+    if(editNum < 0) editNum = 0;
+    break;
+  case BTN_RIGHT_Pin:
+    ++editNum;
+    if(editNum > 2) editNum = 2;
+    break;
+  case BTN_UP_Pin:
+    curBright += mult[editNum];
+    if(curBright > 255) curBright -= mult[editNum];
+    break;
+  case BTN_DOWN_Pin:
+    curBright -= mult[editNum];
+    if(curBright < 0) curBright += mult[editNum];
+    break;
+  case BTN_MID_Pin:
+    screenCur->midPress(NULL);
+    break;
+  }
+//  brightness
+  uint8_t digitSize = UB_Font_WidthPChar32('1', screenCur->text[0]->font); // Пока все цифры одной ширины
+  textBlink32.x = textEdit32.x + (editNum) * digitSize;
+  textBlink32.y = textEdit32.y;
+
+//  illumination =  (3-editNum)*1000 +  textBlink32.x*100 + textBlink32.y;
+
+  sprintf(editText, "%03d", curBright);
+  editText[4]  = '\0';
+  blinkText[0] = editText[editNum];
+  blinkText[1] = '\0';
+
+  editText[editNum] = 127; // Пробел под цифру
+
+  printf("[%d, %d], %d - '%s'\n",textBlink32.x, textBlink32.y, editNum, editText);
+
+  calcBrightPWM();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void getDigits(int8_t num, int8_t *d1, int8_t *d2, int8_t *max)
+{
+  if(num<2)//Правим часы
+  {
+    *d1 = sTimeEdit.Hours/10;
+    *d2 = sTimeEdit.Hours%10;
+    *max = 23;
+  }
+  else //Правим минуты
+  {
+    *d1 = sTimeEdit.Minutes/10;
+    *d2 = sTimeEdit.Minutes%10;
+    *max = 59;
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -233,19 +262,7 @@ void longClickButton()
     break;
   case BTN_MID_Pin:
     printf("Menu \n");
-    switch(screenCur->type)
-    {
-    case stateTime:
-    case stateTimer:
-    case stateCountDown:
-    case stateBrightness:
-      //Если в основных экранах то падаем в меню
-      menu = 0;
-      screenCur = &screenMenu0;
-      break;
-    default:
-      break;
-    }
+    screenCur->midLongPress(NULL);
     break;
   }
   clearScreen();

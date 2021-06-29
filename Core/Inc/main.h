@@ -100,6 +100,8 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 #define MATRX_C_GPIO_Port GPIOC
 #define MATRX_D_Pin GPIO_PIN_9
 #define MATRX_D_GPIO_Port GPIOC
+#define MATRIX_OE_PWM_Pin GPIO_PIN_8
+#define MATRIX_OE_PWM_GPIO_Port GPIOA
 #define MATRX_CLK_Pin GPIO_PIN_10
 #define MATRX_CLK_GPIO_Port GPIOC
 #define MATRX_STB_Pin GPIO_PIN_11

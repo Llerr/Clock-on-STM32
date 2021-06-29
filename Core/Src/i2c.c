@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "aht10.h"
 #include "bmp280.h"
+#include "lightSensor.h"
 /* USER CODE END 0 */
 
 I2C_HandleTypeDef hi2c1;
@@ -217,7 +218,7 @@ void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-//  printf("HAL_I2C_MasterRxCpltCallback: 0x%lX\n", hi2c->Devaddress>>1);
+//  printf("HAL_I2C_MasterRxCpltCallback: 0x%lX\n", hi2c->Devaddress);
 //  if(hi2c->Instance == I2C1)
 //     printf("I2C1\n");
 //   else
@@ -230,11 +231,15 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
   {
     BMP280MasterRxCpltCallback(hi2c);
   }
+  if(MAX44009_READ_ADDR == hi2c->Devaddress)
+  {
+    MAX44009_MasterRxCpltCallback(hi2c);
+  }
 }
 
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 {
-  printf("HAL_I2C_ErrorCallback");
+  printf("HAL_I2C_ErrorCallback: 0x%lX\n", hi2c->Devaddress);
 }
 
 /* USER CODE END 1 */

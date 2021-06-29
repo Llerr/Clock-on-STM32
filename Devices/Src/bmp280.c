@@ -139,7 +139,7 @@ void BMP280Init(I2C_HandleTypeDef *hi2c)
     ready = BMP280_ReadReg(BME280_REGISTER_STATUS);
   }
   while(ready&BME280_STATUS_IM_UPDATE);
-
+  HAL_Delay(500);
   // Прочтём все регистры калибровки
   HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_DIG_T1, I2C_MEMADD_SIZE_8BIT, (uint8_t*)(&calibData), sizeof(calibData), TIME_OUT);
   BMP280DumpCalibration();
@@ -147,7 +147,7 @@ void BMP280Init(I2C_HandleTypeDef *hi2c)
   //Настроим на ежесекундное обновление данных и фильтр пока на 4
   BMP280_WriteReg(BME280_REG_CONFIG, BME280_STBY_1000|BME280_FILTER_4);
   // Давление будем считывать 16 раз x16. Температуру 2 раза x2. Режим работы нормальный. Обновление по интервалу
-  BMP280_WriteReg(BME280_REG_CTRL_MEAS, BME280_OSRS_T_x2|BME280_OSRS_P_x16|BME280_MODE_NORMAL);
+  BMP280_WriteReg(BME280_REG_CTRL_MEAS, BME280_OSRS_T_x2|BME280_OSRS_P_x4|BME280_MODE_NORMAL);
 
   //  printf("T1 %u, T2 %d, T3, %d, P9 %d\n", calibData.dig_T1, calibData.dig_T2, calibData.dig_T3, calibData.dig_P9);
 //  printf("sizeof(BMP280Data): %d", sizeof(BMP280Data));

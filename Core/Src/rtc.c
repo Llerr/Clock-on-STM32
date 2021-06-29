@@ -178,7 +178,7 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
   }
   ++counterForScreens;
   drawScreen();
-  printf("T: %d, H: %d, P: %d\n", temperature, humidity, pressure);
+//  printf("T: %d, H: %d, P: %d\n", temperature, humidity, pressure);
 }
 
 /* USER CODE END 1 */

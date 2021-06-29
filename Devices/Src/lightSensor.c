@@ -8,6 +8,7 @@
 #include "i2c.h"
 
 #include "lightSensor.h"
+#include "sensors.h"
 
 //Время ожидания записи
 #define TIME_OUT 1000
@@ -26,6 +27,7 @@
 I2C_HandleTypeDef *hi2c = NULL;
 /// Значение яркости
 int brightness = -1;
+uint8_t rawValue = 0xFF;
 
 //----------------------------------------------------------------------------------------------------------------------
 void MAX44009Init(I2C_HandleTypeDef *hi2cIn)
@@ -35,13 +37,51 @@ void MAX44009Init(I2C_HandleTypeDef *hi2cIn)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void MAX44009RequestData_IT()
+{
+//  HAL_I2C_Master_Receive_IT(hi2c, AHT10_ADRESS, (uint8_t*)AHT10_RX_Data, 6);
+  printf("Request brightness\n");
+  HAL_I2C_Mem_Read_IT(hi2c, MAX44009_READ_ADDR, LUX_HIGH_BYTE_REG, I2C_MEMADD_SIZE_8BIT, &rawValue, 1);
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void MAX44009RequestData()
 {
-  uint8_t rawValue = 0xFF;
-  uint8_t rawValue1 = 0xFF;
-  HAL_I2C_Mem_Read(hi2c, READ_ADDR, LUX_HIGH_BYTE_REG, I2C_MEMADD_SIZE_8BIT, &rawValue, 1, TIME_OUT);
-  HAL_I2C_Mem_Read(hi2c, READ_ADDR, LUX_LOW_BYTE_REG, I2C_MEMADD_SIZE_8BIT, &rawValue1, 1, TIME_OUT);
+  int ret = 0;
+  uint8_t exp = 0;
+  uint8_t value = 0;
+  int ill = 0;
+  ret =  HAL_I2C_Mem_Read(hi2c, MAX44009_READ_ADDR, LUX_HIGH_BYTE_REG, I2C_MEMADD_SIZE_8BIT, &rawValue, 1, TIME_OUT);
+  switch(ret)
+  {
+  case HAL_OK:
+    exp = rawValue>>4;
+    value = rawValue & 0x0F;
+    ill = (1<<exp)*value * 72;
+    if(ill < 25500) illumination = ill;
+    printf("Brightness %d ( exp:%u, value %u, raw %d)\n", illumination, exp, value, rawValue);
+    break;
+  case HAL_ERROR:
+    printf("HAL_ERROR\n");
+    break;
+  case HAL_BUSY:
+    printf("HAL_BUSY\n");
+    break;
+  case HAL_TIMEOUT:
+    printf("HAL_TIMEOUT\n");
+    break;
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void MAX44009_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+//  uint8_t rawValue1 = 0xFF;
+//  HAL_I2C_Mem_Read(hi2c, READ_ADDR, LUX_LOW_BYTE_REG, I2C_MEMADD_SIZE_8BIT, &rawValue1, 1, TIME_OUT);
   uint8_t exp = rawValue>>4;
   uint8_t value = rawValue & 0x0F;
-  printf("Brightness( exp:%u, value %u\n", exp, value);
+  int ill = (1<<exp)*value * 72;
+  if(ill < 25500) illumination = ill;
+  printf("Brightness %d ( exp:%u, value %u)\n", illumination, exp, value);
 }

@@ -28,6 +28,9 @@
 #define MATRIX_WIDTH   64
 #define MATRIX_SIZE (MATRIX_HEIGHT*MATRIX_WIDTH)
 
+void initMatrix();
+void calcBrightPWM();
+
 void clearMatrix();
 void updateScreen();
 void drawPoint(int x, int y, uint16_t color);

@@ -10,8 +10,29 @@
 #include "main.h"
 #include "MatrixRGB.h"
 #include "Screens.h"
+#include "tim.h"
 
 uint8_t matrix[MATRIX_HEIGHT][MATRIX_WIDTH];
+
+int stepPWM = 0;
+int brightPWM = 0;
+
+//----------------------------------------------------------------------------------------------------------------------
+void initMatrix()
+{
+  stepPWM = htim1.Init.Period/255.0;
+  calcBrightPWM();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void calcBrightPWM()
+{
+  brightPWM = stepPWM*curBright;
+  if(0 == brightPWM) brightPWM = 1;
+
+  TIM1->CCR1 = brightPWM;
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------
 void clearMatrix()
@@ -30,22 +51,35 @@ void updateScreen()
   addr = ~addr;
   addr &=0x0F;
   addr = ((addr<<6)<<16u) | (y<<6); //Установим нужные и сбросим другие биты адреса  (6 посчитано вручную
-  //disable output
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_STB_Pin|MATRX_OE_Pin, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(MATRIX_OE_PWM_GPIO_Port, MATRIX_OE_PWM_Pin, GPIO_PIN_SET);
   MATRX_GPIO_Port->BSRR = addr; // запишем в регистр
+  //------------- ШИМ  ---------------
+  TIM1->CCR1 = 0; // Установка ШИМ
+  TIM1->EGR = TIM_EGR_UG;
+  //-------------------------------------
 
   for(x = 0; x < MATRIX_WIDTH; ++x)
   {
     MATRX_GPIO_Port->BRR = MATRX_RGB_Pins;
 //    MATRX_GPIO_Port->BRR = MATRX_RGB_Pins;
+//    if(y%2)
+//    {
     MATRX_GPIO_Port->BSRR = matrix[y][x]; //Первая половина экрана
 //    MATRX_GPIO_Port->BSRR = matrix[y][x]; //Первая половина экрана
     MATRX_GPIO_Port->BSRR = matrix[y+16][x]<<3; //Вторая половина экрана
 //    MATRX_GPIO_Port->BSRR = matrix[y+16][x]<<3; //Вторая половина экрана
+//    }
     tick(MATRX_CLK_Pin);
   }
+  //disable output
+  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_STB_Pin, GPIO_PIN_SET);
   // Enable the display
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_STB_Pin|MATRX_OE_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_STB_Pin, GPIO_PIN_RESET);
+  //------------ ШИМ --------------------
+  /* Enable the Capture compare channel */
+  TIM1->CCR1 = brightPWM; // Установка ШИМ
+  TIM1->EGR = TIM_EGR_UG;
+  //----------------------------------------
   ++y;
   y = (y < (MATRIX_HEIGHT/2))?y:0;
 }

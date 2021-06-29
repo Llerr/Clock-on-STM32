@@ -111,7 +111,7 @@ uint16_t UB_Font_WidthPChar32(uint8_t ascii, UB_pFont32 *font)
   // Проверка границы символа
   if(ascii<font->first_char) return 0;
   if(ascii>font->last_char) return 0;
-  printf("symb: %c [%d],", ascii, ascii);
+//  printf("symb: %c [%d],", ascii, ascii);
   ascii -= font->first_char;
   symb=&font->table[ascii * (font->height+1)];
   return symb[0];
@@ -135,7 +135,7 @@ uint16_t UB_Font_DrawPChar32(int16_t x, int16_t y, uint8_t ascii, UB_pFont32 *fo
   // Проверка границы символа
   if(ascii<font->first_char) return 0;
   if(ascii>font->last_char) return 0;
-  printf("symb: %c [%d],", ascii, ascii);
+//  printf("symb: %c [%d],", ascii, ascii);
   ascii -= font->first_char;
   symb=&font->table[ascii * (font->height+1)];
   width=symb[0];
@@ -145,7 +145,7 @@ uint16_t UB_Font_DrawPChar32(int16_t x, int16_t y, uint8_t ascii, UB_pFont32 *fo
 
 //  start_mask=0x80;
 //  start_mask=start_mask<<((width/8)*8);
-  printf("Width: %d[%d], start mask: %lX\n", width, (width/8)*8, start_mask);
+//  printf("Width: %d[%d], start mask: %lX\n", width, (width/8)*8, start_mask);
 
   for(yn = 0; yn < font->height; yn++)
   {

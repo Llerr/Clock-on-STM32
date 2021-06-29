@@ -52,11 +52,14 @@ enum TextTypeEnum
   txtTimer,         ///< 7  для вывода секундомера
   txtCountdown,     ///< 8  для вывода таймера
   txtBrightness,    ///< 9  для вывода яркости
-  txtText,          ///< 10 для вывода текста
-  txtMenu,          ///< 11 для вывода меню
-  txtMenuSel,          ///< 11 для вывода меню
+  txtLux,           ///< 10 для значения освещёности
+  txtText,          ///< 11 для вывода текста
+  txtMenu,          ///< 12 для вывода меню
+  txtMenuSel,       ///< 13 для вывода меню
   txtTimeEdit,
   txtDateEdit,
+  txtEdit32,
+  txtBlink32,
   txtEnumLength
 };
 
@@ -86,33 +89,53 @@ typedef struct ScreenDescript_t
   struct ScreenDescript_t *prevState; ///< предыдущий режим
   struct ScreenDescript_t *backState; ///< режим, при долгом нажатии влево. (выход из меню, из редактирования)
 
+  /// Функция вызываемая при нажатии средней кнопки
+  void (*midPress)(void *dataPtr);
+  /// Функция вызываемая при долгом нажатии средней кнопки
+  void (*midLongPress)(void *dataPtr);
+
   uint8_t numText; ///< Количество строк
   TextSets *text[]; ///< Массив строк, для вывода
 } ScreenDescript;
 
+extern int curBright; ///< Текущая яркость
 
 extern int menu;      ///< Текущий пенкт меню
 extern char editMode; ///< Флаг редактирования
-extern char blinkText[32]; ///< Текс для мигания
+extern char editText[32]; ///< Текст для редактирования
+extern char blinkText[32]; ///< Текст для мигания
+
 /**
- * Создание структуры окон
+ * Начальная инициаизация экранов
  */
 void initScreens();
+///Установка яркости экрана
+void setBrightness();
 
+/// Долгое нажатие для отображения меню
+//void midStub(int8_t longPress, void *dataPtr);
+//void showMenu(int8_t longPress, void *dataPtr);
+//void timerStartStop(int8_t longPress, void *dataPtr);
+//void countdownStartStop(int8_t longPress, void *dataPtr);
 /**
  * Отрасовка экрана
  */
 void drawScreen();
 void clearScreen();
 void nextScreenMode();
+
 /**
  * Функция переодически рисующая то цветом фона то основным.
  */
 void blink(uint8_t change);
 
 extern ScreenDescript *screenCur;  ///< Текущий экран
+extern ScreenDescript *screenPrev;  ///< Предыдущий экран
 
+extern TextSets textBrightness;
 extern TextSets textBlinkTimeEdit;
+extern TextSets textEdit32;
+extern TextSets textBlink32;
 
 extern ScreenDescript screenMain1;
 extern ScreenDescript screenMain2;
@@ -121,6 +144,7 @@ extern ScreenDescript screenMain4;
 extern ScreenDescript screenTimer;
 extern ScreenDescript screenCountdown;
 extern ScreenDescript screenBrightness;
+extern ScreenDescript screenBrightnessEdit;
 extern ScreenDescript screenMenu0;
 extern ScreenDescript screenMenu1;
 extern ScreenDescript screenMenu2;

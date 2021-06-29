@@ -10,8 +10,8 @@
 #ifndef INC_LIGHTSENSOR_H_
 #define INC_LIGHTSENSOR_H_
 
-#define WRITE_ADDR 0b10010101
-#define READ_ADDR  0b10010100
+#define MAX44009_WRITE_ADDR 0b10010101
+#define MAX44009_READ_ADDR  0b10010100
 
 extern int brightness;
 
@@ -22,5 +22,7 @@ void MAX44009Init(I2C_HandleTypeDef *hi2c);
  * @param hi2c указатель на обмен i2c
  */
 void MAX44009RequestData();
+
+void MAX44009_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c);
 
 #endif /* INC_LIGHTSENSOR_H_ */

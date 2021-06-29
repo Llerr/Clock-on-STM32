@@ -16,6 +16,7 @@
 int temperature = -300;
 int humidity = -1;
 int pressure = -1;
+int illumination = 0;
 
 void initSensors()
 {
@@ -27,26 +28,27 @@ void initSensors()
 void requestDataSensors()
 {
   uint8_t haveTemp = 0;
-  static uint8_t reset = 0;
+//  static uint8_t reset = 0;
+
   MAX44009RequestData();
 
   BMP280ReadData();
 
-  if(!reset)
-    AHT10RequestData();
+//  if(!reset)
+  AHT10RequestData();
 
   if(AHT10Present)
   {
     if(AHT10_Temperature > 13500 || 0 == AHT10_Humidity )
     {
-      if(!reset)
-      {
-        printf("Reset AHT10\n");
-        AHT10Reset();
-        reset = 1;
-      }
-      else
-        reset = 0;
+//      if(!reset)
+//      {
+//        printf("Reset AHT10\n");
+//        AHT10Reset();
+//        reset = 1;
+//      }
+//      else
+//        reset = 0;
 //      AHT10Present = 0; // Если нереальная температура, то скажем, что датчика нет.
       AHT10_Humidity = 0;
 //      return;

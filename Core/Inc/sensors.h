@@ -13,6 +13,7 @@
 extern int temperature;
 extern int humidity;
 extern int pressure;
+extern int illumination;
 
 #ifdef __cplusplus
 extern "C" {

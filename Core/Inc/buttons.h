@@ -21,8 +21,11 @@ extern volatile uint16_t GPIO_Press_Pin;
 extern volatile ButtonClick haveClick;
 extern int8_t editNum;
 
+void (*buttonReceiver)(); ///< Получатель событий кнопок
+
 void buttonReceiverMenu();
 void buttonReceiverTimeEdit();
+void buttonReceiverBrightEdit();
 
 void clickButton();
 void longClickButton();
