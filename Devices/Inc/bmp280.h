@@ -51,6 +51,7 @@ int32_t bmp280_compensate_T_int32(int32_t adc_T);
 
 /// Returns pressure in Pa as unsigned 32 bit integer. Output value of “96386” equals 96386 Pa = 963.86 hPa
 uint32_t bmp280_compensate_P_int32(int32_t adc_P);
+uint32_t bmp280_compensate_P_int64(int32_t adc_P);
 
 
 

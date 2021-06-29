@@ -161,6 +161,7 @@ void BMP280ReadData()
   // Прочтём регистры за один проход
   HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), TIME_OUT);
 
+  printf("P: %X %X %X | T: %X %X %X\n", BMP280Data[0], BMP280Data[1], BMP280Data[2], BMP280Data[3], BMP280Data[4], BMP280Data[5]);
   int32_t PressRAW = 0;
   PressRAW |= BMP280Data[0]<<12;
   PressRAW |= BMP280Data[1]<<4;
@@ -172,7 +173,8 @@ void BMP280ReadData()
   TempRAW |= BMP280Data[5]>>4;
 
   int32_t realT = bmp280_compensate_T_int32(TempRAW);
-  uint32_t realP = bmp280_compensate_P_int32(PressRAW);
+//  uint32_t realP = bmp280_compensate_P_int32(PressRAW);
+  uint32_t realP = bmp280_compensate_P_int64(PressRAW)/256;
   uint32_t mmHgP = realP*3/4;
   // 101 325 / 760 ≈ 133,322 368 4 Па.
   // Норма атмосферного давления составляет 760 мм рт. ст., или 101 325 Па
@@ -286,6 +288,32 @@ uint32_t bmp280_compensate_P_int32(int32_t adc_P)
   var2 = (((int32_t)(p>>2)) * ((int32_t)calibData.dig_P8))>>13;
   p = (uint32_t)((int32_t)p + ((var1 + var2 + calibData.dig_P7) >> 4));
   return p;
+}
+
+// Returns pressure in Pa as unsigned 32 bit integer in Q24.8 format (24 integer bits and 8 fractional bits).
+// Output value of “24674867” represents 24674867/256 = 96386.2 Pa = 963.862 hPa
+uint32_t bmp280_compensate_P_int64(int32_t adc_P)
+{
+  int64_t var1;
+  int64_t var2;
+  int64_t p;
+  var1 = ((int64_t)t_fine) - 128000;
+  var2 = var1 * var1 * (int64_t)calibData.dig_P6;
+  var2 = var2 + ((var1*(int64_t)calibData.dig_P5)<<17);
+  var2 = var2 + (((int64_t)calibData.dig_P4)<<35);
+  var1 = ((var1 * var1 * (int64_t)calibData.dig_P3)>>8) + ((var1 * (int64_t)calibData.dig_P2)<<12);
+  var1 = (((((int64_t)1)<<47)+var1))*((int64_t)calibData.dig_P1)>>33;
+  if   (var1 == 0)
+  {
+    return 0; // avoid exception caused by division by zero
+  }
+  p = 1048576-adc_P;
+  p = (((p<<31)-var2)*3125)/var1;
+  var1 = (((int64_t)calibData.dig_P9) * (p>>13) * (p>>13)) >> 25;
+  var2 = (((int64_t)calibData.dig_P8) * p) >> 19;
+  p = ((p + var1 + var2) >> 8) + (((int64_t)calibData.dig_P7)<<4);
+  return (uint32_t)p;
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------
