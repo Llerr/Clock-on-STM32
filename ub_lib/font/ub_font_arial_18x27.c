@@ -140,9 +140,10 @@ const uint32_t Arial_18x27_Table[] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_Font32 Arial_18x27 = {
-  Arial_18x27_Table, // Font-Daten
+UB_Font32 Arial_18x27 =
+{
   18,               // Breite eines Zeichens (in Pixel)
   27,              // Hoehe eines Zeichens  (in Pixel)
+  Arial_18x27_Table, // Font-Daten
 };
 

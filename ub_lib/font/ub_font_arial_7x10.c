@@ -136,10 +136,11 @@ const uint16_t Arial_7x10_Table [] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_Font Arial_7x10 = {
-  Arial_7x10_Table, // Font-Daten
+UB_Font Arial_7x10 =
+{
   7,                // Breite eines Zeichens (in Pixel)
   10,               // Hoehe eines Zeichens  (in Pixel)
+  Arial_7x10_Table, // Font-Daten
 };
 
 

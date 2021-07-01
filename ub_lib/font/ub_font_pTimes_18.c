@@ -146,9 +146,9 @@ const uint32_t pTimes_18_Table[] = {
 // Font-Struktur
 //--------------------------------------------------------------
 UB_pFont32 pTimes_18 = {
-  pTimes_18_Table, // Font-Daten
   18,              // Hoehe eines Zeichens  (in Pixel)
   32,              // erstes Zeichen  (Ascii-Nr)
   127,              // letztes Zeichen (Ascii-Nr)
+  pTimes_18_Table, // Font-Daten
 };
 

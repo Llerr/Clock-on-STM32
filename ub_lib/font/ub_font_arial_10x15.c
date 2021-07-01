@@ -137,9 +137,9 @@ const uint16_t Arial_10x15_Table [] = {
 // Font-Struktur
 //--------------------------------------------------------------
 UB_Font Arial_10x15 = {
-  Arial_10x15_Table, // Font-Daten
   10,                // Breite eines Zeichens (in Pixel)
   15,                // Hoehe eines Zeichens  (in Pixel)
+  Arial_10x15_Table, // Font-Daten
 };
 
 

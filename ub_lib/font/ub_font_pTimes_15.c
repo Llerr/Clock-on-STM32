@@ -144,10 +144,11 @@ const uint16_t pTimes_15_Table[] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_pFont pTimes_15 = {
-  pTimes_15_Table, // Font-Daten
+UB_pFont pTimes_15 =
+{
   15,              // Hoehe eines Zeichens  (in Pixel)
   32,              // erstes Zeichen  (Ascii-Nr)
   126,              // letztes Zeichen (Ascii-Nr)
+  pTimes_15_Table, // Font-Daten
 };
 

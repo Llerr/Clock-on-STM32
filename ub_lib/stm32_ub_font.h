@@ -16,9 +16,9 @@
 //-------------------------------------------------------------- 
 typedef struct UB_Font_t
 {
-  const uint16_t *table; // Таблица с данными
   uint16_t width;        // Ширина символа (в пикселях)
   uint16_t height;       // Высота символа (в пикселях)
+  const uint16_t *table; // Таблица с данными
 }UB_Font;
 
 
@@ -27,20 +27,20 @@ typedef struct UB_Font_t
 //--------------------------------------------------------------
 typedef struct UB_Font32_t
 {
-  const uint32_t *table; // Таблица с данными
   uint16_t width;        // Ширина символа (в пикселях)
   uint16_t height;       // Высота символа (в пикселях)
+  const uint32_t *table; // Таблица с данными
 }UB_Font32;
 
 
 //--------------------------------------------------------------
 // Структура пропорционального шрифта (не более 16 пикселей шириной)
 //--------------------------------------------------------------
-typedef struct UB_pFont_t {
-  const uint16_t *table; // Таблица с данными
+typedef struct UB_pFont16_t {
   uint16_t height;       // Высота символа (в пикселях)
   uint16_t first_char;   // Первый символ  (Ascii код)
   uint16_t last_char;    // Последний символ (Ascii код)
+  const uint16_t *table; // Таблица с данными
 }UB_pFont;
 
 
@@ -48,10 +48,10 @@ typedef struct UB_pFont_t {
 // Структура пропорционального шрифта (не более 32 пикселей шириной)
 //--------------------------------------------------------------
 typedef struct UB_pFont32_t {
-  const uint32_t *table; // Таблица с данными
   uint16_t height;       // Высота символа (в пикселях)
   uint16_t first_char;   // Первый символ  (Ascii код)
   uint16_t last_char;    // Последний символ (Ascii код)
+  const uint32_t *table; // Таблица с данными
 }UB_pFont32;
 
 
@@ -91,9 +91,10 @@ extern UB_pFont32 pTimes_18;
 //--------------------------------------------------------------
 // Глобальная функция
 //--------------------------------------------------------------
-uint16_t  UB_Font_WidthPChar(uint8_t ascii, UB_pFont *font);
-uint16_t UB_Font_DrawPChar(int16_t x, int16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg, uint16_t bg);
-uint16_t UB_Font_DrawPString(int16_t x, int16_t y,char *ptr, UB_pFont *font, uint16_t fg, uint16_t bg);
+uint16_t  UB_Font_WidthPChar16(uint8_t ascii, UB_pFont *font);
+uint16_t UB_Font_DrawPChar16(int16_t x, int16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg, uint16_t bg);
+uint16_t UB_Font_DrawPString16(int16_t x, int16_t y,char *ptr, UB_pFont *font, uint16_t fg, uint16_t bg);
+
 uint16_t UB_Font_WidthPChar32(uint8_t ascii, UB_pFont32 *font);
 uint16_t UB_Font_DrawPChar32(int16_t x, int16_t y, uint8_t ascii, UB_pFont32 *font, uint16_t fg, uint16_t bg);
 uint16_t UB_Font_DrawPString32(int16_t x, int16_t y,char *ptr, UB_pFont32 *font, uint16_t fg, uint16_t bg);

@@ -137,9 +137,9 @@ const uint16_t Arial_11x18_Table [] = {
 // Font-Struktur
 //--------------------------------------------------------------
 UB_Font Arial_11x18 = {
-  Arial_11x18_Table, // Font-Daten
   11,                // Breite eines Zeichens (in Pixel)
   18,                // Hoehe eines Zeichens  (in Pixel)
+  Arial_11x18_Table, // Font-Daten
 };
 
 

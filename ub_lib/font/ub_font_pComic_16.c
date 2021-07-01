@@ -144,10 +144,11 @@ const uint16_t pComic_16_Table[] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_pFont pComic_16 = {
-  pComic_16_Table, // Font-Daten
+UB_pFont pComic_16 =
+{
   16,              // Hoehe eines Zeichens  (in Pixel)
   32,              // erstes Zeichen  (Ascii-Nr)
   126,              // letztes Zeichen (Ascii-Nr)
+  pComic_16_Table, // Font-Daten
 };
 

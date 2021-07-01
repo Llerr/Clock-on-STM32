@@ -144,10 +144,11 @@ const uint32_t pArial_21_Table[] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_pFont32 pArial_21 = {
-  pArial_21_Table, // Font-Daten
+UB_pFont32 pArial_21 =
+{
   21,              // Hoehe eines Zeichens  (in Pixel)
   32,              // erstes Zeichen  (Ascii-Nr)
   126,              // letztes Zeichen (Ascii-Nr)
+  pArial_21_Table, // Font-Daten
 };
 

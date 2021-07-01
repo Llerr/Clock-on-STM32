@@ -89,6 +89,8 @@ typedef struct ScreenDescript_t
   struct ScreenDescript_t *prevState; ///< предыдущий режим
   struct ScreenDescript_t *backState; ///< режим, при долгом нажатии влево. (выход из меню, из редактирования)
 
+  struct ScreenDescript_t *setState; ///< режим при нажатии кнопки set
+
   /// Функция вызываемая при нажатии средней кнопки
   void (*midPress)(void *dataPtr);
   /// Функция вызываемая при долгом нажатии средней кнопки

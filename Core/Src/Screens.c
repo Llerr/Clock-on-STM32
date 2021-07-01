@@ -13,7 +13,7 @@
 
 int curBright = 255; ///< Текущая яркость
 
-int menu = 0;  ///<  Пункт меню
+//int menu = 0;  ///<  Пункт меню
 char editMode = 0; ///< Флаг редактирования
 char editText[32] = {0};
 char blinkText[32] = {0};
@@ -77,7 +77,6 @@ void saveDate(void *dataPtr)
 void inBrightness(void *dataPtr) ///< Вход в редактирование яркости
 {
   clearMatrix();
-  printf("Prev screen: %p", screenCur);
   screenBrightnessEdit.backState = screenCur;
   screenCur = &screenBrightnessEdit;
 
@@ -121,7 +120,7 @@ void selectMenuDate(void *dataPtr) ///< Редактрование текуще�
 //----------------------------------------------------------------------------------------------------------------------
 void showMenu(void *dataPtr)
 {
-  menu = 0;
+//  menu = 0;
   screenCur = &screenMenuTime;
 }
 
@@ -148,7 +147,7 @@ void drawTemperature(TextSets *set, void *dataPtr)
   else
     sprintf(buff, "t: --.--C       ");
 
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -159,7 +158,7 @@ void drawHumidity(TextSets *set, void *dataPtr)
     sprintf(buff, "B: %d.%d%%    ", humidity/100, humidity%100);
   else
     sprintf(buff, "B: --.--%%     ");
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -170,7 +169,7 @@ void drawPressure(TextSets *set, void *dataPtr)      // 3 для вывода д
     sprintf(buff, "D: %dmm    ", pressure/100);
   else
     sprintf(buff, "D: ---mm     ");
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -178,7 +177,7 @@ void drawHour(TextSets *set, void *dataPtr)          // 4 для вывода в
 {
   char buff[32];
   sprintf(buff, "%02d", sTime.Hours);
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -186,7 +185,7 @@ void drawMinute(TextSets *set, void *dataPtr)          // 4 для вывода 
 {
   char buff[32];
   sprintf(buff, "%02d", sTime.Minutes);
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -195,7 +194,7 @@ void drawDate(TextSets *set, void *dataPtr)          // 5 для вывода д
   char buff[32];
   sprintf(buff, "  %02d.%02d.%02d   ", sDate.Date, sDate.Month, sDate.Year);
   printf("%s\n", buff);
-  uint16_t pos = UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  uint16_t pos = UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
 //  uint8_t colorForWeek;
 //  if(sDate.WeekDay  > 5)
 //    colorForWeek = RED;
@@ -208,14 +207,14 @@ void drawDate(TextSets *set, void *dataPtr)          // 5 для вывода д
 void drawAlarm(TextSets *set, void *dataPtr)         // 6 для вывода будильниика
 {
   //  char buff[32];
-  UB_Font_DrawPString(set->x, set->y, "@", set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, "@", set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void drawTimer(TextSets *set, void *dataPtr)         // 7 для вывода секундомера
 {
   //  char buff[32];
-  UB_Font_DrawPString(set->x, set->y, "000:00.00", set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, "000:00.00", set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -239,7 +238,7 @@ void drawLux(TextSets *set, void *dataPtr)     // 8 для вывода тайм
 {
   char buff[32];
   sprintf(buff, "%d.%d         ", illumination/100, illumination%100 );
-  UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
   //      UB_Font_DrawPString(0, 16, "000:00.00", &pComic_16 , 7, 0);
 }
 
@@ -247,20 +246,20 @@ void drawLux(TextSets *set, void *dataPtr)     // 8 для вывода тайм
 void drawText(TextSets *set, void *dataPtr)
 {
   //  char buff[32];
-  UB_Font_DrawPString(set->x, set->y, set->text, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, set->text, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void drawMenu(TextSets *set, void *dataPtr)
 {
   //  char buff[32];
-  UB_Font_DrawPString(set->x, set->y, set->text, set->font, set->colorFont, set->colorBack);
+  UB_Font_DrawPString16(set->x, set->y, set->text, set->font, set->colorFont, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void drawEdit(TextSets *set, void *dataPtr)
 {
-  UB_Font_DrawPString(set->x, set->y, set->text, set->font, set->colorFont, TRANSPARENT);
+  UB_Font_DrawPString16(set->x, set->y, set->text, set->font, set->colorFont, TRANSPARENT);
   //  blink(0);
 }
 
@@ -274,7 +273,7 @@ void drawEdit32(TextSets *set, void *dataPtr)
 void drawBlink(TextSets *set, void *dataPtr)
 {
   uint8_t *color = (uint8_t *)(dataPtr);
-  UB_Font_DrawPString(set->x, set->y, set->text, set->font, *color, TRANSPARENT);
+  UB_Font_DrawPString16(set->x, set->y, set->text, set->font, *color, TRANSPARENT);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -384,6 +383,9 @@ ScreenDescript screenMain1 =
     &screenCountdown,
     &screenBrightness,
     &screenMain1,
+
+    &screenMenuTime, // кнопка set
+
     midStub,      // Краткое нажатие
     showMenu,
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -401,6 +403,9 @@ ScreenDescript screenMain2 =
     &screenCountdown,
     &screenBrightness,
     &screenMain2,
+
+    &screenMenuTime, // кнопка set
+
     midStub,      // Краткое нажатие
     showMenu,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -418,6 +423,9 @@ ScreenDescript screenMain3 =
     &screenCountdown,
     &screenBrightness,
     &screenMain3,
+
+    &screenMenuTime, // кнопка set
+
     midStub,      // Краткое нажатие
     showMenu,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -435,6 +443,9 @@ ScreenDescript screenMain4 =
     &screenCountdown,
     &screenBrightness,
     &screenMain4,
+
+    &screenMenuTime, // кнопка set
+
     midStub,      // Краткое нажатие
     showMenu,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -452,6 +463,9 @@ ScreenDescript screenMain4 =
 //    &screenCountdown,
 //    &screenMain1,
 //    &screenMain1,
+
+//    &screenMenuTime, // кнопка set
+
 //    midStub,            // Краткое нажатие
 //    timerStartStop,     // Длинное нажатие
 //    buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -469,6 +483,9 @@ ScreenDescript screenCountdown =
     &screenBrightness,  // следующий режим
     &screenMain1,       // предыдущий режим
     &screenMain1,
+
+    &screenMenuTime, // кнопка set
+
     countdownStartStop,   // Краткое нажатие средней кнопки
     midStub,              // Длинное нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -486,6 +503,9 @@ ScreenDescript screenBrightness =
     &screenMain1,       // следующий режим
     &screenCountdown,   // предыдущий режим
     &screenMain1,       // режим, при долгом нажатии влево. (выход из меню, из редактирования)
+
+    &screenMenuTime, // кнопка set
+
     inBrightness,       // Краткое нажатие средней кнопки
     showMenu,           // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -503,6 +523,9 @@ ScreenDescript screenBrightnessEdit =
     &screenBrightnessEdit,    // следующий режим
     &screenBrightnessEdit,    // предыдущий режим
     &screenBrightness,        // режим, при долгом нажатии влево. (выход из меню, из редактирования)
+
+    &screenBrightnessEdit, // кнопка set (В режиме редактирования не используется)
+
     saveBrightness,           // Краткое нажатие средней кнопки
     showMenu,                 // Долгое нажатие средней кнопки
     buttonReceiverBrightEdit, // Обработчик кнопок в этом пункте
@@ -520,6 +543,9 @@ ScreenDescript screenMenuTime =
     &screenMenuTime,  // вверх
     &screenMenuDate,  // вниз
     &screenMain1,  // Долгое нажатие влево
+
+    &screenMain1, // кнопка set
+
     selectMenuTime,      // Краткое нажатие центр
     midStub,             // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -537,6 +563,9 @@ ScreenDescript screenMenuDate =
     &screenMenuTime, // вверх
     &screenMenuAlarm, // вниз
     &screenMain1,
+
+    &screenMain1, // кнопка set
+
     selectMenuDate,   // Краткое нажатие средней кнопки
     midStub,          // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -554,6 +583,9 @@ ScreenDescript screenMenuAlarm =
     &screenMenuDate,
     &screenMenuBrightness,
     &screenMain1,
+
+    &screenMain1, // кнопка set
+
     midStub,      // Краткое нажатие средней кнопки
     midStub,      // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -571,6 +603,9 @@ ScreenDescript screenMenuBrightness =
     &screenMenuAlarm,
     &screenMenuBrightness,
     &screenMain1,       //Долгое нажатие влево
+
+    &screenMain1, // кнопка set
+
     inBrightness,      // Краткое нажатие средней кнопки
     midStub,           // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -588,10 +623,13 @@ ScreenDescript screenMenuAlr0 =
     &screenMenuAlr0,
     &screenMenuAlr1,
     &screenMenuAlarm,
+
+    &screenMain1, // кнопка set
+
     midStub,      // Краткое нажатие средней кнопки
     midStub,     // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-   3,
+    3,
     {&textMenuAlrm0Sel, &textMenuAlrm1, &textMenuAlrm2}
 };
 
@@ -605,6 +643,9 @@ ScreenDescript screenMenuAlr1 =
     &screenMenuAlr0,
     &screenMenuAlr2,
     &screenMenuAlarm,
+
+    &screenMain1, // кнопка set
+
     midStub,      // Краткое нажатие средней кнопки
     midStub,      // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -622,6 +663,9 @@ ScreenDescript screenMenuAlr2 =
     &screenMenuAlr1,
     &screenMenuAlr2,
     &screenMenuAlarm,
+
+    &screenMain1, // кнопка set
+
     midStub,      // Краткое нажатие средней кнопки
     midStub,      // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
@@ -639,6 +683,9 @@ ScreenDescript screenEditTime =
     &screenEditTime,
     &screenEditTime,
     &screenMenuTime,
+
+    &screenEditTime, // кнопка set (В режиме редактирования не используется)
+
     saveTime,      // Краткое нажатие средней кнопки
     midStub,        // Долгое нажатие средней кнопки
     buttonReceiverTimeEdit, // Обработчик кнопок в этом пункте
@@ -657,6 +704,9 @@ ScreenDescript screenEditDate =
     &screenEditDate,
     &screenEditDate,
     &screenMenuTime,
+
+    &screenEditDate, // кнопка set (В режиме редактирования не используется)
+
     saveDate,      // Краткое нажатие средней кнопки
     midStub,      // Долгое нажатие средней кнопки
     buttonReceiverDateEdit, // Обработчик кнопок в этом пункте

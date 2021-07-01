@@ -144,10 +144,11 @@ const uint16_t pArial_13_Table[] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_pFont pArial_13 = {
-  pArial_13_Table, // Font-Daten
+UB_pFont pArial_13 =
+{
   13,              // Hoehe eines Zeichens  (in Pixel)
   32,              // erstes Zeichen  (Ascii-Nr)
   126,              // letztes Zeichen (Ascii-Nr)
+  pArial_13_Table, // Font-Daten
 };
 

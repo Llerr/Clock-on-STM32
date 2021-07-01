@@ -136,10 +136,11 @@ const uint16_t Arial_16x25_Table [] = {
 //--------------------------------------------------------------
 // Font-Struktur
 //--------------------------------------------------------------
-UB_Font Arial_16x25 = {
-  Arial_16x25_Table, // Font-Daten
+UB_Font Arial_16x25 =
+{
   16,                // Breite eines Zeichens (in Pixel)
   25,                // Hoehe eines Zeichens  (in Pixel)
+  Arial_16x25_Table, // Font-Daten
 };
 
 

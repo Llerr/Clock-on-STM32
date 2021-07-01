@@ -57,33 +57,35 @@ void buttonReceiverMenu()
   {
   case BTN_LEFT_Pin:
     screenCur = screenCur->prevMode;
-    printf("Left %d\n", menu);
+//    printf("Left %d\n", menu);
     break;
   case BTN_RIGHT_Pin:
     screenCur = screenCur->nextMode;
-    printf("Right %d\n", menu);
+//    printf("Right %d\n", menu);
     break;
   case BTN_UP_Pin:
-   --menu;
-    if(menu < 0) menu = 0;
-    printf("Up, menu %d\n", menu);
+//   --menu;
+//    if(menu < 0) menu = 0;
+//    printf("Up, menu %d\n", menu);
     clearMatrix();
     screenCur = screenCur->nextState;
     break;
   case BTN_DOWN_Pin:
-   ++menu;
-    if(menu == NUM_MENU) menu = 3;
-    printf("Down, menu %d\n", menu);
+//   ++menu;
+//    if(menu == NUM_MENU) menu = 3;
+//    printf("Down, menu %d\n", menu);
     clearMatrix();
     screenCur = screenCur->prevState;
     break;
   case BTN_MID_Pin:
-    printf("Work, menu %d\n", menu);
+//    printf("Work, menu %d\n", menu);
 //    screenPrev = screenCur;
     screenCur->midPress(NULL);
     break;
   case BTN_SET_Pin:
-    initSensors();
+    clearMatrix();
+    screenCur = screenCur->setState;
+//    initSensors();
     break;
   }
 }
@@ -138,8 +140,8 @@ void buttonReceiverTimeEdit()
 
   sprintf(editText, "%02d:%02d", sTimeEdit.Hours, sTimeEdit.Minutes);
 
-  uint8_t delimSize = UB_Font_WidthPChar(':', screenCur->text[0]->font);
-  uint8_t digitSize = UB_Font_WidthPChar('1', screenCur->text[0]->font); // Пока все цифры одной ширины
+  uint8_t delimSize = UB_Font_WidthPChar16(':', screenCur->text[0]->font);
+  uint8_t digitSize = UB_Font_WidthPChar16('1', screenCur->text[0]->font); // Пока все цифры одной ширины
 
   textBlinkTimeEdit.x = screenCur->text[0]->x + editNum * digitSize + (editNum/2)*delimSize;
   textBlinkTimeEdit.y = screenCur->text[0]->y;
