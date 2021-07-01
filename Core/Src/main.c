@@ -36,6 +36,7 @@
 
 #include "buttons.h"
 #include "sensors.h"
+#include "backup.h"
 
 #include "aht10.h"
 #include "MatrixRGB.h"
@@ -71,25 +72,22 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+// printf() через SWD
 int __io_putchar(int ch)
 {
   ITM_SendChar(ch);
   return ch;
 }
 
-//int _write(int file, char *ptr, int len){
-//
-//	int i=0;
-//
-//	for(i=0;i<len;i++){
-//
-//		ITM_SendChar((*ptr++));
-//
-//	}
-//
-//	return len;
-//
+// Вывод printf через VCP.
+//int _write_r (struct _reent *r, int file, char * ptr, int len)
+//{
+//  (void)r;
+//  (void)file;
+//  CDC_Transmit_FS((uint8_t *)ptr, len);
+//  return len;
 //}
+
 /* USER CODE END 0 */
 
 /**
@@ -139,7 +137,7 @@ int main(void)
 //  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
   puts(" "); // Для вывода первого символа, чтобы не съедало
-  HAL_Delay(500);
+//  HAL_Delay(500);
   initButtons();
   initSensors();
   initScreens();
@@ -165,6 +163,9 @@ int main(void)
   drawScreen(screenCur);
   HAL_TIM_Base_Start_IT(&htim4); // Таймер для миганий
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+//  saveDateBKP(&sDateEdit);
+  loadDateBKP(&sDate);
+  setDate(&sDate);
 
   puts("Enter to loop");
   while (1)
@@ -184,6 +185,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//  HAL_RTCEx_SetSmoothCalib(hrtc, SmoothCalibPeriod, SmoothCalibPlusPulses, SmouthCalibMinusPulsesValue);
   /* USER CODE END 3 */
 }
 

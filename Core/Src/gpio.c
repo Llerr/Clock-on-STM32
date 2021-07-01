@@ -108,7 +108,7 @@ HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET); // прижимаем DP к "земле"
 for(uint16_t i = 0; i < 10000; i++) {}; // немного ждём
 
-//// переинициализируем пин для работы с USB
+// переинициализируем пин для работы с USB
 GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 GPIO_InitStruct.Pull = GPIO_NOPULL;
 HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

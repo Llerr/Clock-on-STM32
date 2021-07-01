@@ -139,7 +139,6 @@ void BMP280Init(I2C_HandleTypeDef *hi2c)
     ready = BMP280_ReadReg(BME280_REGISTER_STATUS);
   }
   while(ready&BME280_STATUS_IM_UPDATE);
-  HAL_Delay(500);
   // Прочтём все регистры калибровки
   HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_DIG_T1, I2C_MEMADD_SIZE_8BIT, (uint8_t*)(&calibData), sizeof(calibData), TIME_OUT);
   BMP280DumpCalibration();
@@ -161,7 +160,7 @@ void BMP280ReadData()
   // Прочтём регистры за один проход
   HAL_I2C_Mem_Read(hi2cBMP, BMP280_ADDRESS, BMP280_REG_PRESS_MSB, I2C_MEMADD_SIZE_8BIT, BMP280Data, sizeof(BMP280Data), TIME_OUT);
 
-  printf("P: %X %X %X | T: %X %X %X\n", BMP280Data[0], BMP280Data[1], BMP280Data[2], BMP280Data[3], BMP280Data[4], BMP280Data[5]);
+//  printf("P: %X %X %X | T: %X %X %X\n", BMP280Data[0], BMP280Data[1], BMP280Data[2], BMP280Data[3], BMP280Data[4], BMP280Data[5]);
   int32_t PressRAW = 0;
   PressRAW |= BMP280Data[0]<<12;
   PressRAW |= BMP280Data[1]<<4;
@@ -178,7 +177,7 @@ void BMP280ReadData()
   uint32_t mmHgP = realP*3/4;
   // 101 325 / 760 ≈ 133,322 368 4 Па.
   // Норма атмосферного давления составляет 760 мм рт. ст., или 101 325 Па
-  printf("BMP280 T: %ld, P: %lu, mm.Hg: %lu\n", realT, realP, mmHgP);
+//  printf("BMP280 T: %ld, P: %lu, mm.Hg: %lu\n", realT, realP, mmHgP);
   //litlle endian
   BMP280Temperature = realT; // Пересчитаная температура
   BMP280Pressure = mmHgP; // Пересчитаное давление
@@ -315,22 +314,3 @@ uint32_t bmp280_compensate_P_int64(int32_t adc_P)
   return (uint32_t)p;
 
 }
-
-//----------------------------------------------------------------------------------------------------------------------
-//static void I2Cx_WriteData(uint16_t Addr, uint8_t Reg, uint8_t Value)
-//{
-//  HAL_StatusTypeDef status = HAL_OK;
-//  status = HAL_I2C_Mem_Write(&hi2c1, Addr, (uint16_t)Reg, I2C_MEMADD_SIZE_8BIT, &Value, 1, TIME_OUT);
-// if(status != HAL_OK) Error();
-//}
-//
-////----------------------------------------------------------------------------------------------------------------------
-//static uint8_t I2Cx_ReadData(uint16_t Addr, uint8_t Reg)
-//{
-//  HAL_StatusTypeDef status = HAL_OK;
-//  uint8_t value = 0;
-//  status = HAL_I2C_Mem_Read(&hi2c1, Addr, Reg, I2C_MEMADD_SIZE_8BIT, &value, 1, TIME_OUT);
-//  if(status != HAL_OK) Error();
-//  return value;
-//}
-//------------------------------------------------

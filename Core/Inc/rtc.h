@@ -50,7 +50,8 @@ void MX_RTC_Init(void);
 /* USER CODE BEGIN Prototypes */
 void setTime(RTC_TimeTypeDef *time);
 void getTime(RTC_TimeTypeDef *time);
-//void setDate();
+void setDate(RTC_DateTypeDef *date);
+void getDate(RTC_DateTypeDef *date);
 //void setAlarm(int timer);
 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc);

@@ -41,8 +41,9 @@ void AHT10Init(I2C_HandleTypeDef *hi2c)
   AHT10Present = 1;
 //  HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 1000);
   printf("+ AHT10 started!\n");
+  HAL_Delay(30);
 //  HAL_I2C_Master_Transmit_IT (&hi2c1, AHT10_Adress, uint8_t *pData, uint16_t Size);
-  AHT10Reset();;
+  AHT10Reset();
   HAL_Delay(30);
 }
 
@@ -94,5 +95,5 @@ void AHT10MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
   AHT10_ADC_Raw = ((uint32_t)AHT10_RX_Data[1] << 12) | ((uint32_t)AHT10_RX_Data[2] << 4) | (AHT10_RX_Data[3] >> 4);
   AHT10_Humidity = ((AHT10_ADC_Raw/1024)*10000/1024);
   //    printf("Humidity raw: %lu\n", AHT10_ADC_Raw);
-  printf("AHT10 t: %u, H: %lu\n", AHT10_Temperature, AHT10_Humidity);
+//  printf("AHT10 t: %u, H: %lu\n", AHT10_Temperature, AHT10_Humidity);
 }

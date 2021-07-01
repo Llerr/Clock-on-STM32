@@ -94,6 +94,8 @@ typedef struct ScreenDescript_t
   /// Функция вызываемая при долгом нажатии средней кнопки
   void (*midLongPress)(void *dataPtr);
 
+  void (*buttonReceiver)(); ///< Получатель событий кнопок
+
   uint8_t numText; ///< Количество строк
   TextSets *text[]; ///< Массив строк, для вывода
 } ScreenDescript;
@@ -145,15 +147,16 @@ extern ScreenDescript screenTimer;
 extern ScreenDescript screenCountdown;
 extern ScreenDescript screenBrightness;
 extern ScreenDescript screenBrightnessEdit;
-extern ScreenDescript screenMenu0;
-extern ScreenDescript screenMenu1;
-extern ScreenDescript screenMenu2;
-extern ScreenDescript screenMenu3;
+extern ScreenDescript screenMenuTime;
+extern ScreenDescript screenMenuDate;
+extern ScreenDescript screenMenuAlarm;
+extern ScreenDescript screenMenuBrightness;
 extern ScreenDescript screenMenuAlr0;
 extern ScreenDescript screenMenuAlr1;
 extern ScreenDescript screenMenuAlr2;
 
 extern ScreenDescript screenEditTime;
+extern ScreenDescript screenEditDate;
 
 
 //extern ScreenDescript *screenMain[]; ///< Основной экран

@@ -5,6 +5,7 @@
 #include "sensors.h"
 #include "buttons.h"
 #include "rtc.h"
+#include "backup.h"
 
 #include "Screens.h"
 
@@ -21,13 +22,13 @@ ScreenDescript *screenPrev = NULL;
 
 char *weekText[]=
 {
+    "Sn ",
     "Mn ",
     "Tu ",
     "Wd ",
     "Th ",
     "Fr ",
     "St ",
-    "Sn ",
 };
 
 char *menuText[] =
@@ -61,8 +62,15 @@ void initScreens()
 void saveTime(void *dataPtr)
 {
   setTime(&sTimeEdit);
-  screenCur = &screenMenu0;
-  buttonReceiver = buttonReceiverMenu;
+  screenCur = &screenMenuTime;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void saveDate(void *dataPtr)
+{
+  setDate(&sDateEdit);
+  saveDateBKP(&sDateEdit);
+  screenCur = &screenMenuDate;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -72,7 +80,6 @@ void inBrightness(void *dataPtr) ///< Вход в редактирование �
   printf("Prev screen: %p", screenCur);
   screenBrightnessEdit.backState = screenCur;
   screenCur = &screenBrightnessEdit;
-  buttonReceiver = buttonReceiverBrightEdit;
 
   GPIO_Press_Pin = 0;
   buttonReceiverBrightEdit();
@@ -81,8 +88,8 @@ void inBrightness(void *dataPtr) ///< Вход в редактирование �
 //----------------------------------------------------------------------------------------------------------------------
 void saveBrightness(void *dataPtr)
 {
-  screenCur = &screenBrightness;
-  buttonReceiver = buttonReceiverMenu;
+  screenCur = screenCur->backState;
+  clearScreen();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -99,14 +106,23 @@ void selectMenuTime(void *dataPtr) ///< Редактрование текуще�
   getTime(&sTimeEdit);
   sTimeEdit.Seconds = 0;
   buttonReceiverTimeEdit();
-  buttonReceiver = buttonReceiverTimeEdit;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void selectMenuDate(void *dataPtr) ///< Редактрование текущего времени (выбор в меню)
+{
+  screenCur = &screenEditDate;
+  clearScreen();
+  GPIO_Press_Pin = 0;
+  getDate(&sDateEdit);
+  buttonReceiverDateEdit();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void showMenu(void *dataPtr)
 {
   menu = 0;
-  screenCur = &screenMenu0;
+  screenCur = &screenMenuTime;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -177,14 +193,15 @@ void drawMinute(TextSets *set, void *dataPtr)          // 4 для вывода 
 void drawDate(TextSets *set, void *dataPtr)          // 5 для вывода даты
 {
   char buff[32];
-  sprintf(buff, "%02d.%02d.%02d", sDate.Date, sDate.Month, sDate.Year);
+  sprintf(buff, "  %02d.%02d.%02d   ", sDate.Date, sDate.Month, sDate.Year);
+  printf("%s\n", buff);
   uint16_t pos = UB_Font_DrawPString(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
-  uint8_t colorForWeek;
-  if(sDate.WeekDay  > 5)
-    colorForWeek = RED;
-  else
-    colorForWeek = GREEN;
-  UB_Font_DrawPString(pos, set->y, weekText[sDate.WeekDay], set->font, colorForWeek, set->colorBack);
+//  uint8_t colorForWeek;
+//  if(sDate.WeekDay  > 5)
+//    colorForWeek = RED;
+//  else
+//    colorForWeek = GREEN;
+//  UB_Font_DrawPString(pos, set->y, weekText[sDate.WeekDay], set->font, colorForWeek, set->colorBack);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -264,6 +281,7 @@ void drawBlink(TextSets *set, void *dataPtr)
 void drawBlink32(TextSets *set, void *dataPtr)
 {
   uint8_t *color = (uint8_t *)(dataPtr);
+//  printf("%ld: blink(%s):%d\n", HAL_GetTick(), set->text, *color);
   UB_Font_DrawPString32(set->x, set->y, set->text, set->font, *color, TRANSPARENT);
 }
 
@@ -340,12 +358,12 @@ TextSets textMenuAlrSel    = {txtMenuSel, 0, 22, WHITE, BLACK, &pArial_13, drawM
 TextSets textMenuBright    = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Brightness >"};
 TextSets textMenuBrightSel = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Brightness >"};
 
-TextSets textMenuAlrm0    = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Alarms 1     "};
-TextSets textMenuAlrm0Sel = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Alarms 1     "};
-TextSets textMenuAlrm1    = {txtMenu,    0, 11, GREEN, BLACK, &pArial_13, drawMenu, "Alarms 2     "};
-TextSets textMenuAlrm1Sel = {txtMenuSel, 0, 11, WHITE, BLACK, &pArial_13, drawMenu, "Alarms 2     "};
-TextSets textMenuAlrm2    = {txtMenu,    0, 22, GREEN, BLACK, &pArial_13, drawMenu, "Alarms 3     "};
-TextSets textMenuAlrm2Sel = {txtMenuSel, 0, 22, WHITE, BLACK, &pArial_13, drawMenu, "Alarms 3     "};
+TextSets textMenuAlrm0    = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Alarm 1     "};
+TextSets textMenuAlrm0Sel = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Alarm 1     "};
+TextSets textMenuAlrm1    = {txtMenu,    0, 11, GREEN, BLACK, &pArial_13, drawMenu, "Alarm 2     "};
+TextSets textMenuAlrm1Sel = {txtMenuSel, 0, 11, WHITE, BLACK, &pArial_13, drawMenu, "Alarm 2     "};
+TextSets textMenuAlrm2    = {txtMenu,    0, 22, GREEN, BLACK, &pArial_13, drawMenu, "Alarm 3     "};
+TextSets textMenuAlrm2Sel = {txtMenuSel, 0, 22, WHITE, BLACK, &pArial_13, drawMenu, "Alarm 3     "};
 
 
 TextSets textTimeEdit      = {txtTimeEdit, 1, -5, WHITE,  BLACK, &pDigital_7_28, drawEdit,  editText};  // Текст для редактирования
@@ -361,13 +379,14 @@ ScreenDescript screenMain1 =
     stateTime,
     &textBlinkTime,
 
-    &screenMain2,
+    &screenMain2,      // следующий экран режима
     &screenMain4,
-    &screenTimer,
+    &screenCountdown,
     &screenBrightness,
     &screenMain1,
     midStub,      // Краткое нажатие
     showMenu,
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textHour, &textMinute, &textTemperature}
 };
@@ -377,13 +396,14 @@ ScreenDescript screenMain2 =
     stateTime,
     &textBlinkTime, //blink
 
-    &screenMain3,
+    &screenMain3,    // следующий экран режима
     &screenMain1,
-    &screenTimer,
+    &screenCountdown,
     &screenBrightness,
     &screenMain2,
     midStub,      // Краткое нажатие
-    showMenu,
+    showMenu,     // Длинное нажатие
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textHour, &textMinute, &textHumidity}
 };
@@ -393,13 +413,14 @@ ScreenDescript screenMain3 =
     stateTime,
     &textBlinkTime, //Текст для мигания
 
-    &screenMain4,
+    &screenMain4,    // следующий экран режима
     &screenMain2,
-    &screenTimer,
+    &screenCountdown,
     &screenBrightness,
     &screenMain3,
     midStub,      // Краткое нажатие
-    showMenu,
+    showMenu,     // Длинное нажатие
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textHour, &textMinute, &textPressure}
 };
@@ -411,43 +432,46 @@ ScreenDescript screenMain4 =
 
     &screenMain1, // Лево
     &screenMain3, // Право
-    &screenTimer,
+    &screenCountdown,
     &screenBrightness,
     &screenMain4,
     midStub,      // Краткое нажатие
-    showMenu,
+    showMenu,     // Длинное нажатие
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textHour, &textMinute, &textDate}
 };
 
-ScreenDescript screenTimer =
-{
-    stateTimer,
-    NULL, //blink
-
-    &screenTimer,
-    &screenTimer,
-    &screenCountdown,
-    &screenMain1,
-    &screenMain1,
-    midStub,      // Краткое нажатие
-    timerStartStop,
-    1,
-    {&textTimer}
-};
+//ScreenDescript screenTimer =
+//{
+//    stateTimer,
+//    NULL, //blink
+//
+//    &screenTimer,     // следующий экран режима
+//    &screenTimer,
+//    &screenCountdown,
+//    &screenMain1,
+//    &screenMain1,
+//    midStub,            // Краткое нажатие
+//    timerStartStop,     // Длинное нажатие
+//    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+//    1,
+//    {&textTimer}
+//};
 
 ScreenDescript screenCountdown =
 {
     stateCountDown,
     NULL, //blink
 
-    &screenCountdown,
-    &screenCountdown,
-    &screenBrightness,
-    &screenTimer,
+    &screenCountdown,   // следующий экран режима
+    &screenCountdown,   // предыдущий экран режима
+    &screenBrightness,  // следующий режим
+    &screenMain1,       // предыдущий режим
     &screenMain1,
-    midStub,      // Краткое нажатие
-    countdownStartStop,
+    countdownStartStop,   // Краткое нажатие средней кнопки
+    midStub,              // Длинное нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     1,
     {&textCountDown}
 };
@@ -462,8 +486,9 @@ ScreenDescript screenBrightness =
     &screenMain1,       // следующий режим
     &screenCountdown,   // предыдущий режим
     &screenMain1,       // режим, при долгом нажатии влево. (выход из меню, из редактирования)
-    inBrightness,       // Краткое нажатие
-    showMenu,           // Долгое нажатие
+    inBrightness,       // Краткое нажатие средней кнопки
+    showMenu,           // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     2,
     {&textBrightness, &textLux}
 };
@@ -473,78 +498,83 @@ ScreenDescript screenBrightnessEdit =
     stateBrightness,
     &textBlink32, //blink
 
-    &screenBrightnessEdit,
-    &screenBrightnessEdit,
-    &screenBrightnessEdit,
-    &screenBrightnessEdit,
-    &screenBrightness,           // режим, при долгом нажатии влево. (выход из меню, из редактирования)
-    saveBrightness,        // Краткое нажатие
-    showMenu,              // Долгое нажатие
+    &screenBrightnessEdit,    // следующий экран режима
+    &screenBrightnessEdit,    // предыдущий экран режима
+    &screenBrightnessEdit,    // следующий режим
+    &screenBrightnessEdit,    // предыдущий режим
+    &screenBrightness,        // режим, при долгом нажатии влево. (выход из меню, из редактирования)
+    saveBrightness,           // Краткое нажатие средней кнопки
+    showMenu,                 // Долгое нажатие средней кнопки
+    buttonReceiverBrightEdit, // Обработчик кнопок в этом пункте
     2,
-    {&textBrightness, &textLux}
+    {&textEdit32, &textLux}
 };
 
-ScreenDescript screenMenu0 =
+ScreenDescript screenMenuTime =
 {
     stateMenuTime,
     NULL, //blink
 
-    &screenMenu0,
-    &screenMenu0,
-    &screenMenu0,
-    &screenMenu1,
-    &screenMain1,
-    selectMenuTime,      // Краткое нажатие
-    midStub,
+    &screenMenuTime,  // Право
+    &screenMain1,  // Лево
+    &screenMenuTime,  // вверх
+    &screenMenuDate,  // вниз
+    &screenMain1,  // Долгое нажатие влево
+    selectMenuTime,      // Краткое нажатие центр
+    midStub,             // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textMenuTimeSel, &textMenuDate, &textMenuAlr}
 };
 
-ScreenDescript screenMenu1 =
+ScreenDescript screenMenuDate =
 {
     stateMenuDate,
     NULL, //blink
 
-    &screenMenu1, // Лево
-    &screenMenu1, // Право
-    &screenMenu0, // вверх
-    &screenMenu2, // вниз
+    &screenMenuDate, // Право
+    &screenMenuDate, // Лево
+    &screenMenuTime, // вверх
+    &screenMenuAlarm, // вниз
     &screenMain1,
-    midStub,      // Краткое нажатие
-    midStub,
+    selectMenuDate,   // Краткое нажатие средней кнопки
+    midStub,          // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textMenuTime, &textMenuDateSel, &textMenuAlr}
 };
 
-ScreenDescript screenMenu2 =
+ScreenDescript screenMenuAlarm =
 {
     stateMenuAlarm,
     NULL, //blink
 
     &screenMenuAlr0,
-    &screenMenu2,
-    &screenMenu1,
-    &screenMenu3,
+    &screenMenuAlarm,
+    &screenMenuDate,
+    &screenMenuBrightness,
     &screenMain1,
-    midStub,      // Краткое нажатие
-    midStub,
+    midStub,      // Краткое нажатие средней кнопки
+    midStub,      // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textMenuTime, &textMenuDate, &textMenuAlrSel}
 };
 
-ScreenDescript screenMenu3 =
+ScreenDescript screenMenuBrightness =
 {
     stateMenuBrightness,
     NULL, //blink
 
-    &screenMenu3,
-    &screenMenu3,
-    &screenMenu2,
-    &screenMenu3,
-    &screenMain1,
-    inBrightness,      // Краткое нажатие
-    midStub,
-    1,
+    &screenMenuBrightness,
+    &screenMenuBrightness,
+    &screenMenuAlarm,
+    &screenMenuBrightness,
+    &screenMain1,       //Долгое нажатие влево
+    inBrightness,      // Краткое нажатие средней кнопки
+    midStub,           // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+   1,
     {&textMenuBrightSel}
 };
 
@@ -554,13 +584,14 @@ ScreenDescript screenMenuAlr0 =
     NULL, //blink
 
     &screenMenuAlr0,
-    &screenMenu2,
+    &screenMenuAlarm,
     &screenMenuAlr0,
     &screenMenuAlr1,
-    &screenMenu2,
-    midStub,      // Краткое нажатие
-    midStub,
-    3,
+    &screenMenuAlarm,
+    midStub,      // Краткое нажатие средней кнопки
+    midStub,     // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+   3,
     {&textMenuAlrm0Sel, &textMenuAlrm1, &textMenuAlrm2}
 };
 
@@ -570,12 +601,13 @@ ScreenDescript screenMenuAlr1 =
     NULL, //blink
 
     &screenMenuAlr1,
-    &screenMenu2,
+    &screenMenuAlarm,
     &screenMenuAlr0,
     &screenMenuAlr2,
-    &screenMenu2,
-    midStub,      // Краткое нажатие
-    midStub,
+    &screenMenuAlarm,
+    midStub,      // Краткое нажатие средней кнопки
+    midStub,      // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textMenuAlrm0, &textMenuAlrm1Sel, &textMenuAlrm2}
 };
@@ -586,12 +618,13 @@ ScreenDescript screenMenuAlr2 =
     NULL, //blink
 
     &screenMenuAlr2,
-    &screenMenu2,
+    &screenMenuAlarm,
     &screenMenuAlr1,
     &screenMenuAlr2,
-    &screenMenu2,
-    midStub,      // Краткое нажатие
-    midStub,
+    &screenMenuAlarm,
+    midStub,      // Краткое нажатие средней кнопки
+    midStub,      // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textMenuAlrm0, &textMenuAlrm1, &textMenuAlrm2Sel}
 };
@@ -605,9 +638,28 @@ ScreenDescript screenEditTime =
     &screenEditTime,
     &screenEditTime,
     &screenEditTime,
-    &screenMenu0,
-    saveTime,      // Краткое нажатие
-    midStub,
+    &screenMenuTime,
+    saveTime,      // Краткое нажатие средней кнопки
+    midStub,        // Долгое нажатие средней кнопки
+    buttonReceiverTimeEdit, // Обработчик кнопок в этом пункте
     1,
     {&textTimeEdit}
+};
+
+
+ScreenDescript screenEditDate =
+{
+    stateDateEdtit,
+    &textBlink32, //blink
+
+    &screenEditDate,
+    &screenEditDate,
+    &screenEditDate,
+    &screenEditDate,
+    &screenMenuTime,
+    saveDate,      // Краткое нажатие средней кнопки
+    midStub,      // Долгое нажатие средней кнопки
+    buttonReceiverDateEdit, // Обработчик кнопок в этом пункте
+    1,
+    {&textEdit32}
 };

@@ -60,7 +60,7 @@ void MAX44009RequestData()
     value = rawValue & 0x0F;
     ill = (1<<exp)*value * 72;
     if(ill < 25500) illumination = ill;
-    printf("Brightness %d ( exp:%u, value %u, raw %d)\n", illumination, exp, value, rawValue);
+//    printf("Brightness %d ( exp:%u, value %u, raw %d)\n", illumination, exp, value, rawValue);
     break;
   case HAL_ERROR:
     printf("HAL_ERROR\n");
@@ -83,5 +83,5 @@ void MAX44009_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
   uint8_t value = rawValue & 0x0F;
   int ill = (1<<exp)*value * 72;
   if(ill < 25500) illumination = ill;
-  printf("Brightness %d ( exp:%u, value %u)\n", illumination, exp, value);
+//  printf("Brightness %d ( exp:%u, value %u)\n", illumination, exp, value);
 }

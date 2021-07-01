@@ -29,6 +29,7 @@
 #include "i2c.h"
 #include "main.h"
 #include "sensors.h"
+#include "backup.h"
 
 RTC_TimeTypeDef sTime = {0};
 RTC_DateTypeDef sDate = {0};
@@ -68,7 +69,6 @@ void MX_RTC_Init(void)
 
   /* USER CODE BEGIN Check_RTC_BKUP */
   //Чтобы не забыть закоментировать установку времени
-//  ++checkVar;
 #ifdef SET_DATA
   /* USER CODE END Check_RTC_BKUP */
 
@@ -156,6 +156,18 @@ void getTime(RTC_TimeTypeDef *time)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void setDate(RTC_DateTypeDef *date)
+{
+  HAL_RTC_SetDate(&hrtc, date, RTC_FORMAT_BIN);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void getDate(RTC_DateTypeDef *date)
+{
+  HAL_RTC_GetDate(&hrtc, date, RTC_FORMAT_BIN); // RTC_FORMAT_BIN , RTC_FORMAT_BCD
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
 //  printf("============Alarm event===========\n");
@@ -167,8 +179,9 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 //  return;
 //  char str[20] = {0};
 //  printf("\n------------> Second event\n");
-  getTime( &sTime);
-  HAL_RTC_GetDate(hrtc, &sDate, RTC_FORMAT_BIN);
+  getTime(&sTime);
+
+  saveDateByTimeBKP();
 
   requestDataSensors();
   if(counterForScreens>3)

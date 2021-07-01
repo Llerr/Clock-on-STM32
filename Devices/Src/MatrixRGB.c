@@ -65,16 +65,12 @@ void updateScreen()
 //    if(y%2)
 //    {
     MATRX_GPIO_Port->BSRR = matrix[y][x]; //Первая половина экрана
-//    MATRX_GPIO_Port->BSRR = matrix[y][x]; //Первая половина экрана
     MATRX_GPIO_Port->BSRR = matrix[y+16][x]<<3; //Вторая половина экрана
-//    MATRX_GPIO_Port->BSRR = matrix[y+16][x]<<3; //Вторая половина экрана
 //    }
     tick(MATRX_CLK_Pin);
   }
-  //disable output
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_STB_Pin, GPIO_PIN_SET);
-  // Enable the display
-  HAL_GPIO_WritePin(MATRX_GPIO_Port, MATRX_STB_Pin, GPIO_PIN_RESET);
+  //Отправим строб
+  tick(MATRX_STB_Pin);
   //------------ ШИМ --------------------
   /* Enable the Capture compare channel */
   TIM1->CCR1 = brightPWM; // Установка ШИМ
