@@ -29,4 +29,7 @@ extern Picture picNum2;
 extern Picture picNum3;
 extern Picture picBell;
 
+extern Picture picClock;
+extern Picture picSleep;
+
 #endif /* INC_PICTURES_H_ */

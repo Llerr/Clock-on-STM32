@@ -41,7 +41,7 @@ void AHT10Init(I2C_HandleTypeDef *hi2c)
   AHT10Present = 1;
 //  HAL_I2C_Master_Transmit(hi2c, AHT10_ADRESS, &AHT10_Reset_Cmd, 1, 1000);
   printf("+ AHT10 started!\n");
-  HAL_Delay(30);
+  HAL_Delay(50);
 //  HAL_I2C_Master_Transmit_IT (&hi2c1, AHT10_Adress, uint8_t *pData, uint16_t Size);
   AHT10Reset();
   HAL_Delay(30);

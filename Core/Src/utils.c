@@ -10,11 +10,11 @@
 
 #include "utils.h"
 
-Alarm alarm1;
-Alarm alarm2;
-Alarm alarm3;
-Alarm alarmSleep;
-Alarm alarmEdit;
+Alarm alarm1 = {0};
+Alarm alarm2 = {0};
+Alarm alarm3 = {0};
+Alarm alarmSleep = {0};
+Alarm alarmEdit = {0};
 
 uint8_t alarmOnBit = 7;
 

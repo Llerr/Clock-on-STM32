@@ -51,22 +51,24 @@ enum StateTypeEnum
 enum TextTypeEnum
 {
   txtTime = 0,          ///< 0  для вывода времени
-  txtTemperature,       ///< 1  для вывода температуры
-  txtHumidity,          ///< 2  для вывода влажности
-  txtPressure,          ///< 3  для вывода давления
-  txtDateAdd,           ///< 5  для вывода даты дополнительно
-  txtAlarm,             ///< 6  для вывода будильниика
-  txtDate,              ///< 7  для вывода даты
-  txtWeekDay,           ///< 8  для вывода дня недели
-  txtTimer,             ///< 9  для вывода секундомера
-  txtCountdown,         ///< 10 для вывода таймера
-  txtBrightness,        ///< 11 для вывода яркости
-  txtIllum,             ///< 12 для значения освещёности
-  txtText,              ///< 13 для вывода текста
-  txtMenu,              ///< 14 для вывода меню
-  txtMenuSel,           ///< 15 для вывода меню
-  txtCountdownInfo,     ///< 16 поясняющая надпись таймера
-  txtCountdownFinish,   ///< 17 Надпись FINISH для таймера
+  txtClock,             ///< 1  для отрисовки часов
+  txtSleep,             ///< 2  для отрисовки символа сна
+  txtTemperature,       ///< 3  для вывода температуры
+  txtHumidity,          ///< 4  для вывода влажности
+  txtPressure,          ///< 5  для вывода давления
+  txtDateAdd,           ///< 6  для вывода даты дополнительно
+  txtAlarm,             ///< 7  для вывода будильниика
+  txtDate,              ///< 8  для вывода даты
+  txtWeekDay,           ///< 9  для вывода дня недели
+  txtTimer,             ///< 10 для вывода секундомера
+  txtCountdown,         ///< 11 для вывода таймера
+  txtBrightness,        ///< 12 для вывода яркости
+  txtIllum,             ///< 13 для значения освещёности
+  txtText,              ///< 14 для вывода текста
+  txtMenu,              ///< 15 для вывода меню
+  txtMenuSel,           ///< 16 для вывода меню
+  txtCountdownInfo,     ///< 17 поясняющая надпись таймера
+  txtCountdownFinish,   ///< 18 Надпись FINISH для таймера
   txtAlarmDays,
   txtTimeEdit,
   txtDateEdit,
@@ -171,6 +173,8 @@ extern ScreenDescript screenMain1;
 extern ScreenDescript screenMain2;
 extern ScreenDescript screenMain3;
 extern ScreenDescript screenMain4;
+extern ScreenDescript screenClock;
+extern ScreenDescript screenSleep;
 extern ScreenDescript screenTimer;
 extern ScreenDescript screenDate;
 extern ScreenDescript screenCountdown;

@@ -399,6 +399,18 @@ void drawPressure(TextSets *set, void *dataPtr)      // 3 для вывода д
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void drawClock(TextSets *set, void *dataPtr)
+{
+  drawPicture(set->x, set->y, &picClock);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void drawSleep(TextSets *set, void *dataPtr)
+{
+  drawPicture(set->x, set->y, &picSleep);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void drawDate(TextSets *set, void *dataPtr)          // 5 для вывода даты
 {
   char buff[32];
@@ -588,6 +600,8 @@ TextSets textDateAdd     = {txtDate,        0,    19, YELLOW, BLACK, &pArial_13,
 TextSets textTemperature = {txtTemperature, 0,    19, YELLOW, BLACK, &pArial_13,     drawTemperature,  NULL}; // температура
 TextSets textHumidity    = {txtHumidity,    0,    19, YELLOW, BLACK, &pArial_13,     drawHumidity,     NULL}; // Влажность
 TextSets textPressure    = {txtPressure,    0,    19, YELLOW, BLACK, &pArial_13,     drawPressure,     NULL}; // Давление
+TextSets textClock       = {txtClock,      18,    19, YELLOW, BLACK, &pArial_13,     drawClock,        NULL}; // Будильник
+TextSets textSleep       = {txtSleep,      20,    19, YELLOW, BLACK, &pArial_13,     drawSleep,        NULL}; // Досыпание
 
 TextSets textDate        = {txtTimer,       0,     0,  WHITE, BLACK, &pTimes_18,     drawDate,         NULL}; // Дата
 TextSets textWeekDay     = {txtTimer,       1,    18, YELLOW, BLACK, &pArial_13,     drawWeekDay,      NULL}; // День недели
@@ -638,6 +652,7 @@ TextSets textBlink32        = {txtBlink32,        0, 0,  YELLOW, BLACK, &pTimes_
 
 
 //TextSets *texts = {textTime, textTemperature};
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMain1 =
 {
     stateTime,
@@ -658,6 +673,7 @@ ScreenDescript screenMain1 =
     {&textHour, &textMinute, &textTemperature}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMain2 =
 {
     stateTime,
@@ -678,6 +694,7 @@ ScreenDescript screenMain2 =
     {&textHour, &textMinute, &textHumidity}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMain3 =
 {
     stateTime,
@@ -698,11 +715,13 @@ ScreenDescript screenMain3 =
     {&textHour, &textMinute, &textPressure}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMain4 =
 {
     stateTime,
     &textBlinkTime, //blink
 
+//    &screenClock, // Лево
     &screenMain1, // Лево
     &screenMain3, // Право
     &screenDate,
@@ -718,6 +737,49 @@ ScreenDescript screenMain4 =
     {&textHour, &textMinute, &textDateAdd}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenClock =
+{
+    stateTime,
+    &textBlinkTime, //blink
+
+    &screenSleep, // Лево
+    &screenMain4, // Право
+    &screenDate,
+    &screenBrightness,
+    &screenMain4,
+
+    &screenMenuTime, // кнопка set
+
+    midStub,      // Краткое нажатие
+    showMenu,     // Длинное нажатие
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+    3,
+    {&textHour, &textMinute, &textClock}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenSleep =
+{
+    stateTime,
+    &textBlinkTime, //blink
+
+    &screenMain1, // Лево
+    &screenClock, // Право
+    &screenDate,
+    &screenBrightness,
+    &screenMain4,
+
+    &screenMenuTime, // кнопка set
+
+    midStub,      // Краткое нажатие
+    showMenu,     // Длинное нажатие
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+    3,
+    {&textHour, &textMinute, &textSleep}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
 //ScreenDescript screenTimer =
 //{
 //    stateTimer,
@@ -738,6 +800,7 @@ ScreenDescript screenMain4 =
 //    {&textTimer}
 //};
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenDate =
 {
     stateCountDown,
@@ -759,6 +822,7 @@ ScreenDescript screenDate =
     {&textDate, &textWeekDay}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenCountdown =
 {
     stateCountDown,
@@ -779,6 +843,7 @@ ScreenDescript screenCountdown =
     {&textCountDown, &textCntDownInf}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenCountdownFinish =
 {
     stateCountDownFinish,
@@ -799,6 +864,7 @@ ScreenDescript screenCountdownFinish =
     {&textCountDown}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenCountdownEdit =
 {
     stateCountDownEdit,
@@ -819,6 +885,7 @@ ScreenDescript screenCountdownEdit =
     {&textEdit32, &textCntDownInf}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenBrightness =
 {
     stateBrightness,
@@ -839,6 +906,7 @@ ScreenDescript screenBrightness =
     {&textBrightness, &textIllum}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenBrightnessEdit =
 {
     stateBrightnessEdit,
@@ -859,6 +927,7 @@ ScreenDescript screenBrightnessEdit =
     {&textEditBright32, &textIllum}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuTime =
 {
     stateMenuTime,
@@ -879,6 +948,7 @@ ScreenDescript screenMenuTime =
     {&textMenuTimeSel, &textMenuDate, &textMenuAlr}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuDate =
 {
     stateMenuDate,
@@ -899,6 +969,7 @@ ScreenDescript screenMenuDate =
     {&textMenuTime, &textMenuDateSel, &textMenuAlr}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuAlarm =
 {
     stateMenuAlarm,
@@ -919,6 +990,7 @@ ScreenDescript screenMenuAlarm =
     {&textMenuTime, &textMenuDate, &textMenuAlrSel}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuBrightness =
 {
     stateMenuBrightness,
@@ -939,6 +1011,7 @@ ScreenDescript screenMenuBrightness =
     {&textMenuBrightSel}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuAlr0 =
 {
     stateMenuAlarm1,
@@ -959,6 +1032,7 @@ ScreenDescript screenMenuAlr0 =
     {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuAlr1 =
 {
     stateMenuAlarm2,
@@ -979,6 +1053,7 @@ ScreenDescript screenMenuAlr1 =
     {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuAlr2 =
 {
     stateMenuAlarm3,
@@ -999,6 +1074,7 @@ ScreenDescript screenMenuAlr2 =
     {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenEditTime =
 {
     stateTimeEdit,
@@ -1020,6 +1096,7 @@ ScreenDescript screenEditTime =
 };
 
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenEditAlarm =
 {
     stateAlarmEdit,
@@ -1040,6 +1117,7 @@ ScreenDescript screenEditAlarm =
     {&textTimeEdit, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenEditDate =
 {
     stateDateEdtit,
