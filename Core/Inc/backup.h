@@ -30,5 +30,16 @@ void saveDateBKP(RTC_DateTypeDef *date);
  */
 void loadDateBKP(RTC_DateTypeDef *date);
 
+/**
+ * @fn void saveAlarms()
+ * Сохранить все будильники в регистрах backup domain
+ */
+void saveAlarmsBKP();
+
+/**
+ * @fn void loadAlarms()
+ * Загрузить будильники из регистров backup domain
+ */
+void loadAlarmsBKP();
 
 #endif /* INC_BACKUP_H_ */

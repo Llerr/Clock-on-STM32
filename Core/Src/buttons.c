@@ -16,6 +16,7 @@
 #include "tim.h"
 #include "rtc.h"
 #include "sensors.h"
+#include "utils.h"
 
 //#define BTN_RESET_EXTI_IRQn EXTI0_IRQn
 //#define BTN_SET_EXTI_IRQn EXTI1_IRQn
@@ -44,14 +45,15 @@ uint maxYear = 99;     ///< Максимальное значение года
 uint8_t edit = 0;
 
 
-void getDigits(int8_t num, int8_t *d1, int8_t *d2, int8_t *max);
-
 //----------------------------------------------------------------------------------------------------------------------
 void buttonReceiverMenu()
 {
   printf("buttonReceiverMenu %d\n",GPIO_Press_Pin);
 //  static int screen = 0;/
+  // Сбросим счётчики
   counterForScreens = 0;
+  resetCounter = 0;
+
   clearScreen();
   switch(GPIO_Press_Pin)
   {
@@ -80,7 +82,7 @@ void buttonReceiverMenu()
   case BTN_MID_Pin:
 //    printf("Work, menu %d\n", menu);
 //    screenPrev = screenCur;
-    screenCur->midPress(NULL);
+    screenCur->midPress(screenCur);
     break;
   case BTN_SET_Pin:
     clearMatrix();
@@ -146,12 +148,140 @@ void buttonReceiverTimeEdit()
   textBlinkTimeEdit.x = screenCur->text[0]->x + editNum * digitSize + (editNum/2)*delimSize;
   textBlinkTimeEdit.y = screenCur->text[0]->y;
 
-  printf("Edit num: %d, num %c, ( %d, %d)\n", editNum, editText[editNum], textBlinkTimeEdit.x, textBlinkTimeEdit.y);
+  printf("Edit num: %d, val %c, ( %d, %d)\n", editNum, editText[editNum], textBlinkTimeEdit.x, textBlinkTimeEdit.y);
   blinkText[0] = editText[editNum + editNum/2];
   blinkText[1] = '\0';
   printf("Blink text: (%s)\n", blinkText);
 
   editText[editNum + editNum/2] = 127; // Пробел под цифру
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void buttonReceiverAlarmEdit()
+{
+  int mult[] = {10, 1};
+  uint8_t maxNumber = 3 + 8;
+  static int8_t editNum = 0;
+  int8_t delta = 0;
+
+//  static int8_t timeMax = 0;
+
+  clearScreen();
+//  editVal = (editNum<2)?sTimeEdit.Hours:sTimeEdit.Minutes;
+  printf("buttonReceiverAlarmEdit %d\n",GPIO_Press_Pin);
+
+  // Если номер редактируемой цифры меньше 2, то правим часы, иначе минуты
+  //  static int screen = 0;/
+  switch(GPIO_Press_Pin)
+  {
+  case BTN_LEFT_Pin:
+    --editNum;
+    if(editNum < 0) editNum = maxNumber;
+    break;
+  case BTN_RIGHT_Pin:
+    ++editNum;
+    if(editNum > maxNumber) editNum = 0;
+    break;
+  case BTN_UP_Pin:
+    delta = mult[editNum%2];
+    break;
+  case BTN_DOWN_Pin:
+    delta = -mult[editNum%2];
+    break;
+  case BTN_MID_Pin:
+    screenCur->midPress(NULL);
+    return;
+    break;
+  }
+  printf("Time: %02d:%02d, num:%d - edit val: %d\n", alarmEdit.alarmTime.Hours, alarmEdit.alarmTime.Minutes, editNum, delta);
+
+  sprintf(editText, "%02d:%02d", alarmEdit.alarmTime.Hours, alarmEdit.alarmTime.Minutes);
+  sprintf(editTextDays, "MTWTF");
+  sprintf(editTextOffDays, "SS");
+  sprintf(editTextAlarmOn, "1");
+
+  if(editNum < 4) // Правим время
+  {
+    screenCur->blink = &textBlinkTimeEdit;
+    if(editNum<2)//Правим часы
+    {
+      alarmEdit.alarmTime.Hours += delta;
+      alarmEdit.alarmTime.Hours -= (alarmEdit.alarmTime.Hours > maxHours)?delta:0;
+    }
+    else  //Правим минуты
+    {
+      alarmEdit.alarmTime.Minutes += delta;
+      alarmEdit.alarmTime.Minutes -= (alarmEdit.alarmTime.Minutes > maxMinutes)?delta:0;
+    }
+    // Продублируем, для отображения изменений.
+    sprintf(editText, "%02d:%02d", alarmEdit.alarmTime.Hours, alarmEdit.alarmTime.Minutes);
+
+    uint8_t delimSize = UB_Font_WidthPChar16(':', screenCur->text[0]->font);
+    uint8_t digitSize = UB_Font_WidthPChar16('1', screenCur->text[0]->font); // Пока все цифры одной ширины
+
+    textBlinkTimeEdit.x = screenCur->text[0]->x + editNum * digitSize + (editNum/2)*delimSize;
+    textBlinkTimeEdit.y = screenCur->text[0]->y;
+
+    printf("Edit num: %d, val %c, ( %d, %d)\n", editNum, editText[editNum], textBlinkTimeEdit.x, textBlinkTimeEdit.y);
+    blinkText[0] = editText[editNum + editNum/2];
+    blinkText[1] = '\0';
+
+    editText[editNum + editNum/2] = 127; // Пробел под цифру
+  }
+  else if(editNum < 4 + 5) // Правим будни
+  {
+    if(delta > 0)
+      alarmSetDay(&alarmEdit, editNum - 3);
+    else if(delta < 0)
+      alarmResetDay(&alarmEdit, editNum - 3);
+
+    screenCur->blink = &textBlinkDays;
+    textBlinkDays.x = screenCur->text[1]->x + (editNum-4) * 7;
+    textBlinkDays.y = screenCur->text[1]->y;
+
+    blinkText[0] = editTextDays[editNum - 4];
+    blinkText[1] = '\0';
+
+    editTextDays[editNum - 4] = ' '; //Шрифт моноширинный
+    printf("Work day\n");
+  }
+  else if(editNum < 4 + 5 + 2) // Правим выходные
+  {
+    if(delta > 0)
+      alarmSetDay(&alarmEdit, (editNum - 3)%7);
+    else if(delta < 0)
+      alarmResetDay(&alarmEdit, (editNum - 3)%7);
+
+    screenCur->blink = &textBlinkOffDays;
+    textBlinkOffDays.x = screenCur->text[2]->x + (editNum-4-5) * 7;
+    textBlinkOffDays.y = screenCur->text[2]->y;
+
+    blinkText[0] = 'S';
+    blinkText[1] = '\0';
+
+    editTextOffDays[editNum - 4 - 5] = ' '; //Шрифт моноширинный
+    printf("Off day\n");
+  }
+  else  // Правим однократный будильник
+  {
+    if(delta > 0)
+      alarmSetState(&alarmEdit, 1);
+    else if(delta < 0)
+      alarmSetState(&alarmEdit, 0);
+
+    screenCur->blink = &textBlinkAlarmOn;
+    textBlinkAlarmOn.x = screenCur->text[3]->x;
+    textBlinkAlarmOn.y = screenCur->text[3]->y;
+
+    blinkText[0] = 'O';
+    blinkText[1] = 'n';
+    blinkText[2] = '\0';
+
+    editTextAlarmOn[0] = ' ';
+    printf("1 day\n");
+  }
+  drawBars(&alarmEdit);
+  printf("Edit num: %d, Blink text: (%s)\n", editNum, blinkText);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -215,7 +345,76 @@ void buttonReceiverDateEdit()
   textBlink32.x = screenCur->text[0]->x + editNum * digitSize + (editNum/2)*delimSize;
   textBlink32.y = screenCur->text[0]->y;
 
-  printf("Edit num: %d, num %c, ( %d, %d)\n", editNum, editText[editNum], textBlink32.x, textBlink32.y);
+  printf("Edit num: %d, val %c, ( %d, %d)\n", editNum, editText[editNum], textBlink32.x, textBlink32.y);
+  blinkText[0] = editText[editNum + editNum/2];
+  blinkText[1] = '\0';
+  printf("Blink text: (%s)\n", blinkText);
+  editText[editNum + editNum/2] = 127; // Пробел под цифру
+  clearScreen();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void buttonReceiverCountdownEdit()
+{
+  int mult[] = {10, 1};
+  uint8_t maxNumber = 5;
+  static int8_t editNum = 0;
+  int8_t delta = 0;
+//  static int8_t timeMax = 0;
+
+  clearScreen();
+//  editVal = (editNum<2)?sTimeEdit.Hours:sTimeEdit.Minutes;
+  printf("--- buttonReceiverCountdownEdit %d ---\n",GPIO_Press_Pin);
+
+  // Если номер редактируемой цифры меньше 2, то правим часы, иначе минуты
+  //  static int screen = 0;/
+  switch(GPIO_Press_Pin)
+  {
+  case BTN_LEFT_Pin:
+    --editNum;
+    if(editNum < 0) editNum = maxNumber;
+    break;
+  case BTN_RIGHT_Pin:
+    ++editNum;
+    if(editNum > maxNumber) editNum = 0;
+    break;
+  case BTN_UP_Pin:
+    delta = mult[editNum%2];
+    break;
+  case BTN_DOWN_Pin:
+    delta = -mult[editNum%2];
+    break;
+  case BTN_MID_Pin:
+    screenCur->midPress(NULL);
+    break;
+  }
+//  printf("Time: %02d:%02d, num:%d - edit val: %d\n", sTimeEdit.Hours, sTimeEdit.Minutes, editNum, delta);
+
+  if(editNum<2) //Правим часы
+  {
+    sCountdownEdit.Hours += delta;
+    sCountdownEdit.Hours -= (sCountdownEdit.Hours > 99)?delta:0;
+  }
+  else if(editNum<4) //Правим минуты
+  {
+    sCountdownEdit.Minutes += delta;
+    sCountdownEdit.Minutes -= (sCountdownEdit.Minutes > maxMinutes)?delta:0;
+  }
+  else // Правим секунды
+  {
+    sCountdownEdit.Seconds += delta;
+    sCountdownEdit.Seconds -= (sCountdownEdit.Seconds > maxSeconds)?delta:0;
+ }
+
+  sprintf(editText, "%02d:%02d:%02d", sCountdownEdit.Hours, sCountdownEdit.Minutes, sCountdownEdit.Seconds);
+
+  uint8_t delimSize = UB_Font_WidthPChar32(':', screenCur->text[0]->font);
+  uint8_t digitSize = UB_Font_WidthPChar32('1', screenCur->text[0]->font); // Пока все цифры одной ширины
+
+  textBlink32.x = screenCur->text[0]->x + editNum * digitSize + (editNum/2)*delimSize;
+  textBlink32.y = screenCur->text[0]->y;
+
+  printf("Edit num: %d, val %c, ( %d, %d)\n", editNum, editText[editNum], textBlink32.x, textBlink32.y);
   blinkText[0] = editText[editNum + editNum/2];
   blinkText[1] = '\0';
   printf("Blink text: (%s)\n", blinkText);
@@ -253,8 +452,8 @@ void buttonReceiverBrightEdit()
   }
 //  brightness
   uint8_t digitSize = UB_Font_WidthPChar32('1', screenCur->text[0]->font); // Пока все цифры одной ширины
-  textBlink32.x = textEdit32.x + (editNum) * digitSize;
-  textBlink32.y = textEdit32.y;
+  textBlink32.x = textEditBright32.x + (editNum) * digitSize;
+  textBlink32.y = textEditBright32.y;
 
 //  illumination =  (3-editNum)*1000 +  textBlink32.x*100 + textBlink32.y;
 
@@ -271,22 +470,6 @@ void buttonReceiverBrightEdit()
   clearScreen();
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-void getDigits(int8_t num, int8_t *d1, int8_t *d2, int8_t *max)
-{
-  if(num<2)//Правим часы
-  {
-    *d1 = sTimeEdit.Hours/10;
-    *d2 = sTimeEdit.Hours%10;
-    *max = 23;
-  }
-  else //Правим минуты
-  {
-    *d1 = sTimeEdit.Minutes/10;
-    *d2 = sTimeEdit.Minutes%10;
-    *max = 59;
-  }
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 void clickButton()

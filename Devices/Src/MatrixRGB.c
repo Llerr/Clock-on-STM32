@@ -11,6 +11,7 @@
 #include "MatrixRGB.h"
 #include "Screens.h"
 #include "tim.h"
+#include "pictures.h"
 
 uint8_t matrix[MATRIX_HEIGHT][MATRIX_WIDTH];
 
@@ -89,6 +90,31 @@ void drawPoint(int x, int y, uint16_t color)
     return;
   if(TRANSPARENT == color) return;
   matrix[y][x] = color;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void drawPicture(int x, int y, Picture *pic)
+{
+  for(int sy = 0; sy < pic->heght; ++sy)
+    for(int sx = 0; sx < pic->width; ++sx)
+    {
+      drawPoint(x+sx, y+sy, pic->data[sy*pic->width + sx]);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void drawRect(const int x1, const int y1, const int x2, const int y2, uint16_t lineColor, uint16_t fillColor)
+{
+  uint16_t color;
+  for(int y = y1; y <= y2; ++y)
+    for(int x = x1; x <= x2; ++x)
+    {
+      if(x1 == x || x2 == x || y1 == y || y2 == y)
+        color = lineColor;
+      else
+        color = fillColor;
+      drawPoint(x, y, color);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------

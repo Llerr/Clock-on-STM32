@@ -37,27 +37,41 @@ enum StateTypeEnum
   stateMenuAlarm3,
 //  stateMenuAlarm,
 
+  stateCountDownFinish,
+
+  stateBrightnessEdit,
+  stateCountDownEdit,
   stateTimeEdit,
+  stateAlarmEdit,
+//  stateTimeEdit,
+//  stateTimeEdit,
   stateDateEdtit,
 };
 
 enum TextTypeEnum
 {
-  txtTemperature=0, ///< 1  для вывода температуры
-  txtHumidity,      ///< 2  для вывода влажности
-  txtPressure,      ///< 3  для вывода давления
-  txtTime,          ///< 4  для вывода времени
-  txtDate,          ///< 5  для вывода даты
-  txtAlarm,         ///< 6  для вывода будильниика
-  txtTimer,         ///< 7  для вывода секундомера
-  txtCountdown,     ///< 8  для вывода таймера
-  txtBrightness,    ///< 9  для вывода яркости
-  txtLux,           ///< 10 для значения освещёности
-  txtText,          ///< 11 для вывода текста
-  txtMenu,          ///< 12 для вывода меню
-  txtMenuSel,       ///< 13 для вывода меню
+  txtTime = 0,          ///< 0  для вывода времени
+  txtTemperature,       ///< 1  для вывода температуры
+  txtHumidity,          ///< 2  для вывода влажности
+  txtPressure,          ///< 3  для вывода давления
+  txtDateAdd,           ///< 5  для вывода даты дополнительно
+  txtAlarm,             ///< 6  для вывода будильниика
+  txtDate,              ///< 7  для вывода даты
+  txtWeekDay,           ///< 8  для вывода дня недели
+  txtTimer,             ///< 9  для вывода секундомера
+  txtCountdown,         ///< 10 для вывода таймера
+  txtBrightness,        ///< 11 для вывода яркости
+  txtIllum,             ///< 12 для значения освещёности
+  txtText,              ///< 13 для вывода текста
+  txtMenu,              ///< 14 для вывода меню
+  txtMenuSel,           ///< 15 для вывода меню
+  txtCountdownInfo,     ///< 16 поясняющая надпись таймера
+  txtCountdownFinish,   ///< 17 Надпись FINISH для таймера
+  txtAlarmDays,
   txtTimeEdit,
   txtDateEdit,
+  txtFinish,
+  txtEditBright32,
   txtEdit32,
   txtBlink32,
   txtEnumLength
@@ -103,10 +117,16 @@ typedef struct ScreenDescript_t
 } ScreenDescript;
 
 extern int curBright; ///< Текущая яркость
+extern uint8_t counterForScreens; ///< Счётчик для переключения экранов
+extern uint8_t resetCounter;      ///< Счётчик для перехода к начальному режиму (Отображение времени)
 
 extern int menu;      ///< Текущий пенкт меню
 extern char editMode; ///< Флаг редактирования
 extern char editText[32]; ///< Текст для редактирования
+extern char editTextDays[32]; ///< Текст для редактирования рабочих дней
+extern char editTextOffDays[32]; ///< Текст для редактирования выходных
+extern char editTextAlarmOn[32]; ///< Текст для редактирования одиночного будильника
+
 extern char blinkText[32]; ///< Текст для мигания
 
 /**
@@ -125,9 +145,10 @@ void setBrightness();
  * Отрасовка экрана
  */
 void drawScreen();
+void screenSecondCallback();
 void clearScreen();
 void nextScreenMode();
-
+void drawBars();
 /**
  * Функция переодически рисующая то цветом фона то основным.
  */
@@ -138,15 +159,23 @@ extern ScreenDescript *screenPrev;  ///< Предыдущий экран
 
 extern TextSets textBrightness;
 extern TextSets textBlinkTimeEdit;
+extern TextSets textEditBright32;
 extern TextSets textEdit32;
 extern TextSets textBlink32;
+extern TextSets textAlarmDaysBlink;
+extern TextSets textBlinkDays; // Рабочий день недели, для мигания
+extern TextSets textBlinkOffDays; // Выходной день недели, для мигания
+extern TextSets textBlinkAlarmOn; // Одиночный будильник, для мигания
 
 extern ScreenDescript screenMain1;
 extern ScreenDescript screenMain2;
 extern ScreenDescript screenMain3;
 extern ScreenDescript screenMain4;
 extern ScreenDescript screenTimer;
+extern ScreenDescript screenDate;
 extern ScreenDescript screenCountdown;
+extern ScreenDescript screenCountdownFinish;
+extern ScreenDescript screenCountdownEdit;
 extern ScreenDescript screenBrightness;
 extern ScreenDescript screenBrightnessEdit;
 extern ScreenDescript screenMenuTime;
@@ -158,6 +187,7 @@ extern ScreenDescript screenMenuAlr1;
 extern ScreenDescript screenMenuAlr2;
 
 extern ScreenDescript screenEditTime;
+extern ScreenDescript screenEditAlarm;
 extern ScreenDescript screenEditDate;
 
 

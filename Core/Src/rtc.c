@@ -32,13 +32,14 @@
 #include "backup.h"
 
 RTC_TimeTypeDef sTime = {0};
+RTC_TimeTypeDef sCountdown = {0};
+RTC_TimeTypeDef sCountdownEdit = {0};
 RTC_DateTypeDef sDate = {0};
 RTC_AlarmTypeDef sAlarm = {0}; // структура будильника
 
 RTC_TimeTypeDef sTimeEdit; ///< Время для редактирования
 RTC_DateTypeDef sDateEdit; ///< Дата для редактирования
 
-uint8_t counterForScreens = 0;
 /* USER CODE END 0 */
 
 RTC_HandleTypeDef hrtc;
@@ -184,12 +185,9 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
   saveDateByTimeBKP();
 
   requestDataSensors();
-  if(counterForScreens>3)
-  {
-    counterForScreens = 0;
-    nextScreenMode();
-  }
-  ++counterForScreens;
+
+  screenSecondCallback();
+
   drawScreen();
 //  printf("T: %d, H: %d, P: %d\n", temperature, humidity, pressure);
 }

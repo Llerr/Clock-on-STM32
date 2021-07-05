@@ -19,7 +19,7 @@ typedef struct UB_Font_t
   uint16_t width;        // Ширина символа (в пикселях)
   uint16_t height;       // Высота символа (в пикселях)
   const uint16_t *table; // Таблица с данными
-}UB_Font;
+} UB_Font;
 
 
 //--------------------------------------------------------------
@@ -30,29 +30,31 @@ typedef struct UB_Font32_t
   uint16_t width;        // Ширина символа (в пикселях)
   uint16_t height;       // Высота символа (в пикселях)
   const uint32_t *table; // Таблица с данными
-}UB_Font32;
+} UB_Font32;
 
 
 //--------------------------------------------------------------
 // Структура пропорционального шрифта (не более 16 пикселей шириной)
 //--------------------------------------------------------------
-typedef struct UB_pFont16_t {
+typedef struct UB_pFont16_t
+{
   uint16_t height;       // Высота символа (в пикселях)
   uint16_t first_char;   // Первый символ  (Ascii код)
   uint16_t last_char;    // Последний символ (Ascii код)
   const uint16_t *table; // Таблица с данными
-}UB_pFont;
+} UB_pFont;
 
 
 //--------------------------------------------------------------
 // Структура пропорционального шрифта (не более 32 пикселей шириной)
 //--------------------------------------------------------------
-typedef struct UB_pFont32_t {
+typedef struct UB_pFont32_t
+{
   uint16_t height;       // Высота символа (в пикселях)
   uint16_t first_char;   // Первый символ  (Ascii код)
   uint16_t last_char;    // Последний символ (Ascii код)
   const uint32_t *table; // Таблица с данными
-}UB_pFont32;
+} UB_pFont32;
 
 
 //--------------------------------------------------------------
@@ -62,15 +64,15 @@ typedef struct UB_pFont32_t {
 // которые необходимо подключить в CooCox-IDE
 //--------------------------------------------------------------
 // Символы одной ширины
-extern UB_Font Font_5x8;
-extern UB_Font Arial_7x10; 
-extern UB_Font Arial_10x15;
-extern UB_Font Arial_11x18;
-extern UB_Font Arial_13x19;
-extern UB_Font Arial_14x22;
-extern UB_Font Arial_16x25;
-extern UB_Font32 Arial_18x27;
+#include  "Arial_7x10.h"
+//extern UB_Font Arial_10x15;
+//extern UB_Font Arial_11x18;
+//extern UB_Font Arial_13x19;
+//extern UB_Font Arial_14x22;
+//extern UB_Font Arial_16x25;
+//#include "Arial_18x27.h"
 // Пропорциональные символы
+#include "Font_5x8.h"
 extern UB_pFont Arial_8x13;
 extern UB_pFont pLcd_4x6;
 extern UB_pFont pArial_10;
@@ -91,7 +93,7 @@ extern UB_pFont32 pTimes_18;
 //--------------------------------------------------------------
 // Глобальная функция
 //--------------------------------------------------------------
-uint16_t  UB_Font_WidthPChar16(uint8_t ascii, UB_pFont *font);
+uint16_t UB_Font_WidthPChar16(uint8_t ascii, UB_pFont *font);
 uint16_t UB_Font_DrawPChar16(int16_t x, int16_t y, uint8_t ascii, UB_pFont *font, uint16_t fg, uint16_t bg);
 uint16_t UB_Font_DrawPString16(int16_t x, int16_t y,char *ptr, UB_pFont *font, uint16_t fg, uint16_t bg);
 

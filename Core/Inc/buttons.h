@@ -25,7 +25,9 @@ extern int8_t editNum;
 
 void buttonReceiverMenu();
 void buttonReceiverTimeEdit();
+void buttonReceiverAlarmEdit();
 void buttonReceiverDateEdit();
+void buttonReceiverCountdownEdit();
 void buttonReceiverBrightEdit();
 
 void clickButton();

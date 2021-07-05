@@ -137,7 +137,7 @@ int main(void)
 //  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
   puts(" "); // Для вывода первого символа, чтобы не съедало
-//  HAL_Delay(500);
+  HAL_Delay(100);
   initButtons();
   initSensors();
   initScreens();
@@ -165,6 +165,7 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 //  saveDateBKP(&sDateEdit);
   loadDateBKP(&sDate);
+  loadAlarmsBKP();
   setDate(&sDate);
 
   puts("Enter to loop");
