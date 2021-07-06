@@ -12,7 +12,7 @@
 void saveDateByTimeBKP()
 {
   // Раз в день сохраним.
-  if( 0 == sTime.Hours && 0 == sTime.Minutes && 1 == sTime.Seconds )
+  if( 0 == sTime.Minutes && 0 == sTime.Hours && 1 == sTime.Seconds )
   {
     getDate(&sDate);
     printf("Get date: %02d.%02d.%02d\n", sDate.Date, sDate.Month, sDate.Year);
@@ -62,6 +62,12 @@ void saveAlarmsBKP()
 
   saveVal = alarm3.weekDay;
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR7, saveVal);
+
+  alarmOnCount = 0;
+
+  alarmOnCount += alarm1.on;
+  alarmOnCount += alarm2.on;
+  alarmOnCount += alarm3.on;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -91,5 +97,11 @@ void loadAlarmsBKP()
   alarm1.on = (alarm1.weekDay & (1 << alarmOnBit))?1:0;
   alarm2.on = (alarm2.weekDay & (1 << alarmOnBit))?1:0;
   alarm3.on = (alarm3.weekDay & (1 << alarmOnBit))?1:0;
+
+  alarmOnCount = 0;
+
+  alarmOnCount += alarm1.on;
+  alarmOnCount += alarm2.on;
+  alarmOnCount += alarm3.on;
 }
 

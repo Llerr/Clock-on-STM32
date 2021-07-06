@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #include "rtc.h"
+#include "Screens.h"
 
 #include "utils.h"
 
@@ -17,6 +18,7 @@ Alarm alarmSleep = {0};
 Alarm alarmEdit = {0};
 
 uint8_t alarmOnBit = 7;
+uint8_t alarmOnCount = 0;
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -83,6 +85,20 @@ uint8_t decreaseTime(RTC_TimeTypeDef *time)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void addTime(RTC_TimeTypeDef *time, uint16_t sec)
+{
+  uint32_t lineTime =  (uint32_t)(((uint32_t)time->Hours * 3600U) + \
+                      ((uint32_t)time->Minutes * 60U) + \
+                      ((uint32_t)time->Seconds));
+
+  lineTime += sec;
+
+  time->Hours = (lineTime / 3600U)%24;
+  time->Minutes  = (uint8_t)((lineTime % 3600U) / 60U);
+  time->Seconds  = (uint8_t)((lineTime % 3600U) % 60U);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 uint8_t timeIsEqual(const RTC_TimeTypeDef *time1, const RTC_TimeTypeDef *time2)
 {
   // Сначала сравним минуты, они совпадут только 24 раза в сутки.
@@ -110,9 +126,12 @@ void alarmResetDay(Alarm *alrm, WeekDays day)
 //----------------------------------------------------------------------------------------------------------------------
 void alarmSetState(Alarm *alrm, uint8_t on)
 {
-  alrm->on = on;
-  alrm->weekDay = alrm->weekDay & ~(1 << alarmOnBit); // Сбросим флаг
-  alrm->weekDay = alrm->weekDay |  (on << alarmOnBit); // Установим флаг
+  if(alrm->on != on)
+  {
+    alrm->on = on;
+    alrm->weekDay = alrm->weekDay & ~(1 << alarmOnBit); // Сбросим флаг
+    alrm->weekDay = alrm->weekDay |  (on << alarmOnBit); // Установим флаг
+  }
   printf("Alarm on: %d, Weekdays alarm 0x%X\n", on, alrm->weekDay);
 }
 
@@ -126,7 +145,10 @@ uint8_t alarmOneShort(Alarm *alrm)
 void alarmOneShortOff(Alarm *alrm)
 {
   if(alarmOneShort(alrm))
+  {
     alarmSetState(alrm, 0);
+    saveAlarmsBKP(); // Сохраним состояние
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -140,9 +162,11 @@ uint8_t alaramIsOn(Alarm *alrm)
       if(alarmCheckDay(alrm, sDate.WeekDay) || alarmOneShort(alrm) ) // Срабатывает в этот день или один раз
       {
         ret = 1;
+        alarmOneShortOff(alrm); // Выключим одиночный
       }
     }
   }
   return ret;
 }
+
 

@@ -24,6 +24,8 @@ extern Alarm alarm3;
 extern Alarm alarmSleep;
 extern Alarm alarmEdit;
 
+extern uint8_t alarmOnCount; ///< Количество включёных таймеров
+
 typedef enum WeekDays_t
 {
   Sunday = 0,
@@ -60,6 +62,14 @@ uint8_t timeIsZero(RTC_TimeTypeDef *time);
 uint8_t decreaseTime(RTC_TimeTypeDef *time);
 
 /**
+ * @fn void addTime(RTC_TimeTypeDef*, uint16_t)
+ * Добавление sec секунд ко времени
+ * @param time время, к которому добавляем
+ * @param sec добавляемые секунды
+ */
+void addTime(RTC_TimeTypeDef *time, uint16_t sec);
+
+/**
  * @fn uint8_t timeIsEqual(RTC_TimeTypeDef*, RTC_TimeTypeDef*)
  * Сравнить время
  * @param time1 время для сравнения
@@ -69,7 +79,7 @@ uint8_t decreaseTime(RTC_TimeTypeDef *time);
 uint8_t timeIsEqual(const RTC_TimeTypeDef *time1, const RTC_TimeTypeDef *time2);
 
 /**
- * @fn uint8_t alarmOneShort(Alarm*)
+ * @fn uint8_t alarmCheckDay(Alarm *alrm, WeekDays day)
  * Проверка на срабатывание будильника в день недели
  * @param alrm будильник для проверки
  * @return будильник для однократного срабатывания
@@ -106,5 +116,6 @@ void alarmOneShortOff(Alarm *alrm);
  * @return 1 если время срабатывания будильника пришло
  */
 uint8_t alaramIsOn(Alarm *alrm);
+
 
 #endif /* INC_UTILS_H_ */

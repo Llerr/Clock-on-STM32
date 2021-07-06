@@ -94,6 +94,7 @@ void screenSecondCallback()
     nextScreenMode();
   }
   ++counterForScreens;
+  checkAlarms();
 
 }
 
@@ -114,7 +115,9 @@ void nextScreenMode()
   case stateTime:
     screenCur = screenCur->nextMode;
     break;
-  // В режимах редактирования, ничего не делаем
+  // В режимах редактирования, ничего не делаем, а так же в экранах будильника
+  case stateClock:
+  case stateSleep:
   case stateAlarmEdit:
   case stateBrightnessEdit:
   case stateCountDownFinish:
@@ -154,6 +157,54 @@ void blink(uint8_t change)
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
+void sleepOn()
+{
+  printf("Sleep On\n");
+  screenCur = &screenSleep; // Переключимся на экран сна
+  alarmSetState(&alarmSleep, 1); //включим сон
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void alarmOff()
+{
+  printf("Alarm Off\n");
+  screenCur = &screenMain1; // Переключимся на основное время
+  alarmSetState(&alarmSleep, 0); //отключим сон
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+#define SLEEP_TIME (10*1)
+void alarmOn(Alarm *alrm)
+{
+  printf("Alarm On\n");
+  screenCur = &screenClock;
+  alarmSleep.alarmTime = alrm->alarmTime;
+  addTime(&alarmSleep.alarmTime, SLEEP_TIME);
+  clearScreen();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void checkAlarms()
+{
+  if(alaramIsOn(&alarm1))
+  {
+    alarmOn(&alarm1);
+  }
+  if(alaramIsOn(&alarm2))
+  {
+    alarmOn(&alarm2);
+  }
+  if(alaramIsOn(&alarm3))
+  {
+    alarmOn(&alarm3);
+  }
+  if(alaramIsOn(&alarmSleep))
+  {
+    alarmOn(&alarmSleep);
+  }
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 void setBrightness()
 {
@@ -354,6 +405,13 @@ void drawMinute(TextSets *set, void *dataPtr)          // 4 для вывода 
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void drawBellOn(TextSets *set, void *dataPtr)
+{
+  if(alarmOnCount)
+    drawPicture(set->x, set->y, &picBell);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void drawDateAdd(TextSets *set, void *dataPtr)          // 5 для вывода даты
 {
   char buff[32];
@@ -367,9 +425,9 @@ void drawTemperature(TextSets *set, void *dataPtr)
 {
   char buff[32];
   if (temperature > -300)
-    sprintf(buff, " %d.%dC     ", temperature / 100, temperature % 100);
+    sprintf(buff, " %d.%d`C      ", temperature / 100, temperature % 100);
   else
-    sprintf(buff, " --.--C       ");
+    sprintf(buff, " --.--`C        ");
   drawPicture(set->x, set->y, &picTemperature);
   UB_Font_DrawPString16(set->x + picTemperature.width, set->y + 2, buff, set->font, set->colorFont, set->colorBack);
 }
@@ -596,6 +654,7 @@ TextSets textBlinkTime =   {txtTime, 27,   -5, WHITE, BLACK, &pDigital_7_28, dra
 
 TextSets textHour        = {txtTime,        1,    -5,  WHITE, BLACK, &pDigital_7_28, drawHour,         NULL}; // Время
 TextSets textMinute      = {txtTime,        27+4, -5,  WHITE, BLACK, &pDigital_7_28, drawMinute,       NULL}; // Время
+TextSets textBellOn      = {txtTime,        57,    1,  WHITE, BLACK, &pDigital_7_28, drawBellOn,       NULL}; // Время
 TextSets textDateAdd     = {txtDate,        0,    19, YELLOW, BLACK, &pArial_13,     drawDateAdd,      NULL}; // Дата дополнительным полем
 TextSets textTemperature = {txtTemperature, 0,    19, YELLOW, BLACK, &pArial_13,     drawTemperature,  NULL}; // температура
 TextSets textHumidity    = {txtHumidity,    0,    19, YELLOW, BLACK, &pArial_13,     drawHumidity,     NULL}; // Влажность
@@ -606,16 +665,16 @@ TextSets textSleep       = {txtSleep,      20,    19, YELLOW, BLACK, &pArial_13,
 TextSets textDate        = {txtTimer,       0,     0,  WHITE, BLACK, &pTimes_18,     drawDate,         NULL}; // Дата
 TextSets textWeekDay     = {txtTimer,       1,    18, YELLOW, BLACK, &pArial_13,     drawWeekDay,      NULL}; // День недели
 
-TextSets textAlarm            = {txtTime,        0,       -5,  WHITE, BLACK, &pDigital_7_28, drawAlarm,         NULL}; // Время
+TextSets textAlarm            = {txtTime,        0,       -5, WHITE,  BLACK, &pDigital_7_28, drawAlarm,         NULL}; // Время
 TextSets textAlarmDays        = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawAlarmDays,     NULL}; // Список дней недели
 TextSets textAlarmOffDays     = {txtAlarmDays,   0+7*5,   23, YELLOW, BLACK, &Arial_7x10,    drawAlarmOffDays,  NULL}; // Список дней недели
-TextSets textAlarmOn          = {txtAlarmDays,   0+7*7+1, 23, YELLOW, BLACK, &Arial_7x10,    drawAlarmOn,    NULL}; // Список дней недели
-TextSets textAlarmDaysEdit    = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawEdit,     editTextDays}; // Список дней недели для редактирования
-TextSets textAlarmOffDaysEdit = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawEdit,     editTextOffDays}; // Список дней недели для редактирования
-TextSets textAlarmOnEdit      = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawEdit,     editTextAlarmOn}; // Список дней недели для редактирования
-TextSets textBlinkDays        = {txtAlarmDays,   0,       23,  GREEN, BLACK, &Arial_7x10,    drawBlink,     blinkText}; // Рабочий день недели, для мигания
-TextSets textBlinkOffDays     = {txtAlarmDays,   0+7*5,   23,    RED, BLACK, &Arial_7x10,    drawBlink,     blinkText}; // Выходной день недели, для мигания
-TextSets textBlinkAlarmOn     = {txtAlarmDays,   0+7*7+1, 23,  WHITE, BLACK, &Arial_7x10,    drawBlink,     blinkText}; // Одиночный будильник, для мигания
+TextSets textAlarmOn          = {txtAlarmDays,   0+7*7+1, 23, YELLOW, BLACK, &Arial_7x10,    drawAlarmOn,       NULL}; // Список дней недели
+TextSets textAlarmDaysEdit    = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawEdit,          editTextDays}; // Список дней недели для редактирования
+TextSets textAlarmOffDaysEdit = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawEdit,          editTextOffDays}; // Список дней недели для редактирования
+TextSets textAlarmOnEdit      = {txtAlarmDays,   0,       23, YELLOW, BLACK, &Arial_7x10,    drawEdit,          editTextAlarmOn}; // Список дней недели для редактирования
+TextSets textBlinkDays        = {txtAlarmDays,   0,       23, GREEN,  BLACK, &Arial_7x10,    drawBlink,         blinkText}; // Рабочий день недели, для мигания
+TextSets textBlinkOffDays     = {txtAlarmDays,   0+7*5,   23, RED,    BLACK, &Arial_7x10,    drawBlink,         blinkText}; // Выходной день недели, для мигания
+TextSets textBlinkAlarmOn     = {txtAlarmDays,   0+7*7+1, 23, WHITE,  BLACK, &Arial_7x10,    drawBlink,         blinkText}; // Одиночный будильник, для мигания
 
 TextSets textTimer       = {txtTimer,       0,     0, YELLOW, BLACK, &pComic_16,     drawTimer,        NULL};
 TextSets textCountDown   = {txtCountdown,   0,     0, YELLOW, BLACK, &pTimes_18,     drawCountdown,    NULL};
@@ -669,8 +728,8 @@ ScreenDescript screenMain1 =
     midStub,      // Краткое нажатие
     showMenu,
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    3,
-    {&textHour, &textMinute, &textTemperature}
+    4,
+    {&textHour, &textMinute, &textTemperature, &textBellOn}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -690,8 +749,8 @@ ScreenDescript screenMain2 =
     midStub,      // Краткое нажатие
     showMenu,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    3,
-    {&textHour, &textMinute, &textHumidity}
+    4,
+    {&textHour, &textMinute, &textHumidity, &textBellOn}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -711,8 +770,8 @@ ScreenDescript screenMain3 =
     midStub,      // Краткое нажатие
     showMenu,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    3,
-    {&textHour, &textMinute, &textPressure}
+    4,
+    {&textHour, &textMinute, &textPressure, &textBellOn}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -733,26 +792,26 @@ ScreenDescript screenMain4 =
     midStub,      // Краткое нажатие
     showMenu,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    3,
-    {&textHour, &textMinute, &textDateAdd}
+    4,
+    {&textHour, &textMinute, &textDateAdd, &textBellOn}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenClock =
 {
-    stateTime,
+    stateClock,
     &textBlinkTime, //blink
 
-    &screenSleep, // Лево
-    &screenMain4, // Право
-    &screenDate,
-    &screenBrightness,
-    &screenMain4,
+    &screenClock, // Лево
+    &screenClock, // Право
+    &screenClock,
+    &screenClock,
+    &screenClock,
 
-    &screenMenuTime, // кнопка set
+    &screenClock, // кнопка set
 
-    midStub,      // Краткое нажатие
-    showMenu,     // Длинное нажатие
+    sleepOn,      // Краткое нажатие
+    alarmOff,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textHour, &textMinute, &textClock}
@@ -761,19 +820,19 @@ ScreenDescript screenClock =
 //----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenSleep =
 {
-    stateTime,
+    stateSleep,
     &textBlinkTime, //blink
 
-    &screenMain1, // Лево
-    &screenClock, // Право
-    &screenDate,
-    &screenBrightness,
-    &screenMain4,
+    &screenSleep, // Лево
+    &screenSleep, // Право
+    &screenSleep,
+    &screenSleep,
+    &screenSleep,
 
-    &screenMenuTime, // кнопка set
+    &screenSleep, // кнопка set
 
     midStub,      // Краткое нажатие
-    showMenu,     // Длинное нажатие
+    alarmOff,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     3,
     {&textHour, &textMinute, &textSleep}

@@ -24,6 +24,8 @@
 enum StateTypeEnum
 {
   stateTime,
+  stateClock,
+  stateSleep,
   stateTimer,
   stateCountDown,
   stateBrightness,
@@ -155,6 +157,13 @@ void drawBars();
  * Функция переодически рисующая то цветом фона то основным.
  */
 void blink(uint8_t change);
+
+/**
+ * @fn void checkAlarms()
+ * Проверка будильников на срабатывание.
+ * Если будильник сработал, то добавим к таймеру сна 10 минут.
+ */
+void checkAlarms();
 
 extern ScreenDescript *screenCur;  ///< Текущий экран
 extern ScreenDescript *screenPrev;  ///< Предыдущий экран
