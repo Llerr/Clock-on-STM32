@@ -42,4 +42,15 @@ void saveAlarmsBKP();
  */
 void loadAlarmsBKP();
 
+/**
+ * @fn void saveBrightnessBKP()
+ * Сохранить настройки яркости в backup domain
+ */
+void saveBrightnessBKP();
+/**
+ * @fn void loadBrightnessBKP()
+ * Прочитать настройки яркости из backup domain
+ */
+void loadBrightnessBKP();
+
 #endif /* INC_BACKUP_H_ */

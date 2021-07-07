@@ -120,7 +120,7 @@ typedef struct ScreenDescript_t
   TextSets *text[]; ///< Массив строк, для вывода
 } ScreenDescript;
 
-extern int curBright; ///< Текущая яркость
+extern int brightCur; ///< Текущая яркость
 extern uint8_t counterForScreens; ///< Счётчик для переключения экранов
 extern uint8_t resetCounter;      ///< Счётчик для перехода к начальному режиму (Отображение времени)
 

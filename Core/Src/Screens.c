@@ -12,11 +12,15 @@
 #include "pictures.h"
 
 #define NUM_MAIN_SCREENS 4
+#define SLEEP_TIME (10*1)
+#define BELL_TIME_OFF (5*60)
 
-int curBright = 255; ///< Текущая яркость
+int brightCur = 255; ///< Текущая яркость
 uint8_t useCountdown = 0;
 uint8_t counterForScreens = 0; ///< счётчик для перехода к следующему экрану
 uint8_t resetCounter = 0;      ///< Счётчик для перехода к начальному режиму (Отображение времени)
+
+int32_t bellTimeOff = 0;
 
 //int menu = 0;  ///<  Пункт меню
 char editMode = 0; ///< Флаг редактирования
@@ -95,7 +99,6 @@ void screenSecondCallback()
   }
   ++counterForScreens;
   checkAlarms();
-
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -174,13 +177,13 @@ void alarmOff()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-#define SLEEP_TIME (10*1)
 void alarmOn(Alarm *alrm)
 {
   printf("Alarm On\n");
   screenCur = &screenClock;
   alarmSleep.alarmTime = alrm->alarmTime;
   addTime(&alarmSleep.alarmTime, SLEEP_TIME);
+  bellTimeOff = BELL_TIME_OFF;
   clearScreen();
 }
 
@@ -202,6 +205,17 @@ void checkAlarms()
   if(alaramIsOn(&alarmSleep))
   {
     alarmOn(&alarmSleep);
+  }
+
+  if(bellTimeOff > 0) // Через BELL_TIME_OFF выключить звонок
+  {
+    --bellTimeOff;
+    printf("Bell sing %ld sec\n", bellTimeOff);
+  }
+  else if(0 == bellTimeOff)
+  {
+    alarmOff();
+    --bellTimeOff;
   }
 }
 
@@ -228,7 +242,7 @@ void initScreens()
 void saveTime(void *dataPtr)
 {
   setTime(&sTimeEdit);
-  screenCur = &screenMenuTime;
+  screenCur = screenCur->backState;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -238,7 +252,7 @@ void saveDate(void *dataPtr)
   setDate(&sDateEdit);
   getDate(&sDate);
   saveDateBKP(&sDateEdit);
-  screenCur = &screenMenuDate;
+  screenCur = screenCur->backState;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -317,8 +331,12 @@ void saveCountdown(void *dataPtr)
 //----------------------------------------------------------------------------------------------------------------------
 void saveBrightness(void *dataPtr)
 {
+  uint8_t idx = getBrightnessIndex();
   screenCur = screenCur->backState;
   clearScreen();
+  brightnessAll[idx] = brightCur;
+  printf("Save brightness\n");
+  saveBrightnessBKP();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -329,6 +347,7 @@ void midStub(void *dataPtr) ///< Заглушка
 //----------------------------------------------------------------------------------------------------------------------
 void selectMenuTime(void *dataPtr) ///< Редактрование текущего времени (выбор в меню)
 {
+  screenEditTime.backState = screenCur;
   screenCur = &screenEditTime;
   clearScreen();
   GPIO_Press_Pin = 0;
@@ -364,8 +383,9 @@ void selectMenuAlarm(void *dataPtr) ///< Редактрование текуще
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void selectMenuDate(void *dataPtr) ///< Редактрование текущего времени (выбор в меню)
+void selectMenuDate(void *dataPtr) ///< Редактрование даты
 {
+  screenEditDate.backState = screenCur;
   screenCur = &screenEditDate;
   clearScreen();
   GPIO_Press_Pin = 0;
@@ -581,7 +601,7 @@ void drawCountdown(TextSets *set, void *dataPtr)     // 8 для вывода т
 void drawBrightness(TextSets *set, void *dataPtr)     // 8 для вывода таймера
 {
   char buff[32];
-  sprintf(buff, "%03d", curBright);
+  sprintf(buff, "%03d", brightCur);
   UB_Font_DrawPString32(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
   //      UB_Font_DrawPString(0, 16, "000:00.00", &pComic_16 , 7, 0);
 }
@@ -649,18 +669,18 @@ void drawBlink32(TextSets *set, void *dataPtr)
 //----------------------------------------------------------------------------------------------------------------------
 //---------------------------------- Данные ----------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
-//                                  1+13*2
-TextSets textBlinkTime =   {txtTime, 27,   -5, WHITE, BLACK, &pDigital_7_28, drawBlink, ":"}; // Двоеточие для мигания
+//                                     1+13*2
+TextSets textBlinkTime =   {txtTime,       27,     -5,  WHITE,  BLACK, &pDigital_7_28, drawBlink,        ":"}; // Двоеточие для мигания
 
-TextSets textHour        = {txtTime,        1,    -5,  WHITE, BLACK, &pDigital_7_28, drawHour,         NULL}; // Время
-TextSets textMinute      = {txtTime,        27+4, -5,  WHITE, BLACK, &pDigital_7_28, drawMinute,       NULL}; // Время
-TextSets textBellOn      = {txtTime,        57,    1,  WHITE, BLACK, &pDigital_7_28, drawBellOn,       NULL}; // Время
-TextSets textDateAdd     = {txtDate,        0,    19, YELLOW, BLACK, &pArial_13,     drawDateAdd,      NULL}; // Дата дополнительным полем
-TextSets textTemperature = {txtTemperature, 0,    19, YELLOW, BLACK, &pArial_13,     drawTemperature,  NULL}; // температура
-TextSets textHumidity    = {txtHumidity,    0,    19, YELLOW, BLACK, &pArial_13,     drawHumidity,     NULL}; // Влажность
-TextSets textPressure    = {txtPressure,    0,    19, YELLOW, BLACK, &pArial_13,     drawPressure,     NULL}; // Давление
-TextSets textClock       = {txtClock,      18,    19, YELLOW, BLACK, &pArial_13,     drawClock,        NULL}; // Будильник
-TextSets textSleep       = {txtSleep,      20,    19, YELLOW, BLACK, &pArial_13,     drawSleep,        NULL}; // Досыпание
+TextSets textHour        = {txtTime,        1,     -5,  WHITE,  BLACK, &pDigital_7_28, drawHour,         NULL}; // Время
+TextSets textMinute      = {txtTime,        27+4,  -5,  WHITE,  BLACK, &pDigital_7_28, drawMinute,       NULL}; // Время
+TextSets textBellOn      = {txtTime,        57,    1,   WHITE,  BLACK, &pDigital_7_28, drawBellOn,       NULL}; // Время
+TextSets textDateAdd     = {txtDate,        0,     19,  YELLOW, BLACK, &pArial_13,     drawDateAdd,      NULL}; // Дата дополнительным полем
+TextSets textTemperature = {txtTemperature, 0,     19,  YELLOW, BLACK, &pArial_13,     drawTemperature,  NULL}; // температура
+TextSets textHumidity    = {txtHumidity,    0,     19,  YELLOW, BLACK, &pArial_13,     drawHumidity,     NULL}; // Влажность
+TextSets textPressure    = {txtPressure,    0,     19,  YELLOW, BLACK, &pArial_13,     drawPressure,     NULL}; // Давление
+TextSets textClock       = {txtClock,       18,    19,  YELLOW, BLACK, &pArial_13,     drawClock,        NULL}; // Будильник
+TextSets textSleep       = {txtSleep,       20,    19,  YELLOW, BLACK, &pArial_13,     drawSleep,        NULL}; // Досыпание
 
 TextSets textDate        = {txtTimer,       0,     0,  WHITE, BLACK, &pTimes_18,     drawDate,         NULL}; // Дата
 TextSets textWeekDay     = {txtTimer,       1,    18, YELLOW, BLACK, &pArial_13,     drawWeekDay,      NULL}; // День недели
@@ -726,7 +746,7 @@ ScreenDescript screenMain1 =
     &screenMenuTime, // кнопка set
 
     midStub,      // Краткое нажатие
-    showMenu,
+    selectMenuTime,
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     4,
     {&textHour, &textMinute, &textTemperature, &textBellOn}
@@ -747,7 +767,7 @@ ScreenDescript screenMain2 =
     &screenMenuTime, // кнопка set
 
     midStub,      // Краткое нажатие
-    showMenu,     // Длинное нажатие
+    selectMenuTime,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     4,
     {&textHour, &textMinute, &textHumidity, &textBellOn}
@@ -768,7 +788,7 @@ ScreenDescript screenMain3 =
     &screenMenuTime, // кнопка set
 
     midStub,      // Краткое нажатие
-    showMenu,     // Длинное нажатие
+    selectMenuTime,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     4,
     {&textHour, &textMinute, &textPressure, &textBellOn}
@@ -790,7 +810,7 @@ ScreenDescript screenMain4 =
     &screenMenuTime, // кнопка set
 
     midStub,      // Краткое нажатие
-    showMenu,     // Длинное нажатие
+    selectMenuTime,     // Длинное нажатие
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     4,
     {&textHour, &textMinute, &textDateAdd, &textBellOn}
@@ -874,7 +894,7 @@ ScreenDescript screenDate =
     &screenMenuTime,   // кнопка set
 
     midStub,           // Краткое нажатие средней кнопки
-    midStub,           // Длинное нажатие средней кнопки
+    selectMenuDate,           // Длинное нажатие средней кнопки
 
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     2,

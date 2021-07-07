@@ -8,9 +8,12 @@
 
 #include "rtc.h"
 #include "Screens.h"
+#include "backup.h"
+#include "sensors.h"
 
 #include "utils.h"
 
+//------------------------- Будильники ---------------------------------------------------------------------------------
 Alarm alarm1 = {0};
 Alarm alarm2 = {0};
 Alarm alarm3 = {0};
@@ -20,6 +23,11 @@ Alarm alarmEdit = {0};
 uint8_t alarmOnBit = 7;
 uint8_t alarmOnCount = 0;
 
+//------------------ Яркость -------------------------------------------------------------------------------------------
+uint8_t brightnessAll[10] = {0};
+// Разные линейки применения яркостей
+uint16_t illuminationAll[10] = {0, 300,  600,  1200, 2400, 4800,  7600,  10000, 13000, 18000};
+//uint8_t illuminationAll[10] = {0, 2400, 4900, 7300, 9700, 12100, 14500, 16900, 19300, 21700};
 
 //----------------------------------------------------------------------------------------------------------------------
 void checkDate(RTC_DateTypeDef *date)
@@ -169,4 +177,18 @@ uint8_t alaramIsOn(Alarm *alrm)
   return ret;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+uint8_t getBrightnessIndex()
+{
+  uint8_t ret = 0;
+  for(ret = 0; ret< 10; ++ret)
+  {
+    if(illumination < illuminationAll[ret])
+    {
+      printf("Illumination: %d, illuminationAll[%d]: %d\n", illumination, ret, illuminationAll[ret]);
+      break;
+    }
+  }
+  return ret;
+}
 

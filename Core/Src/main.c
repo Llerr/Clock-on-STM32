@@ -166,6 +166,7 @@ int main(void)
 //  saveDateBKP(&sDateEdit);
   loadDateBKP(&sDate);
   loadAlarmsBKP();
+  loadBrightnessBKP();
   setDate(&sDate);
 
   puts("Enter to loop");

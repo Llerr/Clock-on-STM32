@@ -15,16 +15,11 @@ extern int humidity;
 extern int pressure;
 extern int illumination;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 void initSensors();
 
 void requestDataSensors();
+void changeBrightness();
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* INC_SENSORS_H_ */

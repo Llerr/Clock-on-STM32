@@ -28,6 +28,7 @@ void saveDateBKP(RTC_DateTypeDef *date)
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, saveVal);
   saveVal = date->Year | (date->WeekDay << 8);
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR2, saveVal);
+  printf("Save date: %02d.%02d.%02d\n", date->Date, date->Month, date->Year);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -41,6 +42,7 @@ void loadDateBKP(RTC_DateTypeDef *date)
   saveVal = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR2);
   date->Year    = saveVal&0xFF;
   date->WeekDay = saveVal >> 8;
+  printf("Load date: %02d.%02d.%02d\n", date->Date, date->Month, date->Year);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -68,6 +70,9 @@ void saveAlarmsBKP()
   alarmOnCount += alarm1.on;
   alarmOnCount += alarm2.on;
   alarmOnCount += alarm3.on;
+  printf("Save alarm1: %02d:%02d, days %0x02X\n", alarm1.alarmTime.Hours, alarm1.alarmTime.Minutes, alarm1.weekDay);
+  printf("Save alarm2: %02d:%02d, days %0x02X\n", alarm2.alarmTime.Hours, alarm2.alarmTime.Minutes, alarm2.weekDay);
+  printf("Save alarm3: %02d:%02d, days %0x02X\n", alarm3.alarmTime.Hours, alarm3.alarmTime.Minutes, alarm3.weekDay);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -103,5 +108,43 @@ void loadAlarmsBKP()
   alarmOnCount += alarm1.on;
   alarmOnCount += alarm2.on;
   alarmOnCount += alarm3.on;
+  printf("Load alarm1: %02d:%02d, days %0x02X\n", alarm1.alarmTime.Hours, alarm1.alarmTime.Minutes, alarm1.weekDay);
+  printf("Load alarm2: %02d:%02d, days %0x02X\n", alarm2.alarmTime.Hours, alarm2.alarmTime.Minutes, alarm2.weekDay);
+  printf("Load alarm3: %02d:%02d, days %0x02X\n", alarm3.alarmTime.Hours, alarm3.alarmTime.Minutes, alarm3.weekDay);
+  // BKP_DR7
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void saveBrightnessBKP()
+{
+  uint16_t *brightVals = (uint16_t *)brightnessAll;
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR8,  brightVals[0]);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR9,  brightVals[1]);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR10, brightVals[2]);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR11, brightVals[3]);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR12, brightVals[4]);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR13, brightVals[5]);
+  printf("Save brightness\n");
+  // BKP_DR13
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void loadBrightnessBKP()
+{
+  uint16_t *brightVals = (uint16_t *)brightnessAll;
+  brightVals[0] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR8);
+  brightVals[1] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR9);
+  brightVals[2] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR10);
+  brightVals[3] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR11);
+  brightVals[4] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR12);
+  brightVals[5] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR13);
+  // Если ничего не сохранено, скорректируем
+  if(brightnessAll[0] == 0)
+  {
+    for(int i = 0; i < 10; ++i)
+      brightnessAll[i] = 1+i*25;
+  }
+  printf("Load brightness\n");
+  // BKP_DR13
 }
 

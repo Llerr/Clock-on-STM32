@@ -439,12 +439,12 @@ void buttonReceiverBrightEdit()
     if(editNum > 2) editNum = 2;
     break;
   case BTN_UP_Pin:
-    curBright += mult[editNum];
-    if(curBright > 255) curBright -= mult[editNum];
+    brightCur += mult[editNum];
+    if(brightCur > 255) brightCur -= mult[editNum];
     break;
   case BTN_DOWN_Pin:
-    curBright -= mult[editNum];
-    if(curBright < 0) curBright += mult[editNum];
+    brightCur -= mult[editNum];
+    if(brightCur < 0) brightCur += mult[editNum];
     break;
   case BTN_MID_Pin:
     screenCur->midPress(NULL);
@@ -457,7 +457,7 @@ void buttonReceiverBrightEdit()
 
 //  illumination =  (3-editNum)*1000 +  textBlink32.x*100 + textBlink32.y;
 
-  sprintf(editText, "%03d", curBright);
+  sprintf(editText, "%03d", brightCur);
   editText[4]  = '\0';
   blinkText[0] = editText[editNum];
   blinkText[1] = '\0';

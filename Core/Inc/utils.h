@@ -26,6 +26,9 @@ extern Alarm alarmEdit;
 
 extern uint8_t alarmOnCount; ///< Количество включёных таймеров
 
+extern uint8_t  brightnessAll[10]; ///< Массив значений яркостей экрана
+extern uint16_t illuminationAll[10]; ///< Массив значений окружающих яркостей
+
 typedef enum WeekDays_t
 {
   Sunday = 0,
@@ -38,6 +41,7 @@ typedef enum WeekDays_t
 }WeekDays;
 
 extern uint8_t alarmOnBit; ///< 8 бит в маске признак включёного будильника
+
 /**
  * @fn void checkDate(RTC_DateTypeDef*)
  * Проверить дату на корректность, и при её некоректности поправить.
@@ -116,6 +120,8 @@ void alarmOneShortOff(Alarm *alrm);
  * @return 1 если время срабатывания будильника пришло
  */
 uint8_t alaramIsOn(Alarm *alrm);
+
+uint8_t getBrightnessIndex();
 
 
 #endif /* INC_UTILS_H_ */

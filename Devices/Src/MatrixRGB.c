@@ -28,7 +28,7 @@ void initMatrix()
 //----------------------------------------------------------------------------------------------------------------------
 void calcBrightPWM()
 {
-  brightPWM = stepPWM*curBright;
+  brightPWM = stepPWM*brightCur;
   if(0 == brightPWM) brightPWM = 1;
 
   TIM1->CCR1 = brightPWM;
