@@ -185,7 +185,7 @@ uint8_t getBrightnessIndex()
   {
     if(illumination < illuminationAll[ret])
     {
-      printf("Illumination: %d, illuminationAll[%d]: %d\n", illumination, ret, illuminationAll[ret]);
+//      printf("Illumination: %d, illuminationAll[%d]: %d\n", illumination, ret, illuminationAll[ret]);
       break;
     }
   }

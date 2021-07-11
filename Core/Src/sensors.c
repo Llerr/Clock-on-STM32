@@ -95,7 +95,7 @@ void changeBrightness()
     oldIdx = idx;
   }
   calcBrightPWM();
-  printf("Set bright idx: %d, curren bright: %d\n", idx, brightCur);
+//  printf("Set bright idx: %d, curren bright: %d\n", idx, brightCur);
 
 }
 

@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#include "stm32f1xx_hal.h"
+
 /**
  * @struct Audio_t
  * Описание структуры аудиоданных
@@ -23,6 +25,8 @@ typedef struct Audio_t
 } Audio;
 
 extern Audio buttonSound;
+extern Audio clockSound;
+extern Audio countDownSound;
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -46,5 +50,9 @@ void setFreq(uint32_t freq);
  * @param loop зацикливать ли данные (1 - воспроизводить циклически)
  */
 void play(Audio *track, uint8_t loop);
+
+void PlayChannel1Finish(DMA_HandleTypeDef *hdma);
+void PlayChannel1Half(DMA_HandleTypeDef *hdma);
+void PlayChannel2Finish();
 
 #endif /* INC_AUDIO_H_ */

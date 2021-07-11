@@ -17,6 +17,7 @@
 #include "rtc.h"
 #include "sensors.h"
 #include "utils.h"
+#include "audio.h"
 
 //#define BTN_RESET_EXTI_IRQn EXTI0_IRQn
 //#define BTN_SET_EXTI_IRQn EXTI1_IRQn
@@ -54,14 +55,17 @@ void buttonReceiverMenu()
   counterForScreens = 0;
   resetCounter = 0;
 
+//  play(&buttonSound, 0);
   clearScreen();
   switch(GPIO_Press_Pin)
   {
   case BTN_LEFT_Pin:
+    play(&clockSound, 0);
     screenCur = screenCur->prevMode;
 //    printf("Left %d\n", menu);
     break;
   case BTN_RIGHT_Pin:
+    play(&buttonSound, 0);
     screenCur = screenCur->nextMode;
 //    printf("Right %d\n", menu);
     break;
