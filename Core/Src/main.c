@@ -22,17 +22,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "dac.h"
+#include "dma.h"
 #include "i2c.h"
 #include "rtc.h"
 #include "tim.h"
-#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-
-#include "usbd_cdc_if.h"
 
 #include "buttons.h"
 #include "sensors.h"
@@ -41,6 +39,8 @@
 #include "aht10.h"
 #include "MatrixRGB.h"
 #include "Screens.h"
+
+#include "audio.h"
 
 /* USER CODE END Includes */
 
@@ -117,8 +117,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_RTC_Init();
-  MX_USB_DEVICE_Init();
   MX_I2C1_Init();
   MX_I2C2_Init();
   MX_TIM2_Init();
@@ -126,6 +126,7 @@ int main(void)
   MX_TIM4_Init();
   MX_DAC_Init();
   MX_TIM1_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 //  sTime.Hours = 16;
 //  sTime.Minutes = 32;
@@ -137,11 +138,13 @@ int main(void)
 //  HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
   puts(" "); // Для вывода первого символа, чтобы не съедало
+  printf("Button data size: %ld\n", buttonSound.dataLength);
   HAL_Delay(100);
   initButtons();
   initSensors();
   initScreens();
   initMatrix();
+  initAudio();
   //для i2c
   HAL_I2C_EV_IRQHandler(&hi2c1);
 
@@ -163,6 +166,7 @@ int main(void)
   drawScreen(screenCur);
   HAL_TIM_Base_Start_IT(&htim4); // Таймер для миганий
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+//  HAL_DAC_Start(hdac, Channel);
 //  saveDateBKP(&sDateEdit);
   loadDateBKP(&sDate);
   loadAlarmsBKP();
@@ -229,9 +233,8 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USB;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC;
   PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
-  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV1_5;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();

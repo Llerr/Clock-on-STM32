@@ -25,9 +25,6 @@
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
 
-/* External functions --------------------------------------------------------*/
-void SystemClock_Config(void);
-
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
 
@@ -59,7 +56,8 @@ void SystemClock_Config(void);
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern PCD_HandleTypeDef hpcd_USB_FS;
+extern DMA_HandleTypeDef hdma_dac_ch1;
+extern DMA_HandleTypeDef hdma_dac_ch2;
 extern I2C_HandleTypeDef hi2c1;
 extern I2C_HandleTypeDef hi2c2;
 extern RTC_HandleTypeDef hrtc;
@@ -279,34 +277,6 @@ void EXTI3_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles USB high priority or CAN TX interrupts.
-  */
-void USB_HP_CAN1_TX_IRQHandler(void)
-{
-  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 0 */
-
-  /* USER CODE END USB_HP_CAN1_TX_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_FS);
-  /* USER CODE BEGIN USB_HP_CAN1_TX_IRQn 1 */
-
-  /* USER CODE END USB_HP_CAN1_TX_IRQn 1 */
-}
-
-/**
-  * @brief This function handles USB low priority or CAN RX0 interrupts.
-  */
-void USB_LP_CAN1_RX0_IRQHandler(void)
-{
-  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 0 */
-
-  /* USER CODE END USB_LP_CAN1_RX0_IRQn 0 */
-  HAL_PCD_IRQHandler(&hpcd_USB_FS);
-  /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
-
-  /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
-}
-
-/**
   * @brief This function handles EXTI line[9:5] interrupts.
   */
 void EXTI9_5_IRQHandler(void)
@@ -434,23 +404,31 @@ void RTC_Alarm_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles USB wake-up interrupt through EXTI line 18.
+  * @brief This function handles DMA2 channel3 global interrupt.
   */
-void USBWakeUp_IRQHandler(void)
+void DMA2_Channel3_IRQHandler(void)
 {
-  /* USER CODE BEGIN USBWakeUp_IRQn 0 */
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 0 */
 
-  /* USER CODE END USBWakeUp_IRQn 0 */
-  if ((&hpcd_USB_FS)->Init.low_power_enable) {
-    /* Reset SLEEPDEEP bit of Cortex System Control Register */
-    SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
-    SystemClock_Config();
-  }
-  /* Clear EXTI pending bit */
-  __HAL_USB_WAKEUP_EXTI_CLEAR_FLAG();
-  /* USER CODE BEGIN USBWakeUp_IRQn 1 */
+  /* USER CODE END DMA2_Channel3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_dac_ch1);
+  /* USER CODE BEGIN DMA2_Channel3_IRQn 1 */
 
-  /* USER CODE END USBWakeUp_IRQn 1 */
+  /* USER CODE END DMA2_Channel3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 channel4 and channel5 global interrupts.
+  */
+void DMA2_Channel4_5_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Channel4_5_IRQn 0 */
+
+  /* USER CODE END DMA2_Channel4_5_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_dac_ch2);
+  /* USER CODE BEGIN DMA2_Channel4_5_IRQn 1 */
+
+  /* USER CODE END DMA2_Channel4_5_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

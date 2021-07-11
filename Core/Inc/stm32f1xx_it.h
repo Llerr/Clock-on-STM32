@@ -61,8 +61,6 @@ void EXTI0_IRQHandler(void);
 void EXTI1_IRQHandler(void);
 void EXTI2_IRQHandler(void);
 void EXTI3_IRQHandler(void);
-void USB_HP_CAN1_TX_IRQHandler(void);
-void USB_LP_CAN1_RX0_IRQHandler(void);
 void EXTI9_5_IRQHandler(void);
 void TIM2_IRQHandler(void);
 void TIM3_IRQHandler(void);
@@ -72,7 +70,8 @@ void I2C1_ER_IRQHandler(void);
 void I2C2_EV_IRQHandler(void);
 void I2C2_ER_IRQHandler(void);
 void RTC_Alarm_IRQHandler(void);
-void USBWakeUp_IRQHandler(void);
+void DMA2_Channel3_IRQHandler(void);
+void DMA2_Channel4_5_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
