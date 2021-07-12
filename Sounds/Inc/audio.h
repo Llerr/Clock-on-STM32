@@ -49,10 +49,8 @@ void setFreq(uint32_t freq);
  * @param track указатель на данные для воспроизведения
  * @param loop зацикливать ли данные (1 - воспроизводить циклически)
  */
-void play(Audio *track, uint8_t loop);
+void playSound(Audio *track, uint8_t loop);
 
-void PlayChannel1Finish(DMA_HandleTypeDef *hdma);
-void PlayChannel1Half(DMA_HandleTypeDef *hdma);
-void PlayChannel2Finish();
+void stopSound();
 
 #endif /* INC_AUDIO_H_ */
