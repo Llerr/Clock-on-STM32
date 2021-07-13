@@ -32,6 +32,7 @@ void initSensors()
 void requestDataSensors()
 {
   uint8_t haveTemp = 0;
+  static uint8_t aht10Count = 0;
 //  static uint8_t reset = 0;
 
   MAX44009RequestData();
@@ -39,7 +40,14 @@ void requestDataSensors()
   BMP280ReadData();
 
 //  if(!reset)
-  AHT10RequestData();
+  // Опрашиваем не чаще, чем раз в 8 секунд
+  // Так рекомендуют.
+  if(9 == aht10Count )
+  {
+    aht10Count = 0;
+    AHT10RequestData();
+  }
+  ++aht10Count;
 
   if(AHT10Present)
   {
