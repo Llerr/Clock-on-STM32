@@ -172,6 +172,7 @@ int main(void)
   loadAlarmsBKP();
   loadBrightnessBKP();
   setDate(&sDate);
+  getTime(&sTime);
 
   puts("Enter to loop");
   while (1)

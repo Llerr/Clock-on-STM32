@@ -21,6 +21,8 @@ uint32_t restDataLength = 0;
 Audio *trackCur;
 const uint16_t *dataCur = NULL;
 
+uint8_t numReadyChanels = 0;
+
 extern DMA_HandleTypeDef hdma_dac_ch1;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -48,14 +50,11 @@ void setFreq(uint32_t freq)
 //----------------------------------------------------------------------------------------------------------------------
 void startDAC()
 {
-  restDataLength = trackCur->dataLength;
-  dataCur = (uint16_t*)trackCur->data;
   uint32_t length = (restDataLength>UINT16_MAX)?UINT16_MAX:restDataLength;
-//  uint32_t length = (trackCur->dataLength > UINT16_MAX)?UINT16_MAX:trackCur->dataLength;
   printf("Play data length: %ld, pointer %p\n", restDataLength, dataCur);
   HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t *)dataCur, length, DAC_ALIGN_12B_L);
   HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_2, (uint32_t *)dataCur, length, DAC_ALIGN_12B_L);
-
+  numReadyChanels = 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -65,6 +64,8 @@ void playSound(Audio *track, uint8_t loop)
   setFreq(track->bitrate);
   HAL_TIM_Base_Start(&htim6);
   trackCur = track;
+  restDataLength = trackCur->dataLength;
+  dataCur = (uint16_t*)trackCur->data;
   startDAC();
 }
 
@@ -75,17 +76,23 @@ void stopSound()
   playLoop = 0;
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
-void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef *inDac)
+void continuePlay()
 {
-  printf("HAL_DAC_ConvCpltCallbackCh1\n");
+  if(2 != numReadyChanels)
+  {
+    return;
+  }
+
   if(restDataLength < UINT16_MAX) // Уже проиграли всё
   {
     if(playLoop) // Если в цикле, запустим по новой
     {
       printf("Restart play sound.\n");
-      startDAC(trackCur);
+      restDataLength = trackCur->dataLength;
+      dataCur = (uint16_t*)trackCur->data;
+
+      startDAC();
     }
     else // Иначе остановим таймер, всё проиграли
     {
@@ -97,16 +104,23 @@ void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef *inDac)
   //Уменьшим количество оставшихся данных и сдвинимся  вперёд
   restDataLength -=UINT16_MAX;
   dataCur +=UINT16_MAX;
-  uint32_t length = (restDataLength>UINT16_MAX)?UINT16_MAX:restDataLength;
-  printf("Continue play. Length: %ld, pointer 0x%p\n", restDataLength, dataCur);
-  HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_1, (uint32_t *)dataCur, length, DAC_ALIGN_12B_L);
-  HAL_DAC_Start_DMA(&hdac, DAC_CHANNEL_2, (uint32_t *)dataCur, length, DAC_ALIGN_12B_L);
+  startDAC();
 }
-//void HAL_TIM_PWM_PulseFinishedHalfCpltCallback(TIM_HandleTypeDef *htim)
-//{
-//  printf();
-//}
 
+//----------------------------------------------------------------------------------------------------------------------
+void HAL_DAC_ConvCpltCallbackCh1(DAC_HandleTypeDef *inDac)
+{
+  ++numReadyChanels;
+  printf("HAL_DAC_ConvCpltCallbackCh1: %d\n", numReadyChanels);
+  continuePlay();
+}
 
+//----------------------------------------------------------------------------------------------------------------------
+void HAL_DACEx_ConvCpltCallbackCh2(DAC_HandleTypeDef *inDac)
+{
+  ++numReadyChanels;
+  printf("HAL_DACEx_ConvCpltCallbackCh2: %d\n", numReadyChanels);
+  continuePlay();
+}
 //----------------------------------------------------------------------------------------------------------------------
 

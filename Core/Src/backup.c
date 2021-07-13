@@ -12,7 +12,7 @@
 void saveDateByTimeBKP()
 {
   // Раз в день сохраним.
-  if( 0 == sTime.Minutes && 0 == sTime.Hours && 1 == sTime.Seconds )
+  if( 0 == sTime.Minutes && 0 == sTime.Hours && ( sTime.Seconds < 2 ))
   {
     getDate(&sDate);
     printf("Get date: %02d.%02d.%02d\n", sDate.Date, sDate.Month, sDate.Year);
@@ -70,9 +70,9 @@ void saveAlarmsBKP()
   alarmOnCount += alarm1.on;
   alarmOnCount += alarm2.on;
   alarmOnCount += alarm3.on;
-  printf("Save alarm1: %02d:%02d, days %0x02X\n", alarm1.alarmTime.Hours, alarm1.alarmTime.Minutes, alarm1.weekDay);
-  printf("Save alarm2: %02d:%02d, days %0x02X\n", alarm2.alarmTime.Hours, alarm2.alarmTime.Minutes, alarm2.weekDay);
-  printf("Save alarm3: %02d:%02d, days %0x02X\n", alarm3.alarmTime.Hours, alarm3.alarmTime.Minutes, alarm3.weekDay);
+  printf("Save alarm1: %02d:%02d, days 0x%02X\n", alarm1.alarmTime.Hours, alarm1.alarmTime.Minutes, alarm1.weekDay);
+  printf("Save alarm2: %02d:%02d, days 0x%02X\n", alarm2.alarmTime.Hours, alarm2.alarmTime.Minutes, alarm2.weekDay);
+  printf("Save alarm3: %02d:%02d, days 0x%02X\n", alarm3.alarmTime.Hours, alarm3.alarmTime.Minutes, alarm3.weekDay);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -60,12 +60,12 @@ void buttonReceiverMenu()
   switch(GPIO_Press_Pin)
   {
   case BTN_LEFT_Pin:
-    playSound(&clockSound, 0);
+//    playSound(&clockSound, 0);
     screenCur = screenCur->prevMode;
 //    printf("Left %d\n", menu);
     break;
   case BTN_RIGHT_Pin:
-    playSound(&buttonSound, 0);
+//    playSound(&buttonSound, 0);
     screenCur = screenCur->nextMode;
 //    printf("Right %d\n", menu);
     break;
@@ -77,10 +77,7 @@ void buttonReceiverMenu()
     screenCur = screenCur->nextState;
     break;
   case BTN_DOWN_Pin:
-    playSound(&countDownSound, 0);
-//   ++menu;
-//    if(menu == NUM_MENU) menu = 3;
-//    printf("Down, menu %d\n", menu);
+//    playSound(&countDownSound, 0);
     clearMatrix();
     screenCur = screenCur->prevState;
     break;

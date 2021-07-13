@@ -82,6 +82,7 @@ void addTime(RTC_TimeTypeDef *time, uint16_t sec);
  */
 uint8_t timeIsEqual(const RTC_TimeTypeDef *time1, const RTC_TimeTypeDef *time2);
 
+uint8_t alarmTime(const RTC_TimeTypeDef *alrmTime);
 /**
  * @fn uint8_t alarmCheckDay(Alarm *alrm, WeekDays day)
  * Проверка на срабатывание будильника в день недели

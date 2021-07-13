@@ -29,6 +29,7 @@
 #include "main.h"
 #include "sensors.h"
 #include "backup.h"
+#include "utils.h"
 
 RTC_TimeTypeDef sTime = {0};
 RTC_TimeTypeDef sCountdown = {0};
@@ -179,7 +180,13 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 //  return;
 //  char str[20] = {0};
 //  printf("\n------------> Second event\n");
+  uint8_t oldSec = sTime.Seconds;
   getTime(&sTime);
+  // Происходят пропуски и дубдирование времени. Пофиксим
+  if( (0 == sTime.Seconds) && (oldSec == 58 ) )
+    decreaseTime(&sTime);
+  else if( (sTime.Seconds - oldSec) > 1 )
+    --sTime.Seconds;
 
   saveDateByTimeBKP();
 

@@ -114,6 +114,13 @@ uint8_t timeIsEqual(const RTC_TimeTypeDef *time1, const RTC_TimeTypeDef *time2)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+uint8_t alarmTime(const RTC_TimeTypeDef *alrmTime)
+{
+  // Сначала сравним минуты, они совпадут только 24 раза в сутки.
+  return (sTime.Minutes == alrmTime->Minutes) && (sTime.Hours == alrmTime->Hours) && (sTime.Seconds < 2);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 uint8_t alarmCheckDay(Alarm *alrm, WeekDays day)
 {
   return alrm->weekDay & (1 << day);

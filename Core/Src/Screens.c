@@ -7,20 +7,21 @@
 #include "rtc.h"
 #include "backup.h"
 #include "utils.h"
+#include "audio.h"
 
 #include "Screens.h"
 #include "pictures.h"
 
 #define NUM_MAIN_SCREENS 4
-#define SLEEP_TIME (10*1)
-#define BELL_TIME_OFF (5*60)
+#define SLEEP_TIME (1*10)
+#define BELL_TIME_OFF (5*2)
 
 int brightCur = 255; ///< Текущая яркость
 uint8_t useCountdown = 0;
 uint8_t counterForScreens = 0; ///< счётчик для перехода к следующему экрану
 uint8_t resetCounter = 0;      ///< Счётчик для перехода к начальному режиму (Отображение времени)
 
-int32_t bellTimeOff = 0;
+int32_t bellTimeOff = -1;
 
 //int menu = 0;  ///<  Пункт меню
 char editMode = 0; ///< Флаг редактирования
@@ -87,6 +88,7 @@ void screenSecondCallback()
       clearScreen();
       screenCur = &screenCountdownFinish;
       useCountdown = 0;
+      playSound(&countDownSound, 1);
     }
 
     return; // Дальше можно ничего не делать
@@ -166,6 +168,8 @@ void sleepOn()
   printf("Sleep On\n");
   screenCur = &screenSleep; // Переключимся на экран сна
   alarmSetState(&alarmSleep, 1); //включим сон
+  bellTimeOff = -1;
+  stopSound();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -174,6 +178,8 @@ void alarmOff()
   printf("Alarm Off\n");
   screenCur = &screenMain1; // Переключимся на основное время
   alarmSetState(&alarmSleep, 0); //отключим сон
+  bellTimeOff = -1;
+  stopSound();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -184,12 +190,17 @@ void alarmOn(Alarm *alrm)
   alarmSleep.alarmTime = alrm->alarmTime;
   addTime(&alarmSleep.alarmTime, SLEEP_TIME);
   bellTimeOff = BELL_TIME_OFF;
+  playSound(&clockSound, 1);
   clearScreen();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void checkAlarms()
 {
+//  printf("time %02d:%02d:%02d\n", sTime.Hours, sTime.Minutes, sTime.Seconds);
+//
+//  printf("alrm1 %02d:%02d:%02d %d\n", alarm1.alarmTime.Hours,
+//      alarm1.alarmTime.Minutes, alarm1.alarmTime.Seconds, alarm1.on);
   if(alaramIsOn(&alarm1))
   {
     alarmOn(&alarm1);
@@ -210,12 +221,11 @@ void checkAlarms()
   if(bellTimeOff > 0) // Через BELL_TIME_OFF выключить звонок
   {
     --bellTimeOff;
-    printf("Bell sing %ld sec\n", bellTimeOff);
+//    printf("Bell sing %ld sec\n", bellTimeOff);
   }
   else if(0 == bellTimeOff)
   {
     alarmOff();
-    --bellTimeOff;
   }
 }
 
@@ -318,6 +328,7 @@ void countdownFinish(void *dataPtr)
 {
   screenCur = &screenCountdown;
   sCountdown = sCountdownEdit;
+  stopSound();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
