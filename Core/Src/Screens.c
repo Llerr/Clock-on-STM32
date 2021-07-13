@@ -13,8 +13,8 @@
 #include "pictures.h"
 
 #define NUM_MAIN_SCREENS 4
-#define SLEEP_TIME (1*10)
-#define BELL_TIME_OFF (5*2)
+#define SLEEP_TIME (10*60)
+#define BELL_TIME_OFF (15*60)
 
 int brightCur = 255; ///< Текущая яркость
 uint8_t useCountdown = 0;
