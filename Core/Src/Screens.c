@@ -8,6 +8,8 @@
 #include "backup.h"
 #include "utils.h"
 #include "audio.h"
+#include "bmp280.h"
+#include "aht10.h"
 
 #include "Screens.h"
 #include "pictures.h"
@@ -650,6 +652,34 @@ void drawMenu(TextSets *set, void *dataPtr)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void drawAHT10(TextSets *set, void *dataPtr)
+{
+  char buff[32];
+  UB_Font_DrawPString16(0, 0, "AHT10", set->font, set->colorFont, set->colorBack);
+
+  sprintf(buff, " %d.%dC      ", AHT10_Temperature / 100, AHT10_Temperature % 100);
+  UB_Font_DrawPString16(0, 11,  buff, set->font, GREEN, set->colorBack);
+
+  sprintf(buff, " %ld.%ld%%    ", AHT10_Humidity/100, AHT10_Humidity%100);
+  UB_Font_DrawPString16(0, 22, buff, set->font, GREEN, set->colorBack);
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void drawBMP280(TextSets *set, void *dataPtr)
+{
+  char buff[32];
+  UB_Font_DrawPString16(0, 0, "BMP280", set->font, set->colorFont, set->colorBack);
+
+  sprintf(buff, " %d.%dC      ", BMP280Temperature/ 100, BMP280Temperature % 100);
+  UB_Font_DrawPString16(0, 11, buff, set->font, GREEN, set->colorBack);
+
+  sprintf(buff, " %d.%dmm    ", BMP280Pressure/100, BMP280Pressure%100);
+  UB_Font_DrawPString16(0, 22, buff, set->font, GREEN, set->colorBack);
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void drawEdit(TextSets *set, void *dataPtr)
 {
   UB_Font_DrawPString16(set->x, set->y, set->text, set->font, set->colorFont, TRANSPARENT);
@@ -716,14 +746,20 @@ TextSets textCntDownInf     = {txtCountdownInfo,   2, 19,    WHITE, BLACK, &pAri
 TextSets textCntDownFinish  = {txtCountdownFinish, 2, 17,      RED, BLACK, &pTimes_18,     drawBlink32,    "FINISH"}; // надпись о завершении отсчёта
 
 /// Пункты меню, выделенные и нет.
-TextSets textMenuTime      = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Time       "};
-TextSets textMenuTimeSel   = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Time       "};
-TextSets textMenuDate      = {txtMenu,    0, 11, GREEN, BLACK, &pArial_13, drawMenu, "Date       "};
-TextSets textMenuDateSel   = {txtMenuSel, 0, 11, WHITE, BLACK, &pArial_13, drawMenu, "Date       "};
-TextSets textMenuAlr       = {txtMenu,    0, 22, GREEN, BLACK, &pArial_13, drawMenu, "Alarms >   "};
-TextSets textMenuAlrSel    = {txtMenuSel, 0, 22, WHITE, BLACK, &pArial_13, drawMenu, "Alarms >   "};
-TextSets textMenuBright    = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Brightness >"};
-TextSets textMenuBrightSel = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Brightness >"};
+TextSets textMenuTime      = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Time       "};
+TextSets textMenuTimeSel   = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Time       "};
+TextSets textMenuDate      = {txtMenu,    0, 11, GREEN, BLACK,       &pArial_13, drawMenu, "Date       "};
+TextSets textMenuDateSel   = {txtMenuSel, 0, 11, WHITE, BLACK,       &pArial_13, drawMenu, "Date       "};
+TextSets textMenuAlr       = {txtMenu,    0, 22, GREEN, BLACK,       &pArial_13, drawMenu, "Alarms >   "};
+TextSets textMenuAlrSel    = {txtMenuSel, 0, 22, WHITE, BLACK,       &pArial_13, drawMenu, "Alarms >   "};
+TextSets textMenuBright    = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Brightness "};
+TextSets textMenuBrightSel = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Brightness "};
+TextSets textMenuDebug     = {txtMenu,    0, 11, GREEN, TRANSPARENT, &pArial_13, drawMenu, "Debug >"};
+TextSets textMenuDebugSel  = {txtMenuSel, 0, 11, WHITE, TRANSPARENT, &pArial_13, drawMenu, "Debug >"};
+
+TextSets textDebugAHT10    = {txtAHT10, 0, 0,   WHITE, BLACK, &pArial_13, drawAHT10, "AHT10"};
+
+TextSets textDebugBMP280   = {txtBMP280, 0, 0,   WHITE, BLACK, &pArial_13, drawBMP280, "BMP280"};
 
 //TextSets textMenuAlrm0    = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Alarm 1     "};
 //TextSets textMenuAlrm0Sel = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Alarm 1     "};
@@ -1044,9 +1080,9 @@ ScreenDescript screenMenuDate =
     stateMenuDate,
     NULL, //blink
 
-    &screenMenuDate, // Право
-    &screenMenuDate, // Лево
-    &screenMenuTime, // вверх
+    &screenMenuDate,  // Право
+    &screenMenuDate,  // Лево
+    &screenMenuTime,  // вверх
     &screenMenuAlarm, // вниз
     &screenMain1,
 
@@ -1065,10 +1101,10 @@ ScreenDescript screenMenuAlarm =
     stateMenuAlarm,
     NULL, //blink
 
-    &screenMenuAlr0,
-    &screenMenuAlarm,
-    &screenMenuDate,
-    &screenMenuBrightness,
+    &screenMenuAlr0,      // Право
+    &screenMenuAlarm,     // Лево
+    &screenMenuDate,      // вверх
+    &screenMenuBrightness,// вниз
     &screenMain1,
 
     &screenMain1, // кнопка set
@@ -1086,10 +1122,10 @@ ScreenDescript screenMenuBrightness =
     stateMenuBrightness,
     NULL, //blink
 
-    &screenMenuBrightness,
-    &screenMenuBrightness,
-    &screenMenuAlarm,
-    &screenMenuBrightness,
+    &screenMenuBrightness,  // Право
+    &screenMenuBrightness,  // Лево
+    &screenMenuAlarm,       // вверх
+    &screenMenuDebug,  // вниз
     &screenMain1,       //Долгое нажатие влево
 
     &screenMain1, // кнопка set
@@ -1097,8 +1133,8 @@ ScreenDescript screenMenuBrightness =
     inBrightness,      // Краткое нажатие средней кнопки
     midStub,           // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-   1,
-    {&textMenuBrightSel}
+    2,
+    {&textMenuBrightSel, &textMenuDebug}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1107,10 +1143,10 @@ ScreenDescript screenMenuAlr0 =
     stateMenuAlarm1,
     NULL, //blink
 
-    &screenMenuAlr0,
-    &screenMenuAlarm,
-    &screenMenuAlr0,
-    &screenMenuAlr1,
+    &screenMenuAlr0,    // Право
+    &screenMenuAlarm,   // Лево
+    &screenMenuAlr0,    // вверх
+    &screenMenuAlr1,    // вниз
     &screenMenuAlarm,
 
     &screenMain1, // кнопка set
@@ -1128,10 +1164,10 @@ ScreenDescript screenMenuAlr1 =
     stateMenuAlarm2,
     NULL, //blink
 
-    &screenMenuAlr1,
-    &screenMenuAlarm,
-    &screenMenuAlr0,
-    &screenMenuAlr2,
+    &screenMenuAlr1,    // Право
+    &screenMenuAlarm,   // Лево
+    &screenMenuAlr0,    // вверх
+    &screenMenuAlr2,    // вниз
     &screenMenuAlarm,
 
     &screenMain1, // кнопка set
@@ -1149,10 +1185,10 @@ ScreenDescript screenMenuAlr2 =
     stateMenuAlarm3,
     NULL, //blink
 
-    &screenMenuAlr2,
-    &screenMenuAlarm,
-    &screenMenuAlr1,
-    &screenMenuAlr2,
+    &screenMenuAlr2,   // Право
+    &screenMenuAlarm,  // Лево
+    &screenMenuAlr1,   // вверх
+    &screenMenuAlr2,   // вниз
     &screenMenuAlarm,
 
     &screenMain1, // кнопка set
@@ -1165,15 +1201,78 @@ ScreenDescript screenMenuAlr2 =
 };
 
 //----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenMenuDebug =
+{
+    stateMenuBrightness,
+    NULL, //blink
+
+    &screenMenuDebugAHT10,      // Право
+    &screenMenuDebug,      // Лево
+    &screenMenuBrightness, // вверх
+    &screenMenuDebug,      // вниз
+    &screenMain1,          //Долгое нажатие влево
+
+    &screenMain1, // кнопка set
+
+    inBrightness,      // Краткое нажатие средней кнопки
+    midStub,           // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+    2,
+    {&textMenuBright, &textMenuDebugSel}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenMenuDebugAHT10 =
+{
+    stateMenuBrightness,
+    NULL, //blink
+
+    &screenMenuDebugAHT10,  // Право
+    &screenMenuDebug,       // Лево
+    &screenMenuDebugAHT10,  // вверх
+    &screenMenuDebugBMP280,      // вниз
+    &screenMain1,          //Долгое нажатие влево
+
+    &screenMain1, // кнопка set
+
+    midStub,           // Краткое нажатие средней кнопки
+    midStub,           // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+    1,
+    {&textDebugAHT10}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenMenuDebugBMP280 =
+{
+    stateMenuBrightness,
+    NULL, //blink
+
+    &screenMenuDebugBMP280,  // Право
+    &screenMenuDebug,        // Лево
+    &screenMenuDebugAHT10,   // вверх
+    &screenMenuDebugBMP280,  // вниз
+    &screenMain1,            //Долгое нажатие влево
+
+    &screenMain1, // кнопка set
+
+    midStub,      // Краткое нажатие средней кнопки
+    midStub,           // Долгое нажатие средней кнопки
+    buttonReceiverMenu, // Обработчик кнопок в этом пункте
+    1,
+    {&textDebugBMP280}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenEditTime =
 {
     stateTimeEdit,
     &textBlinkTimeEdit, //blink
 
-    &screenEditTime,
-    &screenEditTime,
-    &screenEditTime,
-    &screenEditTime,
+    &screenEditTime,   // Право
+    &screenEditTime,   // Лево
+    &screenEditTime,   // вверх
+    &screenEditTime,   // вниз
     &screenMenuTime,
 
     &screenEditTime, // кнопка set (В режиме редактирования не используется)
@@ -1192,10 +1291,10 @@ ScreenDescript screenEditAlarm =
     stateAlarmEdit,
     &textBlinkTimeEdit, //blink
 
-    &screenEditAlarm,
-    &screenEditAlarm,
-    &screenEditAlarm,
-    &screenEditAlarm,
+    &screenEditAlarm,    // Право
+    &screenEditAlarm,    // Лево
+    &screenEditAlarm,    // вверх
+    &screenEditAlarm,    // вниз
     &screenMenuAlr0,
 
     &screenEditAlarm, // кнопка set (В режиме редактирования не используется)
@@ -1213,10 +1312,10 @@ ScreenDescript screenEditDate =
     stateDateEdtit,
     &textBlink32, //blink
 
-    &screenEditDate,
-    &screenEditDate,
-    &screenEditDate,
-    &screenEditDate,
+    &screenEditDate,  // Право
+    &screenEditDate,  // Лево
+    &screenEditDate,  // вверх
+    &screenEditDate,  // вниз
     &screenMenuTime,
 
     &screenMenuTime, // кнопка set

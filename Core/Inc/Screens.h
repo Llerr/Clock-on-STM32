@@ -34,6 +34,7 @@ enum StateTypeEnum
   stateMenuDate,
   stateMenuAlarm,
   stateMenuBrightness,
+  stateMenuDebug,
   stateMenuAlarm1,
   stateMenuAlarm2,
   stateMenuAlarm3,
@@ -78,7 +79,9 @@ enum TextTypeEnum
   txtEditBright32,
   txtEdit32,
   txtBlink32,
-  txtEnumLength
+  txtEnumLength,
+  txtAHT10,
+  txtBMP280,
 };
 
 typedef struct TextSets_t
@@ -198,6 +201,10 @@ extern ScreenDescript screenMenuBrightness;
 extern ScreenDescript screenMenuAlr0;
 extern ScreenDescript screenMenuAlr1;
 extern ScreenDescript screenMenuAlr2;
+extern ScreenDescript screenMenuDebug;
+extern ScreenDescript screenMenuDebugAHT10;
+extern ScreenDescript screenMenuDebugBMP280;
+
 
 extern ScreenDescript screenEditTime;
 extern ScreenDescript screenEditAlarm;
