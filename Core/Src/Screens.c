@@ -320,7 +320,7 @@ void countdownStartStop(void *dataPtr)
     useCountdown = 0;
     return;
   }
-
+//  sCountdownEdit = sCountdown;
   useCountdown = !useCountdown;
   printf("Save count (%02d:%02d:%02d), start: %d\n", sCountdown.Hours, sCountdown.Minutes, sCountdown.Seconds, useCountdown);
 }
@@ -538,6 +538,7 @@ void drawAlarm(TextSets *set, void *dataPtr)         // 6 для вывода б
     drawPicture(60, 0, &picNum3);
     break;
   default:
+    return;
     break;
   }
   drawPicture(57, 5, &picBell);
