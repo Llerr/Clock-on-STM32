@@ -23,6 +23,8 @@
 /* USER CODE BEGIN 0 */
 #include <string.h>
 
+#include "stm32f1xx_hal_rtc.h"
+
 #include "sensors.h"
 #include "Screens.h"
 #include "i2c.h"
@@ -175,19 +177,57 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+static uint32_t RTC_ReadTimeCounter1(RTC_HandleTypeDef *hrtc)
+{
+  uint16_t high1 = 0U, high2 = 0U, low = 0U;
+  uint32_t timecounter = 0U;
+
+  high1 = READ_REG(hrtc->Instance->CNTH & RTC_CNTH_RTC_CNT);
+  low   = READ_REG(hrtc->Instance->CNTL & RTC_CNTL_RTC_CNT);
+  high2 = READ_REG(hrtc->Instance->CNTH & RTC_CNTH_RTC_CNT);
+
+  if (high1 != high2)
+  {
+    /* In this case the counter roll over during reading of CNTL and CNTH registers,
+       read again CNTL register then return the counter value */
+    timecounter = (((uint32_t) high2 << 16U) | READ_REG(hrtc->Instance->CNTL & RTC_CNTL_RTC_CNT));
+  }
+  else
+  {
+    /* No counter roll over during reading of CNTL and CNTH registers, counter
+       value is equal to first value of CNTL and CNTH */
+    timecounter = (((uint32_t) high1 << 16U) | low);
+  }
+
+  return timecounter;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 {
 //  return;
 //  char str[20] = {0};
 //  printf("\n------------> Second event\n");
-  uint8_t oldSec = sTime.Seconds;
+  uint8_t oldCounter = 0;
   getTime(&sTime);
+  uint32_t counter = RTC_ReadTimeCounter1(hrtc);
   // Происходят пропуски и дубдирование времени. Пофиксим
-  if( (0 == sTime.Seconds) && (oldSec == 58 ) )
-    decreaseTime(&sTime);
-  else if( (sTime.Seconds - oldSec) > 1 )
-    --sTime.Seconds;
+  switch (counter - oldCounter)
+  {
+  case 0:
+    ++counter;
+    timeFromCounter(&sTime, counter);
+    break;
+  case 2:
+    --counter;
+    timeFromCounter(&sTime, counter);
+    break;
+  default:
+    break;
+  }
+  oldCounter = counter;
 
+  printf("%02d:%02d:%02d\n", sTime.Hours, sTime.Minutes, sTime.Seconds);
   saveDateByTimeBKP();
 
   requestDataSensors();

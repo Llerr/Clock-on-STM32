@@ -15,6 +15,11 @@
 
 uint8_t matrix[MATRIX_HEIGHT][MATRIX_WIDTH];
 
+uint16_t winMinX = 0;
+uint16_t winMinY = 0;
+uint16_t winMaxX = MATRIX_WIDTH-1;
+uint16_t winMaxY = MATRIX_HEIGHT-1;
+
 int stepPWM = 0;
 int brightPWM = 0;
 
@@ -84,9 +89,9 @@ void updateScreen()
 //----------------------------------------------------------------------------------------------------------------------
 void drawPoint(int x, int y, uint16_t color)
 {
-  if( y > (MATRIX_HEIGHT-1) || y < 0)
+  if( y > winMaxY || y < winMinY)
     return;
-  if( x > (MATRIX_WIDTH-1) || x < 0)
+  if( x > winMaxX || x < winMinX)
     return;
   if(TRANSPARENT == color) return;
   matrix[y][x] = color;
@@ -115,6 +120,29 @@ void drawRect(const int x1, const int y1, const int x2, const int y2, uint16_t l
         color = fillColor;
       drawPoint(x, y, color);
     }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void resetWin()
+{
+  winMinX = 0;
+  winMinY = 0;
+  winMaxX = MATRIX_WIDTH-1;
+  winMaxY = MATRIX_HEIGHT-1;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void setWinTopLeft(uint16_t x, uint16_t y)
+{
+  winMinX = x;
+  winMinY = y;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void setWinBottomRight(uint16_t x, uint16_t y)
+{
+  winMaxX = x;
+  winMaxY = y;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -260,11 +260,11 @@ void BMP280ReadData()
   {// Output value of “47445” represents 47445/1024 = 46.333 %RH
     HumRAW = BMP280Data[7]|(BMP280Data[6]<<8);
     relalHum = bme280_compensate_H_int32((int32_t)HumRAW);
-    printf("Hum RAW 0x%X (0x%X %X), calc: %lu\n", HumRAW, BMP280Data[6], BMP280Data[7], relalHum/1024);
+//    printf("Hum RAW 0x%X (0x%X %X), calc: %lu\n", HumRAW, BMP280Data[6], BMP280Data[7], relalHum/1024);
   }
   relalHum *= 100;
   relalHum /= 1024;
-  printf("BMP280 T: %ld, P: %lu, mm.Hg: %lu, Hum: %lu%%\n", realT, realP, mmHgP, relalHum);
+//  printf("BMP280 T: %ld, P: %lu, mm.Hg: %lu, Hum: %lu%%\n", realT, realP, mmHgP, relalHum);
   BMP280Temperature = realT;  // Пересчитаная температура
   BMP280Pressure = mmHgP;     // Пересчитаное давление
   BMP280Humidity = relalHum;  // Пересчитаная влажность

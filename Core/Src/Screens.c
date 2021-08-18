@@ -426,7 +426,9 @@ void drawHour(TextSets *set, void *dataPtr)          // 4 для вывода в
 {
   char buff[32];
   sprintf(buff, "%02d", sTime.Hours);
+  setWinBottomRight(26, 21);
   UB_Font_DrawPString16(set->x, set->y, buff, set->font, set->colorFont, set->colorBack);
+  resetWin();
 }
 
 //----------------------------------------------------------------------------------------------------------------------

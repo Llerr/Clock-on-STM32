@@ -71,8 +71,14 @@ uint8_t decreaseTime(RTC_TimeTypeDef *time);
  * @param time время, к которому добавляем
  * @param sec добавляемые секунды
  */
-void addTime(RTC_TimeTypeDef *time, uint16_t sec);
-
+void addTime(RTC_TimeTypeDef *time, int16_t sec);
+/**
+ * @fn void timeFromCounter(RTC_TimeTypeDef*, uint32_t)
+ * Заполнить структуру времени из счётчика
+ * @param time структура времени
+ * @param counter счётчик
+ */
+void timeFromCounter(RTC_TimeTypeDef *time, uint32_t counter);
 /**
  * @fn uint8_t timeIsEqual(RTC_TimeTypeDef*, RTC_TimeTypeDef*)
  * Сравнить время

@@ -70,13 +70,11 @@ void requestDataSensors()
     humidity = BMP280Humidity;
   }
 
-  printf("AHT10 have: %d, temp: %d (%d: %d), humidity: %lu(%lu: %d)\n", AHT10Present,
+  printf("AHT10 have: %d, temp: %d (%d: %d), humidity: %d(%lu: %d)\n", AHT10Present,
       temperature, AHT10Temperature, BMP280Temperature,
       humidity, AHT10Humidity, BMP280Humidity);
 
   pressure = BMP280Pressure;
-
-  haveAT10Data=0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
