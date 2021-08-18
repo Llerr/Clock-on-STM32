@@ -16,8 +16,8 @@
 extern "C" {
 #endif
 
-extern int AHT10_Temperature;
-extern uint32_t AHT10_Humidity;
+extern int AHT10Temperature;
+extern uint32_t AHT10Humidity;
 extern char AHT10Present;
 
 /**

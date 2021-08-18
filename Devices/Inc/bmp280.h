@@ -16,11 +16,13 @@ extern "C" {
 #endif
 
 //Адрес устройства на шине i2c
-#define BMP280_ADDRESS (0x76<<1) /// BMP280 I2C ADDRES
+#define BMP280_ADDRESS0 (0x76<<1) /// BMP280 I2C ADDRES
+#define BMP280_ADDRESS1 (0x77<<1) /// BMP280 I2C ADDRES
 
+extern int BMP280Humidity;    ///< Пересчитанная влажность
 extern int BMP280Temperature; ///< Пересчитаная температура
-extern int BMP280Pressure; ///< Пересчитаное давление
-
+extern int BMP280Pressure;    ///< Пересчитаное давление
+extern uint8_t BMx280_Addr;   ///< Адрес датчика BME/BMP (один из двух 0x76, 0x77)
 /**
  * Начальная инициализация и проверка наличия
  */
@@ -52,7 +54,7 @@ int32_t bmp280_compensate_T_int32(int32_t adc_T);
 /// Returns pressure in Pa as unsigned 32 bit integer. Output value of “96386” equals 96386 Pa = 963.86 hPa
 uint32_t bmp280_compensate_P_int32(int32_t adc_P);
 uint32_t bmp280_compensate_P_int64(int32_t adc_P);
-
+uint32_t bme280_compensate_H_int32(int32_t adc_H);
 
 
 #ifdef __cplusplus

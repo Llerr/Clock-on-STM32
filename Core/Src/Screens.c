@@ -658,11 +658,11 @@ void drawAHT10(TextSets *set, void *dataPtr)
   char buff[32];
   UB_Font_DrawPString16(0, 0, "AHT10", set->font, set->colorFont, set->colorBack);
 
-  sprintf(buff, " %d.%dC      ", AHT10_Temperature / 100, AHT10_Temperature % 100);
-  UB_Font_DrawPString16(0, 11,  buff, set->font, GREEN, set->colorBack);
+  sprintf(buff, " %d.%dC      ", AHT10Temperature / 100, AHT10Temperature % 100);
+  UB_Font_DrawPString16(0, 8,  buff, set->font, GREEN, set->colorBack);
 
-  sprintf(buff, " %ld.%ld%%    ", AHT10_Humidity/100, AHT10_Humidity%100);
-  UB_Font_DrawPString16(0, 22, buff, set->font, GREEN, set->colorBack);
+  sprintf(buff, " %ld.%ld%%    ", AHT10Humidity/100, AHT10Humidity%100);
+  UB_Font_DrawPString16(0, 16, buff, set->font, GREEN, set->colorBack);
 
 }
 
@@ -673,10 +673,13 @@ void drawBMP280(TextSets *set, void *dataPtr)
   UB_Font_DrawPString16(0, 0, "BMP280", set->font, set->colorFont, set->colorBack);
 
   sprintf(buff, " %d.%dC      ", BMP280Temperature/ 100, BMP280Temperature % 100);
-  UB_Font_DrawPString16(0, 11, buff, set->font, GREEN, set->colorBack);
+  UB_Font_DrawPString16(0, 8, buff, set->font, GREEN, set->colorBack);
 
   sprintf(buff, " %d.%dmm    ", BMP280Pressure/100, BMP280Pressure%100);
-  UB_Font_DrawPString16(0, 22, buff, set->font, GREEN, set->colorBack);
+  UB_Font_DrawPString16(0, 16, buff, set->font, GREEN, set->colorBack);
+
+  sprintf(buff, " %d.%d%%    ", BMP280Humidity/100, BMP280Humidity%100);
+  UB_Font_DrawPString16(0, 24, buff, set->font, GREEN, set->colorBack);
 
 }
 
@@ -758,9 +761,9 @@ TextSets textMenuBrightSel = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13,
 TextSets textMenuDebug     = {txtMenu,    0, 11, GREEN, TRANSPARENT, &pArial_13, drawMenu, "Debug >"};
 TextSets textMenuDebugSel  = {txtMenuSel, 0, 11, WHITE, TRANSPARENT, &pArial_13, drawMenu, "Debug >"};
 
-TextSets textDebugAHT10    = {txtAHT10, 0, 0,   WHITE, BLACK, &pArial_13, drawAHT10, "AHT10"};
+TextSets textDebugAHT10    = {txtAHT10, 0, 0,   WHITE, BLACK, &Font_5x8, drawAHT10, "AHT10"};
 
-TextSets textDebugBMP280   = {txtBMP280, 0, 0,   WHITE, BLACK, &pArial_13, drawBMP280, "BMP280"};
+TextSets textDebugBMP280   = {txtBMP280, 0, 0,   WHITE, BLACK, &Font_5x8, drawBMP280, "BMP280"};
 
 //TextSets textMenuAlrm0    = {txtMenu,    0, 0,  GREEN, BLACK, &pArial_13, drawMenu, "Alarm 1     "};
 //TextSets textMenuAlrm0Sel = {txtMenuSel, 0, 0,  WHITE, BLACK, &pArial_13, drawMenu, "Alarm 1     "};
@@ -1204,7 +1207,7 @@ ScreenDescript screenMenuAlr2 =
 //----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuDebug =
 {
-    stateMenuBrightness,
+    stateMenuDebug,
     NULL, //blink
 
     &screenMenuDebugAHT10,      // Право
@@ -1215,7 +1218,7 @@ ScreenDescript screenMenuDebug =
 
     &screenMain1, // кнопка set
 
-    inBrightness,      // Краткое нажатие средней кнопки
+    midStub,           // Краткое нажатие средней кнопки
     midStub,           // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
     2,
@@ -1225,7 +1228,7 @@ ScreenDescript screenMenuDebug =
 //----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuDebugAHT10 =
 {
-    stateMenuBrightness,
+    stateMenuDebug,
     NULL, //blink
 
     &screenMenuDebugAHT10,  // Право
@@ -1246,7 +1249,7 @@ ScreenDescript screenMenuDebugAHT10 =
 //----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuDebugBMP280 =
 {
-    stateMenuBrightness,
+    stateMenuDebug,
     NULL, //blink
 
     &screenMenuDebugBMP280,  // Право

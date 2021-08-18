@@ -123,6 +123,7 @@ void saveBrightnessBKP()
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR10, brightVals[2]);
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR11, brightVals[3]);
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR12, brightVals[4]);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR13, brightVals[5]);
   printf("Save brightness\n");
   // BKP_DR13
 }
@@ -136,11 +137,12 @@ void loadBrightnessBKP()
   brightVals[2] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR10);
   brightVals[3] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR11);
   brightVals[4] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR12);
+  brightVals[5] = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR13);
   // Если ничего не сохранено, скорректируем
   if(brightnessAll[0] == 0)
   {
-    for(int i = 0; i < 10; ++i)
-      brightnessAll[i] = 1+i*24;
+    for(int i = 0; i < 11; ++i)
+      brightnessAll[i] = 1+i*20;
   }
   printf("Load brightness\n");
   // BKP_DR13

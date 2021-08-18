@@ -31,65 +31,52 @@ void initSensors()
 //----------------------------------------------------------------------------------------------------------------------
 void requestDataSensors()
 {
-  uint8_t haveTemp = 0;
-  static uint8_t aht10Count = 0;
-//  static uint8_t reset = 0;
+  uint8_t haveAT10Data = 0;
+  static uint8_t aht10Count = 9;
+  //  static uint8_t reset = 0;
 
   MAX44009RequestData();
   changeBrightness();
   BMP280ReadData();
 
-//  if(!reset)
+  //  if(!reset)
   // Опрашиваем не чаще, чем раз в 8 секунд
   // Так рекомендуют.
   if(9 == aht10Count )
   {
     aht10Count = 0;
     AHT10RequestData();
+    if(AHT10Present)
+      haveAT10Data = 1;
   }
   ++aht10Count;
 
   if(AHT10Present)
   {
-    if(AHT10_Temperature > 13500 || 0 == AHT10_Humidity )
-    {
-//      if(!reset)
-//      {
-//        printf("Reset AHT10\n");
-//        AHT10Reset();
-//        reset = 1;
-//      }
-//      else
-//        reset = 0;
-//      AHT10Present = 0; // Если нереальная температура, то скажем, что датчика нет.
-      AHT10_Humidity = 0;
-//      return;
-    }
-//    printf("AHT10 have: %d, temp: %d, press: %lu\n", AHT10Present, AHT10_Temperature, AHT10_Humidity);
-    if(AHT10_Humidity > 0) // Если адекватная влажность
-      humidity = AHT10_Humidity;
-    if(AHT10_Temperature < 13500) // Если адекватная
-    {
-      temperature = AHT10_Temperature;
-      haveTemp = 1;
-    }
-  }
-  if(BMP280Temperature > -30000) //Если пришла температура
-  {
-    if(haveTemp) // Есть на предыдущем шаге
-    {
-      temperature += BMP280Temperature; //Усредним показания
-      temperature /=2;
-    }
-    else
-      temperature = BMP280Temperature;
+    humidity = AHT10Humidity;
+    temperature = AHT10Temperature;
   }
 
-  if(BMP280Pressure > 0) // Если получили давление
+  if(haveAT10Data) // Есть на предыдущем шаге
   {
-    pressure = BMP280Pressure;
+    temperature +=  BMP280Temperature; //Усредним показания
+    temperature /=2;
+    humidity += BMP280Humidity;
+    humidity /= 2;
   }
-  haveTemp=0;
+  else
+  {
+    temperature = BMP280Temperature;
+    humidity = BMP280Humidity;
+  }
+
+  printf("AHT10 have: %d, temp: %d (%d: %d), humidity: %lu(%lu: %d)\n", AHT10Present,
+      temperature, AHT10Temperature, BMP280Temperature,
+      humidity, AHT10Humidity, BMP280Humidity);
+
+  pressure = BMP280Pressure;
+
+  haveAT10Data=0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

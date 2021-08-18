@@ -26,7 +26,7 @@ extern Alarm alarmEdit;
 
 extern uint8_t alarmOnCount; ///< Количество включёных таймеров
 
-extern uint8_t  brightnessAll[10]; ///< Массив значений яркостей экрана
+extern uint8_t  brightnessAll[12]; ///< Массив значений яркостей экрана
 extern uint16_t illuminationAll[10]; ///< Массив значений окружающих яркостей
 
 typedef enum WeekDays_t

@@ -227,7 +227,7 @@ void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
   {
     AHT10MasterRxCpltCallback(hi2c);
   }
-  if(BMP280_ADDRESS == hi2c->Devaddress)
+  if(BMx280_Addr == hi2c->Devaddress)
   {
     BMP280MasterRxCpltCallback(hi2c);
   }
