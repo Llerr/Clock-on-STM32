@@ -31,7 +31,7 @@ void initSensors()
 //----------------------------------------------------------------------------------------------------------------------
 void requestDataSensors()
 {
-  uint8_t haveAT10Data = 0;
+  static uint8_t haveAT10Data = 0;
   static uint8_t aht10Count = 9;
   //  static uint8_t reset = 0;
 
@@ -46,7 +46,7 @@ void requestDataSensors()
   {
     aht10Count = 0;
     AHT10RequestData();
-    if(AHT10Present)
+    if(AHT10Temperature < 500) // Просто некая температура, меньше чем значение по умолчанию
       haveAT10Data = 1;
   }
   ++aht10Count;
@@ -70,7 +70,7 @@ void requestDataSensors()
     humidity = BMP280Humidity;
   }
 
-  printf("AHT10 have: %d, temp: %d (%d: %d), humidity: %d(%lu: %d)\n", AHT10Present,
+  printf("AHT10 pr/have: %d/%d, temp: %d (%d: %d), humidity: %d(%lu: %d)\n", AHT10Present, haveAT10Data,
       temperature, AHT10Temperature, BMP280Temperature,
       humidity, AHT10Humidity, BMP280Humidity);
 
