@@ -12,7 +12,7 @@
 #include "buttons.h"
 #include "MatrixRGB.h"
 #include "stm32_ub_font.h"
-#include "Screens.h"
+#include "Screen/Screens.h"
 #include "tim.h"
 #include "rtc.h"
 #include "sensors.h"
@@ -394,21 +394,21 @@ void buttonReceiverCountdownEdit()
 
   if(editNum<2) //Правим часы
   {
-    sCountdownEdit.Hours += delta;
-    sCountdownEdit.Hours -= (sCountdownEdit.Hours > 99)?delta:0;
+    editTime->Hours += delta;
+    editTime->Hours -= (editTime->Hours > 99)?delta:0;
   }
   else if(editNum<4) //Правим минуты
   {
-    sCountdownEdit.Minutes += delta;
-    sCountdownEdit.Minutes -= (sCountdownEdit.Minutes > maxMinutes)?delta:0;
+    editTime->Minutes += delta;
+    editTime->Minutes -= (editTime->Minutes > maxMinutes)?delta:0;
   }
   else // Правим секунды
   {
-    sCountdownEdit.Seconds += delta;
-    sCountdownEdit.Seconds -= (sCountdownEdit.Seconds > maxSeconds)?delta:0;
+    editTime->Seconds += delta;
+    editTime->Seconds -= (editTime->Seconds > maxSeconds)?delta:0;
  }
 
-  sprintf(editText, "%02d:%02d:%02d", sCountdownEdit.Hours, sCountdownEdit.Minutes, sCountdownEdit.Seconds);
+  sprintf(editText, "%02d:%02d:%02d", editTime->Hours, editTime->Minutes, editTime->Seconds);
 
   uint8_t delimSize = UB_Font_WidthPChar32(':', screenCur->text[0]->font);
   uint8_t digitSize = UB_Font_WidthPChar32('1', screenCur->text[0]->font); // Пока все цифры одной ширины

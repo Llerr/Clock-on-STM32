@@ -13,7 +13,7 @@
 #include "lightSensor.h"
 #include "sensors.h"
 #include "utils.h"
-#include "Screens.h"
+#include "Screen/Screens.h"
 
 int temperature = -300;
 int humidity = -1;

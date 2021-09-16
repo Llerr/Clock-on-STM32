@@ -145,6 +145,8 @@ void loadBrightnessBKP()
       brightnessAll[i] = 1+i*20;
   }
   printf("Load brightness\n");
+  for(int i = 0; i < 12; ++i)
+    printf(" %d, ", brightnessAll[i]);
   // BKP_DR13
 }
 

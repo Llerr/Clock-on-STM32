@@ -32,4 +32,6 @@ extern Picture picBell;
 extern Picture picClock;
 extern Picture picSleep;
 
+extern Picture picPomidoro;
+
 #endif /* INC_PICTURES_H_ */

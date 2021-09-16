@@ -26,16 +26,20 @@
 #include "stm32f1xx_hal_rtc.h"
 
 #include "sensors.h"
-#include "Screens.h"
+#include "Screen/Screens.h"
 #include "i2c.h"
 #include "main.h"
 #include "sensors.h"
 #include "backup.h"
 #include "utils.h"
+#include "pomidoro.h"
+
 
 RTC_TimeTypeDef sTime = {0};
 RTC_TimeTypeDef sCountdown = {0};
 RTC_TimeTypeDef sCountdownEdit = {0};
+
+
 RTC_DateTypeDef sDate = {0};
 RTC_AlarmTypeDef sAlarm = {0}; // структура будильника
 
@@ -173,7 +177,7 @@ void getDate(RTC_DateTypeDef *date)
 //----------------------------------------------------------------------------------------------------------------------
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
-//  printf("============Alarm event===========\n");
+//  pomidoroTimerCallBack();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -208,7 +212,8 @@ void HAL_RTCEx_RTCEventCallback(RTC_HandleTypeDef *hrtc)
 //  return;
 //  char str[20] = {0};
 //  printf("\n------------> Second event\n");
-  uint8_t oldCounter = 0;
+  static uint8_t oldCounter = 0;
+
   getTime(&sTime);
   uint32_t counter = RTC_ReadTimeCounter1(hrtc);
   // Происходят пропуски и дубдирование времени. Пофиксим

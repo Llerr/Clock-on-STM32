@@ -8,7 +8,8 @@
 #ifndef INC_SENSORS_H_
 #define INC_SENSORS_H_
 
-//#include "aht10.h"
+#include "aht10.h"
+#include "bmp280.h"
 
 extern int temperature;
 extern int humidity;

@@ -38,7 +38,8 @@
 
 #include "aht10.h"
 #include "MatrixRGB.h"
-#include "Screens.h"
+#include "Screen/Screens.h"
+#include "pomidoro.h"
 
 #include "audio.h"
 
@@ -173,6 +174,8 @@ int main(void)
   loadBrightnessBKP();
   setDate(&sDate);
   getTime(&sTime);
+
+  resetPomidoro();
 
   puts("Enter to loop");
   while (1)

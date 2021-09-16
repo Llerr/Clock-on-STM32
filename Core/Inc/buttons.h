@@ -8,7 +8,9 @@
 #ifndef INC_BUTTONS_H_
 #define INC_BUTTONS_H_
 
-#include <buttons.h>
+#include <stdint.h>
+
+#include "buttons.h"
 
 typedef enum ButtonClick_t
 {

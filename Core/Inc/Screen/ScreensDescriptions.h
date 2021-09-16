@@ -1,39 +1,30 @@
-/**
- * @file Screens.h структура экранов и их содержимое
+/*
+ * ScreensDescriptions.h
+ *
+ *  Created on: 11 сент. 2021 г.
+ *      Author: lex
  */
-#pragma once
 
-#include <stdint.h>
-#include <limits.h>
-
-#include "MatrixRGB.h"
-#include "stm32_ub_font.h"
-
-#define RED     1
-#define GREEN   2
-#define BLUE    4
-#define BLACK   0
-#define WHITE   RED|GREEN|BLUE
-#define YELLOW  RED|GREEN
-#define VIOLET  RED|BLUE
-#define MAGENTA GREEN|BLUE
-#define TRANSPARENT 8      ///< Прозрачный
-
-#define NUM_MENU 4 ///< Количество пунктов меню
+#ifndef INC_SCREEN_SCREENSDESCRIPTIONS_H_
+#define INC_SCREEN_SCREENSDESCRIPTIONS_H_
 
 enum StateTypeEnum
 {
-  stateTime,
   stateClock,
   stateSleep,
-  stateTimer,
-  stateCountDown,
+
+  stateTime,
+//  stateTimer,
   stateBrightness,
+  stateCountDown,
+  stateDate,
+  statePomidoro,
 //  stateMenu,
   stateMenuTime,
   stateMenuDate,
   stateMenuAlarm,
   stateMenuBrightness,
+  stateMenuPomidoro,
   stateMenuDebug,
   stateMenuAlarm1,
   stateMenuAlarm2,
@@ -72,6 +63,9 @@ enum TextTypeEnum
   txtMenuSel,           ///< 16 для вывода меню
   txtCountdownInfo,     ///< 17 поясняющая надпись таймера
   txtCountdownFinish,   ///< 18 Надпись FINISH для таймера
+  txtPomidoroWork,
+  txtPomidoroRest,
+  txtPomidoroInfo,
   txtAlarmDays,
   txtTimeEdit,
   txtDateEdit,
@@ -103,7 +97,8 @@ typedef struct TextSets_t
 typedef struct ScreenDescript_t
 {
   enum StateTypeEnum type; ///< Тип экрана
-  TextSets *blink; ///< Строка для мигания
+  TextSets *blink;         ///< Строка для мигания
+  uint8_t autoReset;       ///< Автоматически выходить из режима
   struct ScreenDescript_t *nextMode; ///< следующий экран режима
   struct ScreenDescript_t *prevMode; ///< предыдущий экран режима
   struct ScreenDescript_t *nextState; ///< следующий режим
@@ -123,51 +118,9 @@ typedef struct ScreenDescript_t
   TextSets *text[]; ///< Массив строк, для вывода
 } ScreenDescript;
 
-extern int brightCur; ///< Текущая яркость
-extern uint8_t counterForScreens; ///< Счётчик для переключения экранов
-extern uint8_t resetCounter;      ///< Счётчик для перехода к начальному режиму (Отображение времени)
+extern char *weekText[];
 
-extern int menu;      ///< Текущий пенкт меню
-extern char editMode; ///< Флаг редактирования
-extern char editText[32]; ///< Текст для редактирования
-extern char editTextDays[32]; ///< Текст для редактирования рабочих дней
-extern char editTextOffDays[32]; ///< Текст для редактирования выходных
-extern char editTextAlarmOn[32]; ///< Текст для редактирования одиночного будильника
-
-extern char blinkText[32]; ///< Текст для мигания
-
-/**
- * Начальная инициаизация экранов
- */
-void initScreens();
-///Установка яркости экрана
-void setBrightness();
-
-/// Долгое нажатие для отображения меню
-//void midStub(int8_t longPress, void *dataPtr);
-//void showMenu(int8_t longPress, void *dataPtr);
-//void timerStartStop(int8_t longPress, void *dataPtr);
-//void countdownStartStop(int8_t longPress, void *dataPtr);
-/**
- * Отрасовка экрана
- */
-void drawScreen();
-void screenSecondCallback();
-void clearScreen();
-void nextScreenMode();
-void drawBars();
-/**
- * Функция переодически рисующая то цветом фона то основным.
- */
-void blink(uint8_t change);
-
-/**
- * @fn void checkAlarms()
- * Проверка будильников на срабатывание.
- * Если будильник сработал, то добавим к таймеру сна 10 минут.
- */
-void checkAlarms();
-
+//----------------------------------------------------------------------------------------------------------------------
 extern ScreenDescript *screenCur;  ///< Текущий экран
 extern ScreenDescript *screenPrev;  ///< Предыдущий экран
 
@@ -181,18 +134,21 @@ extern TextSets textBlinkDays; // Рабочий день недели, для �
 extern TextSets textBlinkOffDays; // Выходной день недели, для мигания
 extern TextSets textBlinkAlarmOn; // Одиночный будильник, для мигания
 
+//----------------------------------------------------------------------------------------------------------------------
+extern ScreenDescript screenClock;
+extern ScreenDescript screenSleep;
+
 extern ScreenDescript screenMain1;
 extern ScreenDescript screenMain2;
 extern ScreenDescript screenMain3;
 extern ScreenDescript screenMain4;
-extern ScreenDescript screenClock;
-extern ScreenDescript screenSleep;
-extern ScreenDescript screenTimer;
 extern ScreenDescript screenDate;
 extern ScreenDescript screenCountdown;
+extern ScreenDescript screenBrightness;
+extern ScreenDescript screenPomidoro;
+
 extern ScreenDescript screenCountdownFinish;
 extern ScreenDescript screenCountdownEdit;
-extern ScreenDescript screenBrightness;
 extern ScreenDescript screenBrightnessEdit;
 extern ScreenDescript screenMenuTime;
 extern ScreenDescript screenMenuDate;
@@ -202,6 +158,12 @@ extern ScreenDescript screenMenuAlr0;
 extern ScreenDescript screenMenuAlr1;
 extern ScreenDescript screenMenuAlr2;
 extern ScreenDescript screenMenuDebug;
+extern ScreenDescript screenMenuPomidoro;          ///< Общее меню помидора
+extern ScreenDescript screenMenuPomidoroWork;      ///< Время работы
+extern ScreenDescript screenMenuPomidoroSmallRest; ///< Время короткого перерыва
+extern ScreenDescript screenMenuPomidoroBigRest;   ///< Время длинного перерыва
+extern ScreenDescript screenMenuPomidorosNum;      ///< Количество помидоров в сутках
+extern ScreenDescript screenMenuPomidorosSeries;   ///< Количество помидоров до большого перерыва
 extern ScreenDescript screenMenuDebugAHT10;
 extern ScreenDescript screenMenuDebugBMP280;
 
@@ -216,3 +178,6 @@ extern ScreenDescript screenEditDate;
 //extern ScreenDescript screenCountdown; ///< Экран счётчика
 //extern ScreenDescript screenBrightness; ///< Экран яркости
 //extern ScreenDescript *screenMenu[]; ///< Экран с меню
+
+
+#endif /* INC_SCREEN_SCREENSDESCRIPTIONS_H_ */
