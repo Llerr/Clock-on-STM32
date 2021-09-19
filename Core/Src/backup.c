@@ -7,6 +7,7 @@
 #include "backup.h"
 #include "rtc.h"
 #include "utils.h"
+#include "pomidoro.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 void saveDateByTimeBKP()
@@ -150,3 +151,54 @@ void loadBrightnessBKP()
   // BKP_DR13
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+void savePomidoroBKP()
+{
+  uint32_t saveval = timeToCounter(&sPomidoroWork);
+  saveval = (saveval > UINT16_MAX)?UINT16_MAX:saveval;
+  printf("Save work time in count: %lu\n", saveval);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR14, saveval);
+
+  saveval = timeToCounter(&sPomidoroSmallRest);
+  saveval = (saveval > UINT16_MAX)?UINT16_MAX:saveval;
+  printf("Save small rest time in count: %lu\n", saveval);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR15, saveval);
+
+  saveval = timeToCounter(&sPomidoroBigRest);
+  saveval = (saveval > UINT16_MAX)?UINT16_MAX:saveval;
+  printf("Save big rest time in count: %lu\n", saveval);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR16, saveval);
+
+  saveval = (((uint8_t)numPomidoros) << 8) | (uint8_t)numInSeries;
+  printf("Save num pomidoros and series: 0x%lX (%d,%d)\n", saveval, numPomidoros, numInSeries);
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR17, saveval);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void loadPomidoroBKP()
+{
+  uint32_t saveval = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR14);
+  printf("Init pomidoro....\n");
+  if(saveval != 0) // Если что то сохранено, то будем читать
+  {
+    timeFromCounter(&sPomidoroWork, saveval);
+
+
+    saveval = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR15);
+    timeFromCounter(&sPomidoroSmallRest, saveval);
+
+    saveval = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR16);
+    timeFromCounter(&sPomidoroBigRest, saveval);
+
+    saveval = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR17);
+    printf("Num an series 0x%lX\n", saveval);
+    numInSeries = saveval&0xFF;
+    numPomidoros = (saveval >> 8);
+    printf("Load from backup domain\n");
+  }
+  printf("Work       time: %d:%d:%d\n", sPomidoroWork.Hours, sPomidoroWork.Minutes, sPomidoroWork.Seconds);
+  printf("Small rest time: %d:%d:%d\n", sPomidoroSmallRest.Hours, sPomidoroSmallRest.Minutes, sPomidoroSmallRest.Seconds);
+  printf("Big rest   time: %d:%d:%d\n", sPomidoroBigRest.Hours, sPomidoroBigRest.Minutes, sPomidoroBigRest.Seconds);
+  printf("Num pomidoros in day: %d, num pomidoros in series: %d\n", numPomidoros, numInSeries);
+
+}

@@ -94,10 +94,21 @@ void pomidoroReset(void *dataPtr);
 void countdownFinish(void *dataPtr);
 void saveCountdown(void *dataPtr);
 void saveBrightness(void *dataPtr);
+void savePomidoroWork(void *dataPtr);
+void savePomidoroSmallRest(void *dataPtr);
+void savePomidoroBigRest(void *dataPtr);
+void savePomidoroNumInDay(void *dataPtr);
+void savePomidoroNumInSeries(void *dataPtr);
+
 void midStub(void *dataPtr);           ///< Заглушка
 void selectMenuTime(void *dataPtr);    ///< Редактрование текущего времени (выбор в меню)
 void selectMenuAlarm(void *dataPtr);   ///< Редактрование текущего времени (выбор в меню)
 void selectMenuDate(void *dataPtr);    ///< Редактрование даты
+void selectMenuPomidoroWork(void *dataPtr);
+void selectMenuPomidoroSmallRest(void *dataPtr);
+void selectMenuPomidoroBigRest(void *dataPtr);
+void selectMenuPomidoroNumInDay(void *dataPtr);
+void selectMenuPomidoroNumInSeries(void *dataPtr);
 void showMenu(void *dataPtr);
 void timerStartStop(void *dataPtr);
 

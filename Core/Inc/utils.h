@@ -80,6 +80,13 @@ void addTime(RTC_TimeTypeDef *time, int16_t sec);
  */
 void timeFromCounter(RTC_TimeTypeDef *time, uint32_t counter);
 /**
+ * @fn void timeToCounter(RTC_TimeTypeDef*, uint32_t*)
+ * Посчитать счётчик из структуры времени
+ * @param time структура времени
+ * @return счётчик
+ */
+uint32_t timeToCounter(RTC_TimeTypeDef *time);
+/**
  * @fn uint8_t timeIsEqual(RTC_TimeTypeDef*, RTC_TimeTypeDef*)
  * Сравнить время
  * @param time1 время для сравнения

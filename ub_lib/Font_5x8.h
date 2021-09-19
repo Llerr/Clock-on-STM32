@@ -8,6 +8,8 @@
 #ifndef FONT_5X8_H_
 #define FONT_5X8_H_
 
+#include "stm32_ub_font.h"
+
 #define USE_FONT_5x8
 
 extern UB_pFont Font_5x8;

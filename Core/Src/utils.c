@@ -95,15 +95,11 @@ uint8_t decreaseTime(RTC_TimeTypeDef *time)
 //----------------------------------------------------------------------------------------------------------------------
 void addTime(RTC_TimeTypeDef *time, int16_t sec)
 {
-  uint32_t lineTime =  (uint32_t)(((uint32_t)time->Hours * 3600U) + \
-                      ((uint32_t)time->Minutes * 60U) + \
-                      ((uint32_t)time->Seconds));
+  uint32_t lineTime =  timeToCounter(time);
 
   lineTime += sec;
 
-  time->Hours = (lineTime / 3600U)%24;
-  time->Minutes  = (uint8_t)((lineTime % 3600U) / 60U);
-  time->Seconds  = (uint8_t)((lineTime % 3600U) % 60U);
+  timeFromCounter(time, lineTime);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -112,6 +108,14 @@ void timeFromCounter(RTC_TimeTypeDef *time, uint32_t counter)
   time->Hours = (counter / 3600U)%24;
   time->Minutes  = (uint8_t)((counter % 3600U) / 60U);
   time->Seconds  = (uint8_t)((counter % 3600U) % 60U);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+uint32_t timeToCounter(RTC_TimeTypeDef *time)
+{
+  return  (uint32_t)(((uint32_t)time->Hours * 3600U) + \
+                        ((uint32_t)time->Minutes * 60U) + \
+                        ((uint32_t)time->Seconds));
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -52,5 +52,15 @@ void saveBrightnessBKP();
  * Прочитать настройки яркости из backup domain
  */
 void loadBrightnessBKP();
+/**
+ * @fn void savePomidoro()
+ * Сохранить настройки помидорного таймера
+ */
+void savePomidoroBKP();
+/**
+ * @fn void loadPomidoro()
+ * Прочитать настройки помидорного таймера
+ */
+void loadPomidoroBKP();
 
 #endif /* INC_BACKUP_H_ */

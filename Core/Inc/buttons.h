@@ -21,7 +21,8 @@ typedef enum ButtonClick_t
 
 extern volatile uint16_t GPIO_Press_Pin;
 extern volatile ButtonClick haveClick;
-extern int8_t editNum;
+extern int maxNumEdit; ///< Максимальное число для редактирования
+extern int *numEdit; ///< Редактируемое число
 
 //void (*buttonReceiver)(); ///< Получатель событий кнопок
 
@@ -30,6 +31,7 @@ void buttonReceiverTimeEdit();
 void buttonReceiverAlarmEdit();
 void buttonReceiverDateEdit();
 void buttonReceiverCountdownEdit();
+void buttonReceiverNumEdit();
 void buttonReceiverBrightEdit();
 
 void clickButton();

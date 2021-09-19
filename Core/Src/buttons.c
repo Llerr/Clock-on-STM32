@@ -42,6 +42,8 @@ uint8_t maxSeconds = 59; ///< Секунд в минуте
 uint8_t maxDays = 31;  ///< Дней в месяце (в коде корректируется)
 uint8_t maxMouns = 12; ///< Количество месяцев в году
 uint maxYear = 99;     ///< Максимальное значение года
+int maxNumEdit = 255; ///< Максимальное число для редактирования
+int *numEdit; ///< Редактируемое число
 
 uint8_t edit = 0;
 
@@ -425,7 +427,7 @@ void buttonReceiverCountdownEdit()
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void buttonReceiverBrightEdit()
+void buttonReceiverNumEdit()
 {
 //  static int currBright = 255;
   int mult[] = {100, 10, 1};
@@ -441,12 +443,12 @@ void buttonReceiverBrightEdit()
     if(editNum > 2) editNum = 2;
     break;
   case BTN_UP_Pin:
-    brightCur += mult[editNum];
-    if(brightCur > 255) brightCur -= mult[editNum];
+    *numEdit += mult[editNum];
+    if(*numEdit > maxNumEdit) *numEdit -= mult[editNum];
     break;
   case BTN_DOWN_Pin:
-    brightCur -= mult[editNum];
-    if(brightCur < 0) brightCur += mult[editNum];
+    *numEdit -= mult[editNum];
+    if(*numEdit < 0) *numEdit += mult[editNum];
     break;
   case BTN_MID_Pin:
     screenCur->midPress(NULL);
@@ -457,9 +459,8 @@ void buttonReceiverBrightEdit()
   textBlink32.x = textEditBright32.x + (editNum) * digitSize;
   textBlink32.y = textEditBright32.y;
 
-//  illumination =  (3-editNum)*1000 +  textBlink32.x*100 + textBlink32.y;
 
-  sprintf(editText, "%03d", brightCur);
+  sprintf(editText, "%03d", *numEdit);
   editText[4]  = '\0';
   blinkText[0] = editText[editNum];
   blinkText[1] = '\0';
@@ -467,9 +468,15 @@ void buttonReceiverBrightEdit()
   editText[editNum] = 127; // Пробел под цифру
 
   printf("[%d, %d], %d - '%s'\n",textBlink32.x, textBlink32.y, editNum, editText);
+  clearScreen();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void buttonReceiverBrightEdit()
+{
+  buttonReceiverNumEdit();
 
   calcBrightPWM();
-  clearScreen();
 }
 
 

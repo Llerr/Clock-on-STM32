@@ -150,6 +150,12 @@ extern ScreenDescript screenPomidoro;
 extern ScreenDescript screenCountdownFinish;
 extern ScreenDescript screenCountdownEdit;
 extern ScreenDescript screenBrightnessEdit;
+extern ScreenDescript screenPomidoroWorkEdit;
+extern ScreenDescript screenPomidoroSmallRestEdit;
+extern ScreenDescript screenPomidoroBigRestEdit;
+extern ScreenDescript screenPomidoroNumInDayEdit;
+extern ScreenDescript screenPomidoroNumInSeriesEdit;
+
 extern ScreenDescript screenMenuTime;
 extern ScreenDescript screenMenuDate;
 extern ScreenDescript screenMenuAlarm;
@@ -158,12 +164,12 @@ extern ScreenDescript screenMenuAlr0;
 extern ScreenDescript screenMenuAlr1;
 extern ScreenDescript screenMenuAlr2;
 extern ScreenDescript screenMenuDebug;
-extern ScreenDescript screenMenuPomidoro;          ///< Общее меню помидора
-extern ScreenDescript screenMenuPomidoroWork;      ///< Время работы
-extern ScreenDescript screenMenuPomidoroSmallRest; ///< Время короткого перерыва
-extern ScreenDescript screenMenuPomidoroBigRest;   ///< Время длинного перерыва
-extern ScreenDescript screenMenuPomidorosNum;      ///< Количество помидоров в сутках
-extern ScreenDescript screenMenuPomidorosSeries;   ///< Количество помидоров до большого перерыва
+extern ScreenDescript screenMenuPomidoro;             ///< Общее меню помидора
+extern ScreenDescript screenMenuPomidoroWork;         ///< Время работы
+extern ScreenDescript screenMenuPomidoroSmallRest;    ///< Время короткого перерыва
+extern ScreenDescript screenMenuPomidoroBigRest;      ///< Время длинного перерыва
+extern ScreenDescript screenMenuPomidorosNumInDay;    ///< Количество помидоров в сутках
+extern ScreenDescript screenMenuPomidorosNumInSeries; ///< Количество помидоров до большого перерыва
 extern ScreenDescript screenMenuDebugAHT10;
 extern ScreenDescript screenMenuDebugBMP280;
 

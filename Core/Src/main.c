@@ -172,6 +172,7 @@ int main(void)
   loadDateBKP(&sDate);
   loadAlarmsBKP();
   loadBrightnessBKP();
+  loadPomidoroBKP();
   setDate(&sDate);
   getTime(&sTime);
 

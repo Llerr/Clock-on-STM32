@@ -12,6 +12,7 @@
 
 #include "stm32f1xx_hal.h"
 
+#define HAVE_SOUND
 /**
  * @struct Audio_t
  * Описание структуры аудиоданных

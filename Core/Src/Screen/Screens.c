@@ -143,7 +143,7 @@ void blink(uint8_t change)
 void sleepOn()
 {
   printf("Sleep On\n");
-  screenCur = &screenSleep; // Переключимся на экран сна
+  setScreen(&screenSleep); // Переключимся на экран сна
   alarmSetState(&alarmSleep, 1); //включим сон
   bellTimeOff = -1;
   stopSound();
@@ -153,7 +153,7 @@ void sleepOn()
 void alarmOff()
 {
   printf("Alarm Off\n");
-  screenCur = &screenMain1; // Переключимся на основное время
+  setScreen(&screenMain1); // Переключимся на основное время
   alarmSetState(&alarmSleep, 0); //отключим сон
   bellTimeOff = -1;
   stopSound();
@@ -163,7 +163,7 @@ void alarmOff()
 void alarmOn(Alarm *alrm)
 {
   printf("Alarm On\n");
-  screenCur = &screenClock;
+  setScreen(&screenClock);
   alarmSleep.alarmTime = alrm->alarmTime;
   addTime(&alarmSleep.alarmTime, SLEEP_TIME);
   bellTimeOff = BELL_TIME_OFF;
@@ -220,7 +220,7 @@ void setBrightness()
 //----------------------------------------------------------------------------------------------------------------------
 void initScreens()
 {
-  screenCur = &screenMain1;
+  setScreen(&screenMain1);
 
   //   printf("screenMain1: %p\n", &screenMain1);
   //   printf("screenMain2: %p\n", &screenMain2);
@@ -234,7 +234,7 @@ void initScreens()
 void saveTime(void *dataPtr)
 {
   setTime(&sTimeEdit);
-  screenCur = screenCur->backState;
+  setScreen(screenCur->backState);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ void saveDate(void *dataPtr)
   setDate(&sDateEdit);
   getDate(&sDate);
   saveDateBKP(&sDateEdit);
-  screenCur = screenCur->backState;
+  setScreen(screenCur->backState);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -266,7 +266,7 @@ void saveAlarm(void *dataPtr)
   }
 
   saveAlarmsBKP();
-  screenCur = screenCur->backState;
+  setScreen(screenCur->backState);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -274,7 +274,8 @@ void inBrightness(void *dataPtr) ///< Вход в редактирование �
 {
   clearMatrix();
   screenBrightnessEdit.backState = screenCur;
-  screenCur = &screenBrightnessEdit;
+  setScreen(&screenBrightnessEdit);
+  numEdit = &brightCur;
 
   GPIO_Press_Pin = 0;
   buttonReceiverBrightEdit();
@@ -285,7 +286,7 @@ void inCountdownEdit(void *dataPtr) ///< Вход в редактировани�
 {
   clearMatrix();
   screenCountdownEdit.backState = screenCur;
-  screenCur = &screenCountdownEdit;
+  setScreen(&screenCountdownEdit);
   editTime = &sCountdownEdit;
 
   GPIO_Press_Pin = 0;
@@ -321,7 +322,7 @@ void pomidoroReset(void *dataPtr)
 //----------------------------------------------------------------------------------------------------------------------
 void countdownFinish(void *dataPtr)
 {
-  screenCur = &screenCountdown;
+  setScreen(&screenCountdown);
   sCountdown = sCountdownEdit;
   stopSound();
 }
@@ -329,7 +330,7 @@ void countdownFinish(void *dataPtr)
 //----------------------------------------------------------------------------------------------------------------------
 void saveCountdown(void *dataPtr)
 {
-  screenCur = screenCur->backState;
+  setScreen(screenCur->backState);
   sCountdown = sCountdownEdit;
   clearScreen();
 }
@@ -338,11 +339,58 @@ void saveCountdown(void *dataPtr)
 void saveBrightness(void *dataPtr)
 {
   uint8_t idx = getBrightnessIndex();
-  screenCur = screenCur->backState;
+  setScreen(screenCur->backState);
   clearScreen();
   brightnessAll[idx] = brightCur;
   printf("Save brightness\n");
   saveBrightnessBKP();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void savePomidoroWork(void *dataPtr)
+{
+  setScreen(screenCur->backState);
+  sPomidoroWork = sPomidoroEdit;
+  clearScreen();
+  savePomidoroBKP();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void savePomidoroSmallRest(void *dataPtr)
+{
+  setScreen(screenCur->backState);
+  sPomidoroSmallRest = sPomidoroEdit;
+  clearScreen();
+  savePomidoroBKP();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void savePomidoroBigRest(void *dataPtr)
+{
+  setScreen(screenCur->backState);
+//  printf("Pom edit %d:%d:%d\n", sPomidoroEdit.Hours, sPomidoroEdit.Minutes, sPomidoroEdit.Seconds);
+  sPomidoroBigRest = sPomidoroEdit;
+//  printf("Pom work %d:%d:%d\n", sPomidoroWork.Hours, sPomidoroWork.Minutes, sPomidoroWork.Seconds);
+  clearScreen();
+  savePomidoroBKP();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void savePomidoroNumInDay(void *dataPtr)
+{
+  setScreen(screenCur->backState);
+//  sPomidoroBigRest = sPomidoroEdit;
+  clearScreen();
+  savePomidoroBKP();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void savePomidoroNumInSeries(void *dataPtr)
+{
+  setScreen(screenCur->backState);
+//  sPomidoroBigRest = sPomidoroEdit;
+  clearScreen();
+  savePomidoroBKP();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -366,7 +414,7 @@ void selectMenuTime(void *dataPtr) ///< Редактрование текуще�
 void selectMenuAlarm(void *dataPtr) ///< Редактрование текущего времени (выбор в меню)
 {
   screenEditAlarm.backState = screenCur;
-  screenCur = &screenEditAlarm;
+  setScreen(&screenEditAlarm);
   switch (screenCur->backState->type)
   {
     case stateMenuAlarm1:
@@ -392,7 +440,7 @@ void selectMenuAlarm(void *dataPtr) ///< Редактрование текуще
 void selectMenuDate(void *dataPtr) ///< Редактрование даты
 {
   screenEditDate.backState = screenCur;
-  screenCur = &screenEditDate;
+  setScreen(&screenEditDate);
   clearScreen();
   GPIO_Press_Pin = 0;
   getDate(&sDateEdit);
@@ -400,10 +448,73 @@ void selectMenuDate(void *dataPtr) ///< Редактрование даты
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+void selectMenuPomidoroWork(void *dataPtr)
+{
+  clearMatrix();
+  screenPomidoroWorkEdit.backState = screenCur;
+  setScreen(&screenPomidoroWorkEdit);
+  sPomidoroEdit = sPomidoroWork;
+  editTime = &sPomidoroEdit;
+
+  GPIO_Press_Pin = 0;
+  buttonReceiverCountdownEdit();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void selectMenuPomidoroSmallRest(void *dataPtr)
+{
+  clearMatrix();
+  screenPomidoroSmallRestEdit.backState = screenCur;
+  setScreen(&screenPomidoroSmallRestEdit);
+  sPomidoroEdit = sPomidoroSmallRest;
+  editTime = &sPomidoroEdit;
+
+  GPIO_Press_Pin = 0;
+  buttonReceiverCountdownEdit();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void selectMenuPomidoroBigRest(void *dataPtr)
+{
+  clearMatrix();
+  screenPomidoroBigRestEdit.backState = screenCur;
+  setScreen(&screenPomidoroBigRestEdit);
+  sPomidoroEdit = sPomidoroBigRest;
+  editTime = &sPomidoroEdit;
+
+  GPIO_Press_Pin = 0;
+  buttonReceiverCountdownEdit();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void selectMenuPomidoroNumInDay(void *dataPtr)
+{
+  clearMatrix();
+  screenPomidoroNumInDayEdit.backState = screenCur;
+  setScreen(&screenPomidoroNumInDayEdit);
+  numEdit = &numPomidoros;
+
+  GPIO_Press_Pin = 0;
+  buttonReceiverNumEdit();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void selectMenuPomidoroNumInSeries(void *dataPtr)
+{
+  clearMatrix();
+  screenPomidoroNumInSeriesEdit.backState = screenCur;
+  setScreen(&screenPomidoroNumInSeriesEdit);
+  numEdit = &numInSeries;
+
+  GPIO_Press_Pin = 0;
+  buttonReceiverNumEdit();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 void showMenu(void *dataPtr)
 {
 //  menu = 0;
-  screenCur = &screenMenuTime;
+  setScreen(&screenMenuTime);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

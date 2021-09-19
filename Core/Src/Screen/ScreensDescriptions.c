@@ -83,37 +83,42 @@ TextSets textCountDown   = {txtCountdown,   0,     0, YELLOW, BLACK, &pTimes_18,
 TextSets textBrightness  = {txtBrightness, 16,     0, YELLOW, BLACK, &pTimes_18,     drawBrightness,   NULL}; // Яркость экрана
 TextSets textIllum       = {txtIllum,      16,    16,    RED, BLACK, &pComic_16,     drawIllumination, NULL}; // Внешняя освещённость
 
-TextSets textPomidoroWork    = {txtPomidoroWork,  0,     0, GREEN,  BLACK, &pTimes_18,     drawPomidoro,     NULL}; // Текст со временем помидора
-TextSets textPomidoroRest    = {txtPomidoroRest,  0,     0,   RED,  BLACK, &pTimes_18,     drawPomidoro,     NULL}; // Текст со временем помидора
-TextSets textPomidoroInfo    = {txtPomidoroInfo,  0,    16, WHITE,  BLACK, &pTimes_18,     drawPomidoroInfo, NULL}; // Текст со временем помидора
+TextSets textPomidoroWork           = {txtPomidoroWork,   0,    0, GREEN,  BLACK, &pTimes_18,     drawPomidoro,     NULL}; // Текст со временем помидора
+TextSets textPomidoroRest           = {txtPomidoroRest,   0,    0,   RED,  BLACK, &pTimes_18,     drawPomidoro,     NULL}; // Текст со временем помидора
+TextSets textPomidoroInfo           = {txtPomidoroInfo,   0,   16, WHITE,  BLACK, &pTimes_18,     drawPomidoroInfo, NULL}; // Текст со временем помидора
+TextSets textPomidoroWorkInf        = {txtPomidoroInfo,  15,   19, WHITE,  BLACK, &pArial_13,     drawText,         "work"};          // Пояснительная надпись
+TextSets textPomidoroSmallRestInf   = {txtPomidoroInfo,   6,   19, WHITE,  BLACK, &pArial_13,     drawText,         "small rest"};    // Пояснительная надпись
+TextSets textPomidoroBigRestInf     = {txtPomidoroInfo,   6,   19, WHITE,  BLACK, &pArial_13,     drawText,         "big rest"};      // Пояснительная надпись
+TextSets textPomidoroNumInDayInf    = {txtPomidoroInfo,   6,   19, WHITE,  BLACK, &pArial_10,     drawText,         "Num in day "};   // Пояснительная надпись
+TextSets textPomidoroNumINSeriesInf = {txtPomidoroInfo,   0,   19, WHITE,  BLACK, &pArial_10,     drawText,         "Series length"}; // Пояснительная надпись
 
 TextSets textCntDownInf     = {txtCountdownInfo,   2, 19,    WHITE, BLACK, &pArial_13,     drawText,    "Countdown"}; // Пояснительная надпись
 TextSets textCntDownFinish  = {txtCountdownFinish, 2, 17,      RED, BLACK, &pTimes_18,     drawBlink32,    "FINISH"}; // надпись о завершении отсчёта
 
 /// Пункты меню, выделенные и нет.
-TextSets textMenuTime        = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Time       "};
-TextSets textMenuTimeSel     = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Time       "};
-TextSets textMenuDate        = {txtMenu,    0, 11, GREEN, BLACK,       &pArial_13, drawMenu, "Date       "};
-TextSets textMenuDateSel     = {txtMenuSel, 0, 11, WHITE, BLACK,       &pArial_13, drawMenu, "Date       "};
-TextSets textMenuAlr         = {txtMenu,    0, 22, GREEN, BLACK,       &pArial_13, drawMenu, "Alarms >   "};
-TextSets textMenuAlrSel      = {txtMenuSel, 0, 22, WHITE, BLACK,       &pArial_13, drawMenu, "Alarms >   "};
-TextSets textMenuBright      = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Brightness "};
-TextSets textMenuBrightSel   = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Brightness "};
-TextSets textMenuPomidoro    = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Pomidoro>  "};
-TextSets textMenuPomidoroSel = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Pomidoro>  "};
-TextSets textMenuDebug       = {txtMenu,    0, 11, GREEN, TRANSPARENT, &pArial_13, drawMenu, "Debug >  "};
-TextSets textMenuDebugSel    = {txtMenuSel, 0, 11, WHITE, TRANSPARENT, &pArial_13, drawMenu, "Debug >  "};
+TextSets textMenuTime        = {txtMenu,    0,  0, GREEN, BLACK,       &pArial_10, drawMenu, "Time       "};
+TextSets textMenuTimeSel     = {txtMenuSel, 0,  0, WHITE, BLACK,       &pArial_10, drawMenu, "Time       "};
+TextSets textMenuDate        = {txtMenu,    0, 11, GREEN, BLACK,       &pArial_10, drawMenu, "Date       "};
+TextSets textMenuDateSel     = {txtMenuSel, 0, 11, WHITE, BLACK,       &pArial_10, drawMenu, "Date       "};
+TextSets textMenuAlr         = {txtMenu,    0, 22, GREEN, BLACK,       &pArial_10, drawMenu, "Alarms >   "};
+TextSets textMenuAlrSel      = {txtMenuSel, 0, 22, WHITE, BLACK,       &pArial_10, drawMenu, "Alarms >   "};
+TextSets textMenuBright      = {txtMenu,    0,  0, GREEN, BLACK,       &pArial_10, drawMenu, "Brightness "};
+TextSets textMenuBrightSel   = {txtMenuSel, 0,  0, WHITE, BLACK,       &pArial_10, drawMenu, "Brightness "};
+TextSets textMenuPomidoro    = {txtMenu,    0, 11, GREEN, TRANSPARENT, &pArial_10, drawMenu, "Pomidoro>  "};
+TextSets textMenuPomidoroSel = {txtMenuSel, 0, 11, WHITE, TRANSPARENT, &pArial_10, drawMenu, "Pomidoro>  "};
+TextSets textMenuDebug       = {txtMenu,    0, 22, GREEN, TRANSPARENT, &pArial_10, drawMenu, "Debug >  "};
+TextSets textMenuDebugSel    = {txtMenuSel, 0, 22, WHITE, TRANSPARENT, &pArial_10, drawMenu, "Debug >  "};
 
-TextSets textMenuPomWork         = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Time work  "};
-TextSets textMenuPomWorkSel      = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Time work  "};
-TextSets textMenuPomSmallRest    = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Small Rest "};
-TextSets textMenuPomSmallRestSel = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Small Rest "};
-TextSets textMenuPomBigRest      = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Big rest   "};
-TextSets textMenuPomBigRestSel   = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Big rest   "};
-TextSets textMenuPomNum          = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Day`s amounts"}; // amount
-TextSets textMenuPomNumSel       = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Day`s amounts"};
-TextSets textMenuPomSeries       = {txtMenu,    0, 0,  GREEN, BLACK,       &pArial_13, drawMenu, "Num in series"};
-TextSets textMenuPomSeriesSel    = {txtMenuSel, 0, 0,  WHITE, BLACK,       &pArial_13, drawMenu, "Num in series"};
+TextSets textMenuPomWork         = {txtMenu,    0,  0,  GREEN, BLACK,       &pArial_10, drawMenu, "Time work  "};
+TextSets textMenuPomWorkSel      = {txtMenuSel, 0,  0,  WHITE, BLACK,       &pArial_10, drawMenu, "Time work  "};
+TextSets textMenuPomSmallRest    = {txtMenu,    0, 11,  GREEN, BLACK,       &pArial_10, drawMenu, "Small Rest "};
+TextSets textMenuPomSmallRestSel = {txtMenuSel, 0, 11,  WHITE, BLACK,       &pArial_10, drawMenu, "Small Rest "};
+TextSets textMenuPomBigRest      = {txtMenu,    0, 22,  GREEN, BLACK,       &pArial_10, drawMenu, "Big rest   "};
+TextSets textMenuPomBigRestSel   = {txtMenuSel, 0, 22,  WHITE, BLACK,       &pArial_10, drawMenu, "Big rest   "};
+TextSets textMenuPomNum          = {txtMenu,    0,  0,  GREEN, BLACK,       &pArial_10, drawMenu, "Num in day "}; // amount
+TextSets textMenuPomNumSel       = {txtMenuSel, 0,  0,  WHITE, BLACK,       &pArial_10, drawMenu, "Num in day "};
+TextSets textMenuPomSeries       = {txtMenu,    0, 11,  GREEN, BLACK,       &pArial_10, drawMenu, "Series length"};
+TextSets textMenuPomSeriesSel    = {txtMenuSel, 0, 11,  WHITE, BLACK,       &pArial_10, drawMenu, "Series length"};
 
 TextSets textDebugAHT10    = {txtAHT10, 0, 0,   WHITE, BLACK, &Font_5x8, drawAHT10, "AHT10"};
 
@@ -428,6 +433,117 @@ ScreenDescript screenBrightnessEdit =
 };
 
 //----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenPomidoroWorkEdit =
+{
+    stateCountDownEdit,
+    &textBlink32, //blink
+    0,               //автосброс режима
+
+    &screenPomidoroWorkEdit,  // следующий экран режима
+    &screenPomidoroWorkEdit,  // предыдущий экран режима
+    &screenPomidoroWorkEdit,  // следующий режим
+    &screenPomidoroWorkEdit,  // предыдущий режим
+    &screenMenuPomidoro,
+
+    &screenPomidoroWorkEdit, // кнопка set
+
+    savePomidoroWork,            // Краткое нажатие средней кнопки
+    midStub,                     // Длинное нажатие средней кнопки
+    buttonReceiverCountdownEdit, // Обработчик кнопок в этом пункте
+    2,
+    {&textEdit32, &textPomidoroWorkInf}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenPomidoroSmallRestEdit =
+{
+    stateCountDownEdit,
+    &textBlink32, //blink
+    0,               //автосброс режима
+
+    &screenPomidoroSmallRestEdit,  // следующий экран режима
+    &screenPomidoroSmallRestEdit,  // предыдущий экран режима
+    &screenPomidoroSmallRestEdit,  // следующий режим
+    &screenPomidoroSmallRestEdit,  // предыдущий режим
+    &screenMenuPomidoro,
+
+    &screenPomidoroSmallRestEdit, // кнопка set
+
+    savePomidoroSmallRest,       // Краткое нажатие средней кнопки
+    midStub,                     // Длинное нажатие средней кнопки
+    buttonReceiverCountdownEdit, // Обработчик кнопок в этом пункте
+    2,
+    {&textEdit32, &textPomidoroSmallRestInf}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenPomidoroBigRestEdit =
+{
+    stateCountDownEdit,
+    &textBlink32, //blink
+    0,               //автосброс режима
+
+    &screenPomidoroBigRestEdit,  // следующий экран режима
+    &screenPomidoroBigRestEdit,  // предыдущий экран режима
+    &screenPomidoroBigRestEdit,  // следующий режим
+    &screenPomidoroBigRestEdit,  // предыдущий режим
+    &screenMenuPomidoro,
+
+    &screenPomidoroBigRestEdit, // кнопка set
+
+    savePomidoroBigRest,         // Краткое нажатие средней кнопки
+    midStub,                     // Длинное нажатие средней кнопки
+    buttonReceiverCountdownEdit, // Обработчик кнопок в этом пункте
+    2,
+    {&textEdit32, &textPomidoroBigRestInf}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenPomidoroNumInDayEdit =
+{
+    stateCountDownEdit,
+    &textBlink32, //blink
+    0,               //автосброс режима
+
+    &screenPomidoroNumInDayEdit,  // следующий экран режима
+    &screenPomidoroNumInDayEdit,  // предыдущий экран режима
+    &screenPomidoroNumInDayEdit,  // следующий режим
+    &screenPomidoroNumInDayEdit,  // предыдущий режим
+    &screenMenuPomidoro,
+
+    &screenPomidoroNumInDayEdit, // кнопка set
+
+    savePomidoroNumInDay,         // Краткое нажатие средней кнопки
+    midStub,                     // Длинное нажатие средней кнопки
+    buttonReceiverNumEdit,       // Обработчик кнопок в этом пункте
+    2,
+    {&textEditBright32, &textPomidoroNumInDayInf}
+};
+
+//----------------------------------------------------------------------------------------------------------------------
+ScreenDescript screenPomidoroNumInSeriesEdit =
+{
+    stateCountDownEdit,
+    &textBlink32, //blink
+    0,               //автосброс режима
+
+    &screenPomidoroNumInSeriesEdit,  // следующий экран режима
+    &screenPomidoroNumInSeriesEdit,  // предыдущий экран режима
+    &screenPomidoroNumInSeriesEdit,  // следующий режим
+    &screenPomidoroNumInSeriesEdit,  // предыдущий режим
+    &screenMenuPomidoro,
+
+    &screenPomidoroNumInSeriesEdit, // кнопка set
+
+    savePomidoroNumInSeries,         // Краткое нажатие средней кнопки
+    midStub,                     // Длинное нажатие средней кнопки
+    buttonReceiverNumEdit,       // Обработчик кнопок в этом пункте
+    2,
+    {&textEditBright32, &textPomidoroNumINSeriesInf}
+};
+
+
+//----------------------------------------------------------------------------------------------------------------------
 //---------------------------- M E N U ---------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
 ScreenDescript screenMenuTime =
@@ -505,7 +621,7 @@ ScreenDescript screenMenuBrightness =
     &screenMenuBrightness,  // Право
     &screenMenuBrightness,  // Лево
     &screenMenuAlarm,       // вверх
-    &screenMenuDebug,  // вниз
+    &screenMenuPomidoro,    // вниз
     &screenMain1,       //Долгое нажатие влево
 
     &screenMain1, // кнопка set
@@ -513,8 +629,8 @@ ScreenDescript screenMenuBrightness =
     inBrightness,      // Краткое нажатие средней кнопки
     midStub,           // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    2,
-    {&textMenuBrightSel, &textMenuDebug}
+    3,
+    {&textMenuBrightSel, &textMenuPomidoro, &textMenuDebug}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -532,11 +648,11 @@ ScreenDescript screenMenuPomidoro =
 
     &screenMain1,       // кнопка set
 
-    inBrightness,       // Краткое нажатие средней кнопки
+    midStub,            // Краткое нажатие средней кнопки
     midStub,            // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    2,
-    {&textMenuBrightSel, &textMenuDebug}
+    3,
+    {&textMenuBright, &textMenuPomidoroSel, &textMenuDebug}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -546,19 +662,19 @@ ScreenDescript screenMenuDebug =
     NULL, //blink
     1,               //автосброс режима
 
-    &screenMenuDebugAHT10,      // Право
+    &screenMenuDebugAHT10, // Право
     &screenMenuDebug,      // Лево
-    &screenMenuBrightness, // вверх
+    &screenMenuPomidoro,   // вверх
     &screenMenuDebug,      // вниз
     &screenMain1,          //Долгое нажатие влево
 
     &screenMain1, // кнопка set
 
-    midStub,           // Краткое нажатие средней кнопки
-    midStub,           // Долгое нажатие средней кнопки
+    midStub,            // Краткое нажатие средней кнопки
+    midStub,            // Долгое нажатие средней кнопки
     buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    2,
-    {&textMenuBright, &textMenuDebugSel}
+    3,
+    {&textMenuBright, &textMenuPomidoro, &textMenuDebugSel}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -635,18 +751,18 @@ ScreenDescript screenMenuPomidoroWork =
     1,               //автосброс режима
 
     &screenMenuPomidoroWork,      // Право
-    &screenMenuPomidoro,             // Лево
+    &screenMenuPomidoro,          // Лево
     &screenMenuPomidoroWork,      // вверх
     &screenMenuPomidoroSmallRest, // вниз
-    &screenMenuAlarm,
+    &screenMenuPomidoro,
 
     &screenMain1,       // кнопка set
 
-    selectMenuAlarm,    // Краткое нажатие средней кнопки
-    midStub,            // Долгое нажатие средней кнопки
-    buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    4,
-    {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
+    selectMenuPomidoroWork, // Краткое нажатие средней кнопки
+    midStub,                // Долгое нажатие средней кнопки
+    buttonReceiverMenu,     // Обработчик кнопок в этом пункте
+    3,
+    {&textMenuPomWorkSel, &textMenuPomSmallRest, &textMenuPomBigRest}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -664,11 +780,11 @@ ScreenDescript screenMenuPomidoroSmallRest =
 
     &screenMain1, // кнопка set
 
-    selectMenuAlarm,      // Краткое нажатие средней кнопки
-    midStub,      // Долгое нажатие средней кнопки
-    buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    4,
-    {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
+    selectMenuPomidoroSmallRest, // Краткое нажатие средней кнопки
+    midStub,                     // Долгое нажатие средней кнопки
+    buttonReceiverMenu,          // Обработчик кнопок в этом пункте
+    3,
+    {&textMenuPomWork, &textMenuPomSmallRestSel, &textMenuPomBigRest}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -681,60 +797,60 @@ ScreenDescript screenMenuPomidoroBigRest =
     &screenMenuPomidoroBigRest,   // Право
     &screenMenuPomidoro,  // Лево
     &screenMenuPomidoroSmallRest,   // вверх
-    &screenMenuPomidorosNum,   // вниз
+    &screenMenuPomidorosNumInDay,   // вниз
     &screenMenuAlarm,
 
     &screenMain1, // кнопка set
 
-    selectMenuAlarm,      // Краткое нажатие средней кнопки
-    midStub,      // Долгое нажатие средней кнопки
-    buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    4,
-    {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
+    selectMenuPomidoroBigRest, // Краткое нажатие средней кнопки
+    midStub,                   // Долгое нажатие средней кнопки
+    buttonReceiverMenu,        // Обработчик кнопок в этом пункте
+    3,
+    {&textMenuPomWork, &textMenuPomSmallRest, &textMenuPomBigRestSel}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
-ScreenDescript screenMenuPomidorosNum =
+ScreenDescript screenMenuPomidorosNumInDay =
 {
     stateMenuAlarm3,
     NULL, //blink
     1,               //автосброс режима
 
-    &screenMenuPomidorosNum,   // Право
-    &screenMenuPomidoro,  // Лево
-    &screenMenuPomidoroBigRest,   // вверх
-    &screenMenuPomidorosSeries,   // вниз
+    &screenMenuPomidorosNumInDay,    // Право
+    &screenMenuPomidoro,             // Лево
+    &screenMenuPomidoroBigRest,      // вверх
+    &screenMenuPomidorosNumInSeries, // вниз
     &screenMenuAlarm,
 
     &screenMain1, // кнопка set
 
-    selectMenuAlarm,    // Краткое нажатие средней кнопки
-    midStub,            // Долгое нажатие средней кнопки
-    buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    4,
-    {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
+    selectMenuPomidoroNumInDay, // Краткое нажатие средней кнопки
+    midStub,                    // Долгое нажатие средней кнопки
+    buttonReceiverMenu,         // Обработчик кнопок в этом пункте
+    2,
+    {&textMenuPomNumSel, &textMenuPomSeries}
 };
 
 //----------------------------------------------------------------------------------------------------------------------
-ScreenDescript screenMenuPomidorosSeries =
+ScreenDescript screenMenuPomidorosNumInSeries =
 {
     stateMenuAlarm3,
     NULL, //blink
     1,               //автосброс режима
 
-    &screenMenuPomidorosSeries, // Право
-    &screenMenuPomidoro,        // Лево
-    &screenMenuPomidorosNum,    // вверх
-    &screenMenuPomidorosSeries, // вниз
+    &screenMenuPomidorosNumInSeries, // Право
+    &screenMenuPomidoro,             // Лево
+    &screenMenuPomidorosNumInDay,    // вверх
+    &screenMenuPomidorosNumInSeries, // вниз
     &screenMenuAlarm,
 
     &screenMain1, // кнопка set
 
-    selectMenuAlarm,    // Краткое нажатие средней кнопки
-    midStub,            // Долгое нажатие средней кнопки
-    buttonReceiverMenu, // Обработчик кнопок в этом пункте
-    4,
-    {&textAlarm, &textAlarmDays, &textAlarmOffDays, &textAlarmOn}
+    selectMenuPomidoroNumInSeries, // Краткое нажатие средней кнопки
+    midStub,                       // Долгое нажатие средней кнопки
+    buttonReceiverMenu,            // Обработчик кнопок в этом пункте
+    2,
+    {&textMenuPomNum, &textMenuPomSeriesSel}
 };
 
 //----------------------------------------------------------------------------------------------------------------------

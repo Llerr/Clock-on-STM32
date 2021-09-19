@@ -8,6 +8,8 @@
 #ifndef ARIAL_7X10_H_
 #define ARIAL_7X10_H_
 
+#include "stm32_ub_font.h"
+
 #define USE_ARIAL_7x10
 
 extern UB_pFont Arial_7x10;
