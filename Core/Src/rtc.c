@@ -183,7 +183,9 @@ void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 //----------------------------------------------------------------------------------------------------------------------
 static uint32_t RTC_ReadTimeCounter1(RTC_HandleTypeDef *hrtc)
 {
-  uint16_t high1 = 0U, high2 = 0U, low = 0U;
+  uint16_t high1 = 0U;
+  uint16_t  high2 = 0U;
+  uint16_t low = 0U;
   uint32_t timecounter = 0U;
 
   high1 = READ_REG(hrtc->Instance->CNTH & RTC_CNTH_RTC_CNT);

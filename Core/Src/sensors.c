@@ -81,7 +81,7 @@ void requestDataSensors()
 void changeBrightness()
 {
   uint8_t idx = getBrightnessIndex();
-  static uint8_t oldIdx = 0;
+  static uint8_t oldIdx = 255; //Для первого срабатывания при низком освещении
   if(oldIdx != idx)
   {
     brightCur = brightnessAll[idx];
