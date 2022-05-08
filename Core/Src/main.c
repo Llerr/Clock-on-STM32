@@ -74,9 +74,14 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 // printf() через SWD
+//int __io_putchar(int ch)
+//{
+//  ITM_SendChar(ch);
+//  return ch;
+//}
 int __io_putchar(int ch)
 {
-  ITM_SendChar(ch);
+  ITM_SendChar((uint32_t)ch);
   return ch;
 }
 
@@ -225,6 +230,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+
   /** Initializes the CPU, AHB and APB buses clocks
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
@@ -312,5 +318,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

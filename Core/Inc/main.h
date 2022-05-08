@@ -123,5 +123,3 @@ void ReceiveUSB(uint8_t *str, uint32_t len);
 #endif
 
 #endif /* __MAIN_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
