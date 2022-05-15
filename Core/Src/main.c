@@ -148,7 +148,7 @@ int main(void)
   HAL_Delay(100);
   initButtons();
   initSensors();
-  initScreens();
+  initScreen();
   initMatrix();
   initAudio();
   //для i2c

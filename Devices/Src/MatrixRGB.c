@@ -108,7 +108,7 @@ void drawPicture(int x, int y, Picture *pic)
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void drawRect(const int x1, const int y1, const int x2, const int y2, uint16_t lineColor, uint16_t fillColor)
+void drawBorderRect(const int x1, const int y1, const int x2, const int y2, uint16_t lineColor, uint16_t fillColor)
 {
   uint16_t color;
   for(int y = y1; y <= y2; ++y)

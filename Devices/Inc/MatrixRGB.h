@@ -35,7 +35,7 @@ void clearMatrix();
 void updateScreen();
 void drawPoint(int x, int y, uint16_t color);
 void drawPicture(int x, int y, Picture *pic);
-void drawRect(const int x1, const int y1, const int x2, const int y2, uint16_t lineColor, uint16_t fillColor);
+void drawBorderRect(const int x1, const int y1, const int x2, const int y2, uint16_t lineColor, uint16_t fillColor);
 
 void resetWin();
 void setWinTopLeft(uint16_t x, uint16_t y);

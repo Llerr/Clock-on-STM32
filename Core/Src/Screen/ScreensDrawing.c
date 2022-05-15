@@ -150,17 +150,17 @@ void drawBars(Alarm *alrm)
   int x = screenCur->text[1]->x;
   int y = screenCur->text[1]->y;
   if(alarmCheckDay(alrm, Saturday))
-    drawRect(x+5*7+1, y-3, x+6*7-1, y-2, RED, RED);
+    drawBorderRect(x+5*7+1, y-3, x+6*7-1, y-2, RED, RED);
   if(alarmCheckDay(alrm, Sunday))
-    drawRect(x+6*7+1, y-3, x+7*7-1, y-2, RED, RED);
+    drawBorderRect(x+6*7+1, y-3, x+7*7-1, y-2, RED, RED);
   if(alrm->on)
-    drawRect(x+7*7+2, y-3, x+9*7-1, y-2, WHITE, WHITE);
+    drawBorderRect(x+7*7+2, y-3, x+9*7-1, y-2, WHITE, WHITE);
 
 //  drawRect(2, 2, 3, 10, RED, BLUE);
   for(uint8_t i = 1; i < 6; ++i)
   {
     if(alarmCheckDay(alrm, i))
-      drawRect(x+(i-1)*7+1, y-3, x+i*7-1, y-2, GREEN, GREEN);
+      drawBorderRect(x+(i-1)*7+1, y-3, x+i*7-1, y-2, GREEN, GREEN);
   }
 
 }
